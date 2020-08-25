@@ -1,0 +1,125 @@
+{
+  "name": "fetchye",
+  "version": "0.0.1",
+  "description": "If you know how to use Fetch, you know how to use Fetchye [fetch-yae]. Simple React Hooks, Centralized Cache, Infinitely Extensible.",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/americanexpress/fetchye.git"
+  },
+  "author": "Michael A Tomcal <michael.a.tomcal@aexp.com>",
+  "bugs": {
+    "url": "https://github.com/americanexpress/fetchye/issues"
+  },
+  "homepage": "https://github.com/americanexpress/fetchye#readme",
+  "contributors": [
+    "Andres Escobar <Andres.Escobar@aexp.com> (https://github.com/anescobar1991)",
+    "James Singleton <James.Singleton1@aexp.com> https://github.com/JamesSingleton)",
+    "Jimmy King  <Jimmy.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
+    "Jonathan Adshead <Jonathan.Adshead@aexp.com> (https://github.com/JAdshead)",
+    "Michael Tobia <Michael.M.Tobia@aexp.com> (https://github.com/Francois-Esquire)",
+    "Michael Tomcal <Michael.A.Tomcal@aexp.com> (https://github.com/mtomcal))",
+    "Nelly Kiboi <Nelly.J.Kiboi@aexp.com> (https://github.com/nellyk)",
+    "Nickolas Oliver <nickolas.oliver@aexp.com> (https://github.com/PixnBits)",
+    "Andrew Curtis <andrew.curtis@aexp.com> (https://github.com/drewcur)",
+    "Scott McIntyre <scott.mcintyre@aexp.com> (https://github.com/smackfu)"
+  ],
+  "keywords": [
+    "async",
+    "react",
+    "redux",
+    "react-redux",
+    "hooks",
+    "ssr",
+    "fetch",
+    "data",
+    "query",
+    "promise"
+  ],
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "babel src --out-dir lib",
+    "lint": "eslint --ignore-path .gitignore --ext js,jsx,md .",
+    "prepublish": "npm run build",
+    "test": "npm run test:unit",
+    "test:unit": "jest",
+    "test:git-history": "commitlint --from origin/main --to HEAD",
+    "test:lockfile": "lockfile-lint -p package-lock.json -t npm -a npm -o https: -c -i",
+    "posttest": "npm run lint && npm run test:lockfile && npm run test:git-history"
+  },
+  "peerDependencies": {
+    "react": "16.x.x",
+    "react-dom": "16.x.x",
+    "react-redux": "7.x.x",
+    "redux": "4.x.x"
+  },
+  "optionalDependencies": {
+    "immutable": "^4.0.0-rc.12"
+  },
+  "dependencies": {
+    "create-shared-react-context": "^1.0.3",
+    "object-hash": "^2.0.3",
+    "prop-types": "^15.7.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/polyfill": "^7.10.4",
+    "@commitlint/cli": "^9.1.1",
+    "@commitlint/config-conventional": "^9.1.1",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/git": "^9.0.0",
+    "@semantic-release/github": "^7.0.7",
+    "@semantic-release/npm": "^7.0.5",
+    "@semantic-release/release-notes-generator": "^9.0.1",
+    "@testing-library/react": "^10.4.8",
+    "amex-jest-preset-react": "^6.1.0",
+    "babel-preset-amex": "^3.4.0",
+    "core-js-compat": "3.6.5",
+    "eslint": "^7.6.0",
+    "eslint-config-amex": "^13.0.0",
+    "husky": "^4.2.5",
+    "immutable": "^4.0.0-rc.12",
+    "jest": "^26.4.0",
+    "lockfile-lint": "^4.3.7",
+    "react": "16.x.x",
+    "react-dom": "16.x.x",
+    "react-redux": "7.x.x",
+    "redux": "4.x.x",
+    "semantic-release": "^17.1.1"
+  },
+  "release": {
+    "branches": [
+      "+([0-9])?(.{+([0-9]),x}).x",
+      "main",
+      "next",
+      "next-major",
+      {
+        "name": "beta",
+        "prerelease": true
+      },
+      {
+        "name": "alpha",
+        "prerelease": true
+      }
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/git",
+      "@semantic-release/github"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
+}

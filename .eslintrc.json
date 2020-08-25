@@ -1,0 +1,6 @@
+{
+  "extends": "amex",
+  "rules": {
+    "unicorn/prevent-abbreviations": "off"
+  }
+}

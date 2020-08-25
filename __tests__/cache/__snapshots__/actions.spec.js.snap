@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Actions clearErrorsAction should have correct shape 1`] = `
+Object {
+  "hash": "abc1234",
+  "type": "@fetchye/CLEAR_ERROR",
+}
+`;
+
+exports[`Actions deleteAction should have correct shape 1`] = `
+Object {
+  "hash": "abc1234",
+  "type": "@fetchye/DELETE_DATA",
+}
+`;
+
+exports[`Actions errorAction should have correct shape 1`] = `
+Object {
+  "error": [Error: Fake Error],
+  "hash": "abc1234",
+  "type": "@fetchye/ERROR",
+}
+`;
+
+exports[`Actions loadingAction should have correct shape 1`] = `
+Object {
+  "hash": "abc1234",
+  "type": "@fetchye/IS_LOADING",
+}
+`;
+
+exports[`Actions setAction should have correct shape 1`] = `
+Object {
+  "hash": "abc1234",
+  "type": "@fetchye/SET_DATA",
+  "value": Object {
+    "body": Object {
+      "fakeData": true,
+    },
+    "ok": true,
+    "status": 200,
+  },
+}
+`;
