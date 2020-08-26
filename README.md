@@ -55,7 +55,7 @@ import { Provider } from 'react-redux';
 import { FetchyeReduxProvider } from 'fetchye';
 import { fetchyeReducer } from 'fetchye/lib/cache/immutable/reducer';
 
-const store = createStore(reducer);
+const store = createStore(fetchyeReducer);
 
 const ParentComponent = ({ children }) => (
   <>
