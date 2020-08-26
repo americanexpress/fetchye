@@ -14,6 +14,13 @@
  * permissions and limitations under the License.
  */
 
+// Object.fromEntries is not compatible with Node v10
+// provide our own lightweight solution
+export const headersToObject = (headers = []) => [...headers]
+  .reduce((acc, [key, value]) => {
+    acc[key] = value;
+    return acc;
+  }, {});
 export const defaultFetcher = async (fetchClient, key, options) => {
   let res;
   let payload;
@@ -24,7 +31,7 @@ export const defaultFetcher = async (fetchClient, key, options) => {
     payload = {
       body,
       ok: res.ok,
-      headers: Object.fromEntries(res.headers?.entries() || []),
+      headers: headersToObject(res.headers),
       status: res.status,
     };
   } catch (requestError) {
