@@ -35,6 +35,7 @@ export const defaultFetcher = async (fetchClient, key, options) => {
       status: res.status,
     };
   } catch (requestError) {
+    // eslint-disable-next-line no-console
     console.error(requestError);
     error = requestError;
   }

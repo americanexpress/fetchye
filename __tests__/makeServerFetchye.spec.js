@@ -16,9 +16,10 @@
 
 import { createStore } from 'redux';
 import { makeServerFetchye } from '../src/makeServerFetchye';
-import reducer from '../src/cache/immutable/reducer';
+import { SimpleCache } from '../src/cache';
 
-const store = createStore(reducer, reducer(undefined, { type: '' }));
+const cache = SimpleCache();
+const store = createStore(cache.reducer, cache.reducer(undefined, { type: '' }));
 
 global.console.error = jest.fn();
 
@@ -43,7 +44,56 @@ describe('makeServerFetchye', () => {
     }));
     const fetchyeRes = await makeServerFetchye({
       store,
-      cacheSelector: (state) => state,
+      cache,
+      fetchClient,
+    })('http://example.com');
+
+    expect(fetchyeRes).toMatchInlineSnapshot(`
+      Object {
+        "data": Object {
+          "body": Object {
+            "fakeData": true,
+          },
+          "headers": Object {
+            "content-type": "application/json",
+          },
+          "ok": true,
+          "status": 200,
+        },
+        "error": undefined,
+      }
+    `);
+  });
+  it('should return data in success state when using default cache', async () => {
+    const fetchClient = jest.fn(async () => ({
+      ...defaultPayload,
+    }));
+    const fetchyeRes = await makeServerFetchye({
+      store,
+      fetchClient,
+    })('http://example.com');
+
+    expect(fetchyeRes).toMatchInlineSnapshot(`
+      Object {
+        "data": Object {
+          "body": Object {
+            "fakeData": true,
+          },
+          "headers": Object {
+            "content-type": "application/json",
+          },
+          "ok": true,
+          "status": 200,
+        },
+        "error": undefined,
+      }
+    `);
+  });
+  it('should return data in success state if no cache and no store provided', async () => {
+    const fetchClient = jest.fn(async () => ({
+      ...defaultPayload,
+    }));
+    const fetchyeRes = await makeServerFetchye({
       fetchClient,
     })('http://example.com');
 
@@ -69,7 +119,7 @@ describe('makeServerFetchye', () => {
     });
     const fetchyeRes = await makeServerFetchye({
       store,
-      cacheSelector: (state) => state,
+      cache,
       fetchClient,
     })('http://example.com/one');
 
@@ -93,7 +143,7 @@ describe('makeServerFetchye', () => {
     }));
     const fetchye = makeServerFetchye({
       store,
-      cacheSelector: (state) => state,
+      cache,
       fetchClient,
     });
     await fetchye('http://example.com/two');

@@ -14,12 +14,11 @@
  * permissions and limitations under the License.
  */
 
-export const getCacheByKey = (cache = {}, computedKey) => {
-  const unpackedCache = cache.toJS ? cache.toJS() : cache;
-  const data = unpackedCache.data?.[computedKey.hash];
-  const loading = !!unpackedCache.loading && unpackedCache.loading.includes(computedKey.hash);
-  const error = unpackedCache.errors?.[computedKey.hash];
-  return { data, loading, error };
-};
+import createSharedReactContext from 'create-shared-react-context';
 
-export default getCacheByKey;
+// Touching this will cause a breaking change
+export const SHARED_CONTEXT_ID = 'FetchyeContext';
+
+export const FetchyeContext = createSharedReactContext(null, SHARED_CONTEXT_ID);
+
+export default FetchyeContext;

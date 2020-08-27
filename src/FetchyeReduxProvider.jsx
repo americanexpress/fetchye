@@ -17,35 +17,25 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import createSharedReactContext from 'create-shared-react-context';
+import { defaultFetcher } from './defaultFetcher';
+import { FetchyeContext } from './FetchyeContext';
 
-const contextShape = {
-  dispatch: null,
-  fetchClient: null,
-  useFetchyeSelector: () => {
-    throw new Error('Could not find a Fetchye Provider. Please add one in a parent component to fix this.');
-  },
-};
-
-// Touching this will cause a breaking change
-export const SHARED_CONTEXT_ID = 'FetchyeContext';
-
-export const FetchyeContext = createSharedReactContext(contextShape, SHARED_CONTEXT_ID);
-
-const makeUseFetchyeSelector = (cacheSelector) => () => useSelector(
-  (state) => cacheSelector(state)
+const makeUseFetchyeSelector = (getCacheByKey, cacheSelector) => (key) => useSelector(
+  (state) => getCacheByKey(cacheSelector(state), key)
 );
 
 export const FetchyeReduxProvider = ({
-  cacheSelector, fetchClient = fetch, children,
+  cache, fetcher = defaultFetcher, fetchClient = fetch, children,
 }) => {
   const dispatch = useDispatch();
+  const { cacheSelector, getCacheByKey } = cache;
   const memoizedConfig = useMemo(() => ({
-    ...contextShape,
+    cache,
     dispatch,
-    useFetchyeSelector: makeUseFetchyeSelector(cacheSelector),
+    defaultFetcher: fetcher,
+    useFetchyeSelector: makeUseFetchyeSelector(getCacheByKey, cacheSelector),
     fetchClient,
-  }), []);
+  }), [cache, cacheSelector, dispatch, fetchClient, fetcher, getCacheByKey]);
   return (
     <FetchyeContext.Provider value={memoizedConfig}>
       {children}
@@ -54,9 +44,12 @@ export const FetchyeReduxProvider = ({
 };
 
 FetchyeReduxProvider.propTypes = {
-  cacheSelector: PropTypes.func.isRequired,
-  fetchClient: PropTypes.func.isRequired,
+  cache: PropTypes.shape({
+    reducer: PropTypes.func.isRequired,
+    getCacheByKey: PropTypes.func.isRequired,
+    cacheSelector: PropTypes.func.isRequired,
+  }).isRequired,
+  fetchClient: PropTypes.func,
+  fetcher: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
-
-export default FetchyeReduxProvider;

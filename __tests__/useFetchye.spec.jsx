@@ -18,11 +18,13 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { FetchyeReduxProvider } from '../src/FetchyeContext';
+import { FetchyeReduxProvider } from '../src/FetchyeReduxProvider';
 import { useFetchye } from '../src/useFetchye';
-import reducer from '../src/cache/immutable/reducer';
+import { SimpleCache } from '../src/cache';
 
-const store = createStore(reducer, reducer(undefined, { type: '' }));
+global.fetch = jest.fn(async () => {});
+const cache = SimpleCache();
+const store = createStore(cache.reducer, cache.reducer(undefined, { type: '' }));
 
 const defaultPayload = {
   headers: new global.Headers({
@@ -43,7 +45,7 @@ describe('useFetchye', () => {
     }));
     render(
       <Provider store={store}>
-        <FetchyeReduxProvider fetchClient={fetchClient} cacheSelector={(state) => state}>
+        <FetchyeReduxProvider cache={cache} fetchClient={fetchClient}>
           {React.createElement(() => {
             fetchyeRes = useFetchye('http://example.com');
             return null;
@@ -67,7 +69,7 @@ describe('useFetchye', () => {
     }));
     render(
       <Provider store={store}>
-        <FetchyeReduxProvider fetchClient={fetchClient} cacheSelector={(state) => state}>
+        <FetchyeReduxProvider cache={cache} fetchClient={fetchClient}>
           {React.createElement(() => {
             fetchyeRes = useFetchye('http://example.com');
             return null;
@@ -115,7 +117,7 @@ describe('useFetchye', () => {
     });
     render(
       <Provider store={store}>
-        <FetchyeReduxProvider fetchClient={fetchClient} cacheSelector={(state) => state}>
+        <FetchyeReduxProvider cache={cache} fetchClient={fetchClient}>
           {React.createElement(() => {
             fetchyeResOne = useFetchye('http://example.com/one');
             fetchyeResTwo = useFetchye(
@@ -164,7 +166,7 @@ describe('useFetchye', () => {
     }));
     render(
       <Provider store={store}>
-        <FetchyeReduxProvider fetchClient={fetchClient} cacheSelector={(state) => state}>
+        <FetchyeReduxProvider cache={cache} fetchClient={fetchClient}>
           {React.createElement(() => {
             fetchyeRes = useFetchye('http://example.com/one', { lazy: true });
             return null;
@@ -182,7 +184,7 @@ describe('useFetchye', () => {
     }));
     render(
       <Provider store={store}>
-        <FetchyeReduxProvider fetchClient={fetchClient} cacheSelector={(state) => state}>
+        <FetchyeReduxProvider cache={cache} fetchClient={fetchClient}>
           {React.createElement(() => {
             fetchyeRes = useFetchye('http://example.com/one', { lazy: true });
             return null;
@@ -198,6 +200,46 @@ describe('useFetchye', () => {
           Object {
             "lazy": true,
           },
+        ],
+      ]
+    `);
+  });
+  it('should use fetcher in hook over provider fetcher', async () => {
+    const customFetchClient = jest.fn(async () => ({
+      ...defaultPayload,
+      status: 201,
+    }));
+    const customFetcher = async (fetchClient, key, options) => {
+      const res = await customFetchClient(key, options);
+      return {
+        payload: {
+          ok: res.ok,
+          status: res.status,
+          body: await res.json(),
+        },
+        error: undefined,
+      };
+    };
+    render(
+      <Provider store={store}>
+        <FetchyeReduxProvider
+          cache={cache}
+          fetchClient={() => {
+            throw new Error('Fake Error');
+          }}
+        >
+          {React.createElement(() => {
+            useFetchye('http://example.com/test', {}, customFetcher);
+            return null;
+          })}
+        </FetchyeReduxProvider>
+      </Provider>
+    );
+    expect(customFetchClient.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          "http://example.com/test",
+          Object {},
         ],
       ]
     `);

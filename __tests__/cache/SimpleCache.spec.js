@@ -15,8 +15,8 @@
  */
 
 import { createStore } from 'redux';
-import reducer from '../../../src/cache/immutable/reducer';
-import * as actions from '../../../src/cache/actions';
+import SimpleCache from '../../src/cache/SimpleCache';
+import * as actions from '../../src/cache/actions';
 
 const fakeError = new Error('Fake Error');
 const fakeData = {
@@ -40,21 +40,22 @@ const createScenario = (dispatch, actionKeys, hash) => {
   });
 };
 
-describe('Immutable Reducer', () => {
+describe('SimpleCache', () => {
   let store;
+  const cache = SimpleCache();
   beforeEach(() => {
-    store = createStore(reducer, reducer(undefined, { type: '' }));
+    store = createStore(cache.reducer, cache.reducer(undefined, { type: '' }));
   });
   it('should reflect load state', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction'], 'abc1234');
     expect(getState()).toMatchInlineSnapshot(`
-      Immutable.Map {
-        "errors": Immutable.Map {},
-        "loading": Immutable.Set [
-          "abc1234",
-        ],
-        "data": Immutable.Map {},
+      Object {
+        "data": Object {},
+        "errors": Object {},
+        "loading": Object {
+          "abc1234": "abc1234",
+        },
       }
     `);
   });
@@ -62,10 +63,8 @@ describe('Immutable Reducer', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'setAction'], 'abc1234');
     expect(getState()).toMatchInlineSnapshot(`
-      Immutable.Map {
-        "errors": Immutable.Map {},
-        "loading": Immutable.Set [],
-        "data": Immutable.Map {
+      Object {
+        "data": Object {
           "abc1234": Object {
             "body": Object {
               "fakeData": true,
@@ -74,6 +73,8 @@ describe('Immutable Reducer', () => {
             "status": 200,
           },
         },
+        "errors": Object {},
+        "loading": Object {},
       }
     `);
   });
@@ -81,12 +82,12 @@ describe('Immutable Reducer', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'errorAction'], 'abc1234');
     expect(getState()).toMatchInlineSnapshot(`
-      Immutable.Map {
-        "errors": Immutable.Map {
+      Object {
+        "data": Object {},
+        "errors": Object {
           "abc1234": [Error: Fake Error],
         },
-        "loading": Immutable.Set [],
-        "data": Immutable.Map {},
+        "loading": Object {},
       }
     `);
   });
@@ -94,10 +95,10 @@ describe('Immutable Reducer', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'setAction', 'deleteAction'], 'abc1234');
     expect(getState()).toMatchInlineSnapshot(`
-      Immutable.Map {
-        "errors": Immutable.Map {},
-        "loading": Immutable.Set [],
-        "data": Immutable.Map {},
+      Object {
+        "data": Object {},
+        "errors": Object {},
+        "loading": Object {},
       }
     `);
   });
@@ -105,10 +106,10 @@ describe('Immutable Reducer', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'errorAction', 'clearErrorsAction'], 'abc1234');
     expect(getState()).toMatchInlineSnapshot(`
-      Immutable.Map {
-        "errors": Immutable.Map {},
-        "loading": Immutable.Set [],
-        "data": Immutable.Map {},
+      Object {
+        "data": Object {},
+        "errors": Object {},
+        "loading": Object {},
       }
     `);
   });
@@ -117,12 +118,8 @@ describe('Immutable Reducer', () => {
     createScenario(dispatch, ['loadingAction', 'setAction'], 'abc1234');
     createScenario(dispatch, ['loadingAction', 'errorAction'], 'def5678');
     expect(getState()).toMatchInlineSnapshot(`
-      Immutable.Map {
-        "errors": Immutable.Map {
-          "def5678": [Error: Fake Error],
-        },
-        "loading": Immutable.Set [],
-        "data": Immutable.Map {
+      Object {
+        "data": Object {
           "abc1234": Object {
             "body": Object {
               "fakeData": true,
@@ -131,6 +128,10 @@ describe('Immutable Reducer', () => {
             "status": 200,
           },
         },
+        "errors": Object {
+          "def5678": [Error: Fake Error],
+        },
+        "loading": Object {},
       }
     `);
   });
@@ -138,10 +139,69 @@ describe('Immutable Reducer', () => {
     const { dispatch, getState } = store;
     dispatch({ type: '@fetchye' });
     expect(getState()).toMatchInlineSnapshot(`
-      Immutable.Map {
-        "errors": Immutable.Map {},
-        "loading": Immutable.Set [],
-        "data": Immutable.Map {},
+      Object {
+        "data": Object {},
+        "errors": Object {},
+        "loading": Object {},
+      }
+    `);
+  });
+
+  describe('getCacheByKey', () => {
+    it('should return data error loading', () => {
+      const { dispatch, getState } = store;
+      createScenario(dispatch, ['loadingAction', 'setAction'], 'abc1234');
+      createScenario(dispatch, ['loadingAction', 'errorAction'], 'def5678');
+      expect(cache.getCacheByKey(getState(), 'abc1234')).toMatchInlineSnapshot(`
+        Object {
+          "data": Object {
+            "body": Object {
+              "fakeData": true,
+            },
+            "ok": true,
+            "status": 200,
+          },
+          "error": undefined,
+          "loading": undefined,
+        }
+      `);
+    });
+    it('should return empty data error loading if cache undefined', () => {
+      expect(cache.getCacheByKey(undefined, 'abc1234')).toMatchInlineSnapshot(`
+        Object {
+          "data": undefined,
+          "error": undefined,
+          "loading": undefined,
+        }
+      `);
+    });
+  });
+  it('should accept a cacheSelector', () => {
+    const { dispatch, getState } = store;
+    createScenario(dispatch, ['loadingAction', 'errorAction'], 'def5678');
+    const cacheSelector = (state) => state.someSliceOfState;
+    const nextCache = SimpleCache({ cacheSelector });
+    expect(nextCache.cacheSelector({ someSliceOfState: getState() })).toMatchInlineSnapshot(`
+        Object {
+          "data": Object {},
+          "errors": Object {
+            "def5678": [Error: Fake Error],
+          },
+          "loading": Object {},
+        }
+      `);
+  });
+  it('should return default cacheSelector', () => {
+    const { dispatch, getState } = store;
+    createScenario(dispatch, ['loadingAction', 'errorAction'], 'def5678');
+    const nextCache = SimpleCache();
+    expect(nextCache.cacheSelector(getState())).toMatchInlineSnapshot(`
+      Object {
+        "data": Object {},
+        "errors": Object {
+          "def5678": [Error: Fake Error],
+        },
+        "loading": Object {},
       }
     `);
   });

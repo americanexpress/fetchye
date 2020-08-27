@@ -18,18 +18,20 @@ import React, { useContext } from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { FetchyeReduxProvider, FetchyeContext } from '../src/FetchyeContext';
+import { SimpleCache } from '../src/cache';
+import { FetchyeContext } from '../src/FetchyeContext';
+import { FetchyeReduxProvider } from '../src/FetchyeReduxProvider';
 
 const store = createStore((state) => state, { initialState: {} });
 
 global.fetch = () => {};
 
-describe('FetchyeContext', () => {
+describe('FetchyeReduxProvider', () => {
   it('should create fetchye context with global fetch', () => {
     let contextResult;
     render(
       <Provider store={store}>
-        <FetchyeReduxProvider cacheSelector={(state) => state}>
+        <FetchyeReduxProvider cache={SimpleCache()}>
           {React.createElement(() => {
             contextResult = useContext(FetchyeContext);
             return <fake-element />;
@@ -39,31 +41,23 @@ describe('FetchyeContext', () => {
     );
     expect(contextResult).toMatchInlineSnapshot(`
       Object {
+        "cache": Object {
+          "cacheSelector": [Function],
+          "getCacheByKey": [Function],
+          "reducer": [Function],
+        },
+        "defaultFetcher": [Function],
         "dispatch": [Function],
         "fetchClient": [Function],
         "useFetchyeSelector": [Function],
       }
     `);
   });
-  it('should throw if default useFetchyeSelector is used', () => {
-    let contextResult;
-    render(
-      <Provider store={store}>
-        {React.createElement(() => {
-          contextResult = useContext(FetchyeContext);
-          return <fake-element />;
-        })}
-      </Provider>
-    );
-    expect(() => contextResult.useFetchyeSelector()).toThrowErrorMatchingInlineSnapshot(
-      '"Could not find a Fetchye Provider. Please add one in a parent component to fix this."'
-    );
-  });
   it('should create fetchye context with custom fetch', () => {
     const fakeFetchClient = jest.fn();
     render(
       <Provider store={store}>
-        <FetchyeReduxProvider fetchClient={fakeFetchClient} cacheSelector={(state) => state}>
+        <FetchyeReduxProvider cache={SimpleCache()} fetchClient={fakeFetchClient}>
           {React.createElement(() => {
             const { fetchClient } = useContext(FetchyeContext);
             fetchClient();
@@ -76,9 +70,10 @@ describe('FetchyeContext', () => {
   });
   it('should call cacheSelector within useFetchyeSelector', () => {
     const fakeCacheSelector = jest.fn((state) => state);
+    const cache = SimpleCache({ cacheSelector: fakeCacheSelector });
     render(
       <Provider store={store}>
-        <FetchyeReduxProvider cacheSelector={fakeCacheSelector}>
+        <FetchyeReduxProvider cache={cache}>
           {React.createElement(() => {
             const { useFetchyeSelector } = useContext(FetchyeContext);
             useFetchyeSelector();

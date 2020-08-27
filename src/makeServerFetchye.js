@@ -15,23 +15,29 @@
  */
 
 import { runAsync } from './runAsync';
-import { defaultFetcher } from './defaultFetcher';
 import { computeKey } from './computeKey';
-import { getCacheByKey } from './getCacheByKey';
+import SimpleCache from './cache/SimpleCache';
+import { defaultFetcher } from './defaultFetcher';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
 
 export const makeServerFetchye = ({
-  store: { dispatch, getState },
-  cacheSelector,
+  cache = SimpleCache(),
+  store: { getState, dispatch } = {},
   fetchClient,
 }) => async (
   key,
   { mapOptionsToKey = (options) => options, ...options } = { },
   fetcher = defaultFetcher
 ) => {
-  const cache = cacheSelector(getState());
+  const { cacheSelector } = cache;
   const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));
-  const { data, loading, error } = getCacheByKey(cache, computedKey);
+  if (!getState || !dispatch || !cacheSelector) {
+    return runAsync({
+      dispatch: () => {}, computedKey, fetcher, fetchClient, options,
+    });
+  }
+  const state = cacheSelector(getState());
+  const { data, loading, error } = cache.getCacheByKey(state, computedKey.hash);
   if (!data && !error && !loading) {
     return runAsync({
       dispatch, computedKey, fetcher, fetchClient, options,

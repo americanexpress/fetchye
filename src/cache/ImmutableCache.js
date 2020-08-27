@@ -23,9 +23,9 @@ import {
   DELETE_DATA,
   ERROR,
   CLEAR_ERROR,
-} from '../constants';
+} from './constants';
 
-export function fetchyeReducer(state = iMap({
+function reducer(state = iMap({
   errors: iMap(),
   loading: iSet(),
   data: iMap(),
@@ -58,4 +58,17 @@ export function fetchyeReducer(state = iMap({
   }
 }
 
-export default fetchyeReducer;
+const getCacheByKey = (cache = iMap(), key) => {
+  const data = cache.getIn(['data', key]);
+  const loading = cache.hasIn(['loading', key]);
+  const error = cache.getIn(['error', key]);
+  return { data, loading, error };
+};
+
+export default function ImmutableCache({ cacheSelector = (state) => state } = {}) {
+  return {
+    getCacheByKey,
+    reducer,
+    cacheSelector,
+  };
+}
