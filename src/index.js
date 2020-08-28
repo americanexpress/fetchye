@@ -16,5 +16,4 @@
 
 export * from './useFetchye';
 export * from './makeServerFetchye';
-export * from './FetchyeReduxProvider';
 export * from './FetchyeProvider';

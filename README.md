@@ -37,30 +37,129 @@ const MyComponent = () => {
 
 ## ⬇️ Install
 
-> For One App Installs skip to [One App Install](#one-app-install) section.
+**Contents**
+* [Quick Install](#simple-install)
+* [FetchyeProvider Install](#cache-install)
+* [FetchyeReduxProvider Install](#fetchyereduxprovider-install)
+* [One App Install](#one-app-install)
 
-### Redux-based Install
+### Quick Install
+
+**Pros**
+- Painless and Quick
+
+**Cons**
+- No shared caching
+- No de-duplication of API calls
+
+Just install and do `useFetchye`. Thats it!
+
+```sh
+npm i -S fetchye
+```
+
+```js
+// ...
+import { useFetchye } from 'fetchye';
+
+const MyComponent = () => {
+  const { isLoading, data } = useFetchye('http://example.com/api/profile');
+  return (
+    <>
+      {!isLoading && (
+        <p>{data.body.name}</p>
+      )}
+    </>
+  );
+};
+```
+
+### `FetchyeProvider` Install
+
+**Pros**
+- Easy
+- Shared Cache
+- De-duplication of API calls
+
+**Cons**
+- No Redux Dev Tools for debugging and cache inspection
+
+Install `fetchye`:
 
 ```
 npm i -S fetchye
 ```
 
-Add the `<FetchyeReduxProvider />` component under the Redux `<Provider />`:
+Add the `<FetchyeProvider />` component:
 
-> A Standalone Provider without Redux will be added in Beta release.
+```jsx
+import { FetchyeProvider, SimpleCache } from 'fetchye';
+
+const fetchyeCache = SimpleCache();
+
+const ParentComponent = ({ children }) => (
+  <>
+    <FetchyeProvider cache={fetchyeCache}>
+      {/* Use your Router to supply children components containing useFetchye */}
+      {children}
+    </FetchyeProvider>
+  </>
+);
+```
+
+In a child React Component, do `useFetchye` queries:
+
+```js
+// ...
+import { useFetchye } from 'fetchye';
+
+const MyComponent = () => {
+  const { isLoading, data } = useFetchye('http://example.com/api/profile');
+  return (
+    <>
+      {!isLoading && (
+        <p>{data.body.name}</p>
+      )}
+    </>
+  );
+};
+```
+
+### `FetchyeReduxProvider` Install
+
+**Pros**
+- Easy if you know Redux
+- Shared Cache
+- De-duplication of API calls
+- Redux Dev Tools for debugging and cache inspection
+
+**Cons**
+- More steps and dependencies
+
+Add `fetchye` and its needed optional dependencies:
+
+```
+npm i -S fetchye redux react-redux
+```
+
+Add the `<FetchyeReduxProvider />` component under the Redux `<Provider />`:
 
 ```jsx
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import { FetchyeReduxProvider } from 'fetchye';
-import { fetchyeReducer } from 'fetchye/lib/cache/immutable/reducer';
+import FetchyeReduxProvider from 'fetchye/lib/FetchyeReduxProvider';
+import { SimpleCache } from 'fetchye';
 
-const store = createStore(fetchyeReducer);
+const fetchyeCache = SimpleCache({
+  // Need to tell Fetchye where the cache reducer will be located
+  cacheSelector: (state) => state,
+});
+const store = createStore(fetchyeCache.reducer);
 
 const ParentComponent = ({ children }) => (
   <>
     <Provider store={store}>
-      <FetchyeReduxProvider fetchClient={fetch} cacheSelector={(state) => state}>
+      <FetchyeReduxProvider cache={fetchyeCache}>
         {/* Use your Router to supply children components containing useFetchye */}
         {children}
       </FetchyeReduxProvider>
@@ -69,10 +168,38 @@ const ParentComponent = ({ children }) => (
 );
 ```
 
+In a child React Component, do `useFetchye` queries:
+
+```js
+// ...
+import { useFetchye } from 'fetchye';
+
+const MyComponent = () => {
+  const { isLoading, data } = useFetchye('http://example.com/api/profile');
+  return (
+    <>
+      {!isLoading && (
+        <p>{data.body.name}</p>
+      )}
+    </>
+  );
+};
+```
+
 ### One App Install
 
+**Pros**
+- Shared Cache
+- De-duplication of API calls
+- Redux Dev Tools for debugging and cache inspection
+- Shared Cache between Micro Frontend Holocron Modules
+- Immutable Redux State
+
+**Cons**
+- More steps and dependencies
+
 ```
-npm i -S fetchye
+npm i -S fetchye redux react-redux immutable redux-immutable
 ```
 
 Add the `<FetchyeReduxProvider />` component to your Root Holocron Module:
@@ -80,12 +207,18 @@ Add the `<FetchyeReduxProvider />` component to your Root Holocron Module:
 ```jsx
 // ...
 import { combineReducers } from 'redux-immutable';
-import { FetchyeReduxProvider } from 'fetchye';
-import { fetchyeReducer } from 'fetchye/lib/cache/immutable/reducer';
+import FetchyeReduxProvider from 'fetchye/lib/FetchyeReduxProvider';
+import ImmutableCache from 'fetchye/lib/cache/ImmutableCache';
+
+// One App requires ImmutableJS based Cache configuration:
+const fetchyeCache = ImmutableCache({
+  // Need to tell Fetchye where the cache reducer will be located
+  cacheSelector: (state) => state.getIn(['modules', 'my-module-root', 'fetchye']),
+});
 
 const MyModuleRoot = ({ children }) => (
   <>
-    <FetchyeReduxProvider fetchClient={fetch} cacheSelector={(state) => state.getIn(['modules', 'my-module-root', 'fetchye'])}>
+    <FetchyeReduxProvider cache={fetchyeCache}>
       {/* Use your Router to supply children components containing useFetchye */}
       {children}
     </FetchyeReduxProvider>
@@ -100,6 +233,24 @@ MyModuleRoot.holocron = {
     // ... any other reducers
     fetchye: fetchyeReducer,
   }),
+};
+```
+
+In a child React Component or Holocron Module, do `useFetchye` queries:
+
+```js
+// ...
+import { useFetchye } from 'fetchye';
+
+const MyComponent = () => {
+  const { isLoading, data } = useFetchye('http://example.com/api/profile');
+  return (
+    <>
+      {!isLoading && (
+        <p>{data.body.name}</p>
+      )}
+    </>
+  );
 };
 ```
 

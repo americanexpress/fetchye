@@ -52,12 +52,12 @@
   },
   "peerDependencies": {
     "react": "16.x.x",
-    "react-dom": "16.x.x",
-    "react-redux": "7.x.x",
-    "redux": "4.x.x"
+    "react-dom": "16.x.x"
   },
   "optionalDependencies": {
-    "immutable": "^4.0.0-rc.12"
+    "immutable": "^4.0.0-rc.12",
+    "react-redux": "7.x.x",
+    "redux": "4.x.x"
   },
   "dependencies": {
     "create-shared-react-context": "^1.0.3",
