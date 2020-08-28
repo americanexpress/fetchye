@@ -1,3 +1,10 @@
+# [1.0.0-nightly.3](https://github.com/americanexpress/fetchye/compare/v1.0.0-nightly.2...v1.0.0-nightly.3) (2020-08-28)
+
+
+### Bug Fixes
+
+* **async:** fix async await ([ea38cf5](https://github.com/americanexpress/fetchye/commit/ea38cf58060a287fb329ab9a2c6bb2a876812ed6))
+
 # [1.0.0-nightly.2](https://github.com/americanexpress/fetchye/compare/v1.0.0-nightly.1...v1.0.0-nightly.2) (2020-08-28)
 
 
