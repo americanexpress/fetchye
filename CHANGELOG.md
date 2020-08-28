@@ -1,3 +1,15 @@
+# [1.0.0-nightly.2](https://github.com/americanexpress/fetchye/compare/v1.0.0-nightly.1...v1.0.0-nightly.2) (2020-08-28)
+
+
+### Bug Fixes
+
+* **imports:** remove redux dependent files from exports ([5d424e7](https://github.com/americanexpress/fetchye/commit/5d424e73de33f131e15fd54dd449fe8e1bf5801a))
+
+
+### Features
+
+* **initialData:** added initialData to options ([1747f45](https://github.com/americanexpress/fetchye/commit/1747f4532793e7f5d3dd005e1ee4ac54f86b9202))
+
 # 1.0.0-nightly.1 (2020-08-28)
 
 
