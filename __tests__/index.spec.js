@@ -21,7 +21,6 @@ describe('index', () => {
     expect(Object.keys(fetchye).sort()).toMatchInlineSnapshot(`
       Array [
         "FetchyeProvider",
-        "FetchyeReduxProvider",
         "makeServerFetchye",
         "useFetchye",
       ]

@@ -69,9 +69,9 @@ const defaultEqualityChecker = (a, b) => a.data === b.data
 && a.loading === b.loading;
 
 export const FetchyeProvider = ({
-  cache = SimpleCache(), initialState = cache.reducer(undefined, { type: '' }), equalityChecker = defaultEqualityChecker, fetcher = defaultFetcher, fetchClient = fetch, children,
+  cache = SimpleCache(), initialData = cache.reducer(undefined, { type: '' }), equalityChecker = defaultEqualityChecker, fetcher = defaultFetcher, fetchClient = fetch, children,
 }) => {
-  const [state, dispatch] = useReducer(cache.reducer, initialState);
+  const [state, dispatch] = useReducer(cache.reducer, initialData);
   const [notify, subscribe] = useSubscription();
   const fetchyeState = useRef();
   fetchyeState.current = state;
@@ -107,7 +107,7 @@ FetchyeProvider.propTypes = {
     reducer: PropTypes.func,
     getCacheByKey: PropTypes.func,
   }),
-  initialState: PropTypes.shape({}),
+  initialData: PropTypes.shape({}),
   equalityChecker: PropTypes.func,
   fetchClient: PropTypes.func,
   fetcher: PropTypes.func,

@@ -16,6 +16,7 @@
 
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { useSelector, useDispatch } from 'react-redux';
 import { defaultFetcher } from './defaultFetcher';
 import { FetchyeContext } from './FetchyeContext';

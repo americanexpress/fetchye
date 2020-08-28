@@ -21,6 +21,20 @@ import { isLoading } from './isLoading';
 import { useFetchyeContext } from './useFetchyeContext';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
 
+const getData = (data, isFirstRender, options) => {
+  if (!data && isFirstRender.current) {
+    return options?.initialData?.data;
+  }
+  return data;
+};
+
+const getError = (error, isFirstRender, options) => {
+  if (!error && isFirstRender.current) {
+    return options?.initialData?.error;
+  }
+  return error;
+};
+
 export const useFetchye = (
   key,
   { mapOptionsToKey = (options) => options, ...options } = { },
@@ -31,7 +45,7 @@ export const useFetchye = (
   const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
   const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));
   const { data, loading, error } = useFetchyeSelector(computedKey.hash);
-  const isFirstRender = useRef(!data);
+  const isFirstRender = useRef(!data && !options?.initialData?.data);
   useEffect(() => {
     if (options.lazy || !computedKey) {
       return;
@@ -49,8 +63,8 @@ export const useFetchye = (
   }, [data, loading, error, computedKey, selectedFetcher, options, dispatch, fetchClient]);
   return {
     isLoading: isLoading(loading, isFirstRender, options),
-    error,
-    data,
+    error: getError(error, isFirstRender, options),
+    data: getData(data, isFirstRender, options),
     run() {
       return runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
