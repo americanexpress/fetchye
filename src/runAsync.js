@@ -29,7 +29,7 @@ export const runAsync = async ({
   } else {
     dispatch(actions.errorAction({ hash: computedKey.hash, error: requestError }));
   }
-  return { data, error: requestError };
+  return { data, error: requestError || null };
 };
 
 export default runAsync;

@@ -64,7 +64,7 @@ describe('runAsync', () => {
             "fake": true,
           },
         },
-        "error": undefined,
+        "error": null,
       }
     `);
   });
