@@ -18,6 +18,6 @@ module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'scope-case': [2, 'always', ['pascal-case', 'camel-case', 'kebab-case']],
-    'body-max-line-length': [2, 'always', 150],
+    'body-max-line-length': [2, 'always', 200],
   },
 };

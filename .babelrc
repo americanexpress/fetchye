@@ -1,4 +1,8 @@
 {
   "presets": ["amex"],
-  "plugins": ["@babel/plugin-transform-regenerator"]
+  "plugins": [
+    [
+      "@babel/transform-runtime"
+    ]
+  ]
 }
