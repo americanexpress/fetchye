@@ -1,3 +1,10 @@
+# [1.0.0-nightly.4](https://github.com/americanexpress/fetchye/compare/v1.0.0-nightly.3...v1.0.0-nightly.4) (2020-08-28)
+
+
+### Bug Fixes
+
+* **ssr:** fix ssr conditionals ([40185d0](https://github.com/americanexpress/fetchye/commit/40185d0574131f5a437ad6720c68d0ec92baa44b))
+
 # [1.0.0-nightly.3](https://github.com/americanexpress/fetchye/compare/v1.0.0-nightly.2...v1.0.0-nightly.3) (2020-08-28)
 
 
