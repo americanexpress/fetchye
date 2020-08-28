@@ -105,6 +105,10 @@
       {
         "name": "alpha",
         "prerelease": true
+      },
+      {
+        "name": "nightly",
+        "prerelease": true
       }
     ],
     "plugins": [

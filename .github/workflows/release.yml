@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - alpha
+      - nightly
 
 jobs:
   prepare:
