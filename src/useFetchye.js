@@ -22,14 +22,14 @@ import { useFetchyeContext } from './useFetchyeContext';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
 
 const getData = (data, isFirstRender, options) => {
-  if (!data && isFirstRender.current) {
+  if (!data && !isFirstRender.current) {
     return options?.initialData?.data;
   }
   return data;
 };
 
 const getError = (error, isFirstRender, options) => {
-  if (!error && isFirstRender.current) {
+  if (!error && !isFirstRender.current) {
     return options?.initialData?.error;
   }
   return error;

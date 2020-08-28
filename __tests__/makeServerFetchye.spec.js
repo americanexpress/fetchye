@@ -60,7 +60,7 @@ describe('makeServerFetchye', () => {
           "ok": true,
           "status": 200,
         },
-        "error": undefined,
+        "error": null,
       }
     `);
   });
@@ -109,7 +109,7 @@ describe('makeServerFetchye', () => {
           "ok": true,
           "status": 200,
         },
-        "error": undefined,
+        "error": null,
       }
     `);
   });
