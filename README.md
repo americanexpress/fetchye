@@ -31,8 +31,8 @@ const MyComponent = () => {
 ## ✨ Features
 
 * ES6 Fetch powered by React Hooks
-* Centralized Cache
-* Redux, Headless (Coming Soon) or `useReducer` (Coming Soon) Cache modes available
+* Pure React or Redux Shared Cache modes available
+* Headless per-Hook Cache Mode available
 * SSR-friendly
 
 ## ⬇️ Install
@@ -44,6 +44,8 @@ const MyComponent = () => {
 * [One App Install](#one-app-install)
 
 ### Quick Install
+
+>💡 Makes use of Headless per-Hook Cache Mode
 
 **Pros**
 - Painless and Quick
@@ -75,6 +77,8 @@ const MyComponent = () => {
 ```
 
 ### `FetchyeProvider` Install
+
+>💡 When you want a central cache but no extra dependencies
 
 **Pros**
 - Easy
@@ -126,6 +130,8 @@ const MyComponent = () => {
 ```
 
 ### `FetchyeReduxProvider` Install
+
+>💡 When you want a central cache integrated with a Redux based project
 
 **Pros**
 - Easy if you know Redux
@@ -187,6 +193,8 @@ const MyComponent = () => {
 ```
 
 ### One App Install
+
+>💡 For when you use the [One App](https://github.com/americanexpress/one-app) Micro-Frontend Framework
 
 **Pros**
 - Shared Cache
