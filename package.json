@@ -60,6 +60,7 @@
     "redux": "4.x.x"
   },
   "dependencies": {
+    "@babel/runtime": "^7.11.2",
     "create-shared-react-context": "^1.0.3",
     "object-hash": "^2.0.3",
     "prop-types": "^15.7.2"
@@ -67,6 +68,7 @@
   "devDependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.1",
+    "@babel/plugin-transform-runtime": "^7.11.0",
     "@babel/polyfill": "^7.10.4",
     "@commitlint/cli": "^9.1.1",
     "@commitlint/config-conventional": "^9.1.1",
