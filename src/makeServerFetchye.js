@@ -19,6 +19,7 @@ import { computeKey } from './computeKey';
 import SimpleCache from './cache/SimpleCache';
 import { defaultFetcher } from './defaultFetcher';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
+import { coerceSsrField } from './queryHelpers';
 
 export const makeServerFetchye = ({
   cache = SimpleCache(),
@@ -32,18 +33,26 @@ export const makeServerFetchye = ({
   const { cacheSelector } = cache;
   const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));
   if (!getState || !dispatch || !cacheSelector) {
-    return runAsync({
+    const res = await runAsync({
       dispatch: () => {}, computedKey, fetcher, fetchClient, options,
     });
+    return {
+      data: coerceSsrField(res.data),
+      error: coerceSsrField(res.error),
+    };
   }
   const state = cacheSelector(getState());
   const { data, loading, error } = cache.getCacheByKey(state, computedKey.hash);
   if (!data && !error && !loading) {
-    return runAsync({
+    const res = await runAsync({
       dispatch, computedKey, fetcher, fetchClient, options,
     });
+    return {
+      data: coerceSsrField(res.data),
+      error: coerceSsrField(res.error),
+    };
   }
-  return { data, error };
+  return { data: coerceSsrField(data), error: coerceSsrField(error) };
 };
 
 export default makeServerFetchye;

@@ -85,7 +85,7 @@ describe('makeServerFetchye', () => {
           "ok": true,
           "status": 200,
         },
-        "error": undefined,
+        "error": null,
       }
     `);
   });
@@ -132,8 +132,8 @@ describe('makeServerFetchye', () => {
     `);
     expect(fetchyeRes).toMatchInlineSnapshot(`
       Object {
-        "data": undefined,
-        "error": [Error: fake error],
+        "data": null,
+        "error": "Error: fake error",
       }
     `);
   });
@@ -162,7 +162,7 @@ describe('makeServerFetchye', () => {
           "ok": true,
           "status": 200,
         },
-        "error": undefined,
+        "error": null,
       }
     `);
   });

@@ -17,23 +17,13 @@
 import { useEffect, useRef } from 'react';
 import { runAsync } from './runAsync';
 import { computeKey } from './computeKey';
-import { isLoading } from './isLoading';
+import {
+  isLoading,
+  getData,
+  getError,
+} from './queryHelpers';
 import { useFetchyeContext } from './useFetchyeContext';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
-
-const getData = (data, isFirstRender, options) => {
-  if (!data && !isFirstRender.current) {
-    return options?.initialData?.data;
-  }
-  return data;
-};
-
-const getError = (error, isFirstRender, options) => {
-  if (!error && !isFirstRender.current) {
-    return options?.initialData?.error;
-  }
-  return error;
-};
 
 export const useFetchye = (
   key,
@@ -45,13 +35,11 @@ export const useFetchye = (
   const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
   const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));
   const { data, loading, error } = useFetchyeSelector(computedKey.hash);
-  const isFirstRender = useRef(!data && !options?.initialData?.data);
+  const numOfRenders = useRef(0);
+  numOfRenders.current += 1;
   useEffect(() => {
     if (options.lazy || !computedKey) {
       return;
-    }
-    if (isFirstRender.current !== false) {
-      isFirstRender.current = false;
     }
     if (!data && !error && !loading) {
       (async () => {
@@ -62,9 +50,9 @@ export const useFetchye = (
     }
   }, [data, loading, error, computedKey, selectedFetcher, options, dispatch, fetchClient]);
   return {
-    isLoading: isLoading(loading, isFirstRender, options),
-    error: getError(error, isFirstRender, options),
-    data: getData(data, isFirstRender, options),
+    isLoading: isLoading({ loading, numOfRenders: numOfRenders.current, options }),
+    error: getError(error, numOfRenders.current, options),
+    data: getData(data, numOfRenders.current, options),
     run() {
       return runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
