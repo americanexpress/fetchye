@@ -14,9 +14,11 @@
  * permissions and limitations under the License.
  */
 
-import { isLoading } from '../src/isLoading';
+import {
+  isLoading, getData, getError, coerceSsrField,
+} from '../src/queryHelpers';
 
-describe('defaultMapOptionsToKey', () => {
+describe('isLoading', () => {
   it('should return true if loading cache true', () => {
     expect(isLoading(true, {}, {})).toBeTruthy();
   });
@@ -28,5 +30,32 @@ describe('defaultMapOptionsToKey', () => {
   });
   it('should return false if all args are false', () => {
     expect(isLoading(false, { current: false }, { lazy: false })).toBeFalsy();
+  });
+});
+
+describe('getData', () => {
+  it('should return data if data exists', () => {
+    expect(getData({})).toBeTruthy();
+  });
+  it('should return initialData data', () => {
+    expect(getData(undefined, { initialData: { data: { fakeData: true } } })).toBeTruthy();
+  });
+});
+
+describe('getError', () => {
+  it('should return error if error exists', () => {
+    expect(getError(new Error('fake error'))).toBeTruthy();
+  });
+  it('should return initialData error', () => {
+    expect(getError(undefined, { initialData: { error: new Error('fake error') } })).toBeTruthy();
+  });
+});
+
+describe('coerceSsrField', () => {
+  it('should return stringified error', () => {
+    expect(coerceSsrField(new Error('Fake Error'))).toEqual('Error: Fake Error');
+  });
+  it('should return null if undefined', () => {
+    expect(coerceSsrField(undefined)).toEqual(null);
   });
 });

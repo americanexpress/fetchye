@@ -26,3 +26,27 @@ export const isLoading = (loading, isFirstRender, options) => {
   }
   return false;
 };
+
+export const getData = (data, options) => {
+  if (!data) {
+    return options?.initialData?.data;
+  }
+  return data;
+};
+
+export const getError = (error, options) => {
+  if (!error) {
+    return options?.initialData?.error;
+  }
+  return error;
+};
+
+export const coerceSsrField = (field) => {
+  if (!field) {
+    return null;
+  }
+  if (field instanceof Error) {
+    return field.toString?.();
+  }
+  return field;
+};
