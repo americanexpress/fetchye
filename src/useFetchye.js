@@ -35,13 +35,11 @@ export const useFetchye = (
   const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
   const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));
   const { data, loading, error } = useFetchyeSelector(computedKey.hash);
-  const isFirstRender = useRef(!data && !options?.initialData?.data);
+  const numOfRenders = useRef(0);
+  numOfRenders.current += 1;
   useEffect(() => {
     if (options.lazy || !computedKey) {
       return;
-    }
-    if (isFirstRender.current !== false) {
-      isFirstRender.current = false;
     }
     if (!data && !error && !loading) {
       (async () => {
@@ -52,9 +50,9 @@ export const useFetchye = (
     }
   }, [data, loading, error, computedKey, selectedFetcher, options, dispatch, fetchClient]);
   return {
-    isLoading: isLoading(loading, options),
-    error: getError(error, options),
-    data: getData(data, options),
+    isLoading: isLoading({ loading, numOfRenders: numOfRenders.current, options }),
+    error: getError(error, numOfRenders.current, options),
+    data: getData(data, numOfRenders.current, options),
     run() {
       return runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,

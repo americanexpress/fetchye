@@ -20,34 +20,48 @@ import {
 
 describe('isLoading', () => {
   it('should return true if loading cache true', () => {
-    expect(isLoading(true, {}, {})).toBeTruthy();
+    expect(isLoading({
+      loading: true, data: undefined, numOfRenders: 2, options: {},
+    })).toBeTruthy();
   });
   it('should return true if first render is true', () => {
-    expect(isLoading(false, { current: true }, {})).toBeTruthy();
+    expect(isLoading({
+      loading: false, data: undefined, numOfRenders: 1, options: { },
+    })).toBeTruthy();
   });
   it('should return false if first render is true and lazy is true', () => {
-    expect(isLoading(false, { current: true }, { lazy: true })).toBeFalsy();
+    expect(isLoading({
+      loading: false, data: undefined, numOfRenders: 1, options: { lazy: true },
+    })).toBeFalsy();
   });
   it('should return false if all args are false', () => {
-    expect(isLoading(false, { current: false }, { lazy: false })).toBeFalsy();
+    expect(isLoading({ loading: false, numOfRenders: 2, options: { lazy: false } })).toBeFalsy();
   });
 });
 
 describe('getData', () => {
   it('should return data if data exists', () => {
-    expect(getData({})).toBeTruthy();
+    expect(getData({ fakeData: true }, 0)).toEqual({ fakeData: true });
   });
   it('should return initialData data', () => {
-    expect(getData(undefined, { initialData: { data: { fakeData: true } } })).toBeTruthy();
+    expect(getData(undefined, 1, { initialData: { data: { fakeData: true } } }))
+      .toEqual({ fakeData: true });
+  });
+  it('should return not initialData data on >1 renders', () => {
+    expect(getData(undefined, 2, { initialData: { data: { fakeData: true } } })).toBeUndefined();
   });
 });
 
 describe('getError', () => {
+  const error = new Error('fake error');
   it('should return error if error exists', () => {
-    expect(getError(new Error('fake error'))).toBeTruthy();
+    expect(getError(error, 0)).toEqual(error);
   });
   it('should return initialData error', () => {
-    expect(getError(undefined, { initialData: { error: new Error('fake error') } })).toBeTruthy();
+    expect(getError(undefined, 1, { initialData: { error } })).toEqual(error);
+  });
+  it('should return not initialData error on >1 renders', () => {
+    expect(getError(undefined, 2, { initialData: { error } })).toBeUndefined();
   });
 });
 
