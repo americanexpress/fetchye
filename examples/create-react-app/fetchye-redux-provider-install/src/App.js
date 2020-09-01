@@ -11,7 +11,6 @@ const fetchyeCache = SimpleCache({
   cacheSelector: (state) => state
 });
 const store = createStore(fetchyeCache.reducer);
-// Visit https://codesandbox.io/s/json-server-1i5z0 sandbox to start the fake api if not working
 export default function App() {
   return (
     <Provider store={store}>

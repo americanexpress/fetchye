@@ -3,7 +3,7 @@ import { useFetchye } from "fetchye";
 
 export default function Posts() {
   const { isLoading, data } = useFetchye(
-    "https://1i5z0.sse.codesandbox.io/posts/1"
+    "https://bulyq.sse.codesandbox.io/profile"
   );
-  return <>{!isLoading && <p>{data?.body.title}</p>}</>;
+  return <>{!isLoading && <p>{data?.body.name}</p>}</>;
 }
