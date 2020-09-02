@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
@@ -24,12 +24,6 @@ import { useFetchye } from '../src/useFetchye';
 import { SimpleCache } from '../src/cache';
 
 const cache = SimpleCache();
-const store = createStore(cache.reducer, cache.reducer(undefined, { type: '' }));
-global.console = {
-  error: jest.fn(),
-  log: jest.fn(),
-};
-
 const defaultPayload = {
   headers: new global.Headers({
     'Content-Type': 'application/json',
@@ -41,11 +35,15 @@ const defaultPayload = {
   }),
 };
 
-const ReduxSetup = (props) => (
-  <Provider store={store}>
-    <FetchyeReduxProvider {...props} />
-  </Provider>
-);
+const ReduxSetup = (props) => {
+  const currentStore = useRef(createStore(cache.reducer, cache.reducer(undefined, { type: '' })));
+
+  return (
+    <Provider store={currentStore.current}>
+      <FetchyeReduxProvider {...props} />
+    </Provider>
+  );
+};
 
 const noop = ({ children }) => children;
 
@@ -55,10 +53,10 @@ describe('useFetchye', () => {
     ['FetchyeProvider', FetchyeProvider],
     ['Headless', noop],
   ].forEach(([name, AFetchyeProvider]) => {
-    beforeEach(() => {
-      global.fetch = jest.fn(async () => {});
-    });
     describe(name, () => {
+      beforeEach(() => {
+        jest.resetAllMocks();
+      });
       it('should return loading state', async () => {
         let fetchyeRes;
         global.fetch = jest.fn(async () => ({
@@ -72,6 +70,7 @@ describe('useFetchye', () => {
             })}
           </AFetchyeProvider>
         );
+
         expect(fetchyeRes).toMatchInlineSnapshot(`
           Object {
             "data": undefined,
@@ -232,9 +231,7 @@ describe('useFetchye', () => {
           };
         };
         render(
-          <AFetchyeProvider
-            cache={cache}
-          >
+          <AFetchyeProvider cache={cache}>
             {React.createElement(() => {
               useFetchye('http://example.com/test', {}, customFetcher);
               return null;
@@ -250,39 +247,43 @@ describe('useFetchye', () => {
           ]
         `);
       });
-      // it('should return initialState', async () => {
-      //   let fetchyeRes;
-      //   global.fetch = jest.fn(async () => ({
-      //     ...defaultPayload,
-      //   }));
-      //   render(
-      //     <>
-      //       <AFetchyeProvider cache={cache}>
-      //         {React.createElement(() => {
-      //           fetchyeRes = useFetchye('http://example.com', {
-      //             initialData: {
-      //               body: {
-      //                 initialData: true,
-      //               },
-      //               loading: false,
-      //               error: null,
-      //             },
-      //           });
-      //           return null;
-      //         })}
-      //       </AFetchyeProvider>
-      //     </>
-      //   );
-      //   expect(global.fetch).not.toHaveBeenCalled();
-      //   expect(fetchyeRes).toMatchInlineSnapshot(`
-      //     Object {
-      //       "data": undefined,
-      //       "error": undefined,
-      //       "isLoading": true,
-      //       "run": [Function],
-      //     }
-      //   `);
-      // });
+      it('should return initialState', async () => {
+        let fetchyeRes;
+        global.fetch = jest.fn(async () => {});
+        render(
+          <>
+            <AFetchyeProvider cache={cache}>
+              {React.createElement(() => {
+                fetchyeRes = useFetchye('http://example.com', {
+                  initialData: {
+                    data: {
+                      body: {
+                        initialData: true,
+                      },
+                    },
+                    loading: false,
+                    error: null,
+                  },
+                });
+                return null;
+              })}
+            </AFetchyeProvider>
+          </>
+        );
+        expect(global.fetch).not.toHaveBeenCalled();
+        expect(fetchyeRes).toMatchInlineSnapshot(`
+          Object {
+            "data": Object {
+              "body": Object {
+                "initialData": true,
+              },
+            },
+            "error": null,
+            "isLoading": false,
+            "run": [Function],
+          }
+        `);
+      });
     });
   });
 });

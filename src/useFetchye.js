@@ -19,8 +19,6 @@ import { runAsync } from './runAsync';
 import { computeKey } from './computeKey';
 import {
   isLoading,
-  getData,
-  getError,
 } from './queryHelpers';
 import { useFetchyeContext } from './useFetchyeContext';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
@@ -41,6 +39,9 @@ export const useFetchye = (
     if (options.lazy || !computedKey) {
       return;
     }
+    if (numOfRenders.current === 1 && options.initialData?.data) {
+      return;
+    }
     const { loading, data, error } = selectorState.current;
     if (!loading && !data && !error) {
       runAsync({
@@ -51,12 +52,12 @@ export const useFetchye = (
   return {
     isLoading: isLoading({
       loading: selectorState.current.loading,
-      data: selectorState.current.data,
+      data: selectorState.current.data || options.initialData?.data,
       numOfRenders: numOfRenders.current,
       options,
     }),
-    error: getError(selectorState.current.error, numOfRenders.current, options),
-    data: getData(selectorState.current.data, numOfRenders.current, options),
+    error: selectorState.current.error || options.initialData?.error,
+    data: selectorState.current.data || options.initialData?.data,
     run() {
       return runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,

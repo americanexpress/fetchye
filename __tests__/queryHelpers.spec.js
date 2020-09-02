@@ -15,7 +15,7 @@
  */
 
 import {
-  isLoading, getData, getError, coerceSsrField,
+  isLoading, coerceSsrField,
 } from '../src/queryHelpers';
 
 describe('isLoading', () => {
@@ -36,32 +36,6 @@ describe('isLoading', () => {
   });
   it('should return false if all args are false', () => {
     expect(isLoading({ loading: false, numOfRenders: 2, options: { lazy: false } })).toBeFalsy();
-  });
-});
-
-describe('getData', () => {
-  it('should return data if data exists', () => {
-    expect(getData({ fakeData: true }, 0)).toEqual({ fakeData: true });
-  });
-  it('should return initialData data', () => {
-    expect(getData(undefined, 1, { initialData: { data: { fakeData: true } } }))
-      .toEqual({ fakeData: true });
-  });
-  it('should return not initialData data on >1 renders', () => {
-    expect(getData(undefined, 2, { initialData: { data: { fakeData: true } } })).toBeUndefined();
-  });
-});
-
-describe('getError', () => {
-  const error = new Error('fake error');
-  it('should return error if error exists', () => {
-    expect(getError(error, 0)).toEqual(error);
-  });
-  it('should return initialData error', () => {
-    expect(getError(undefined, 1, { initialData: { error } })).toEqual(error);
-  });
-  it('should return not initialData error on >1 renders', () => {
-    expect(getError(undefined, 2, { initialData: { error } })).toBeUndefined();
   });
 });
 
