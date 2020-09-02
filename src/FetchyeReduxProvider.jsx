@@ -21,9 +21,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { defaultFetcher } from './defaultFetcher';
 import { FetchyeContext } from './FetchyeContext';
 
-const makeUseFetchyeSelector = (getCacheByKey, cacheSelector) => (key) => useSelector(
-  (state) => getCacheByKey(cacheSelector(state), key)
-);
+const makeUseFetchyeSelector = (getCacheByKey, cacheSelector) => (key) => ({
+  current: useSelector(
+    (state) => getCacheByKey(cacheSelector(state), key)
+  ),
+});
 
 export const FetchyeReduxProvider = ({
   cache, fetcher = defaultFetcher, fetchClient = fetch, children,

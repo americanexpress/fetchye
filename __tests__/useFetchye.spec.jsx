@@ -19,12 +19,16 @@ import { render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { FetchyeReduxProvider } from '../src/FetchyeReduxProvider';
+import { FetchyeProvider } from '../src/FetchyeProvider';
 import { useFetchye } from '../src/useFetchye';
 import { SimpleCache } from '../src/cache';
 
-global.fetch = jest.fn(async () => {});
 const cache = SimpleCache();
 const store = createStore(cache.reducer, cache.reducer(undefined, { type: '' }));
+global.console = {
+  error: jest.fn(),
+  log: jest.fn(),
+};
 
 const defaultPayload = {
   headers: new global.Headers({
@@ -37,211 +41,248 @@ const defaultPayload = {
   }),
 };
 
+const ReduxSetup = (props) => (
+  <Provider store={store}>
+    <FetchyeReduxProvider {...props} />
+  </Provider>
+);
+
+const noop = ({ children }) => children;
+
 describe('useFetchye', () => {
-  it('should return loading state', () => {
-    let fetchyeRes;
-    const fetchClient = jest.fn(async () => ({
-      ...defaultPayload,
-    }));
-    render(
-      <Provider store={store}>
-        <FetchyeReduxProvider cache={cache} fetchClient={fetchClient}>
-          {React.createElement(() => {
-            fetchyeRes = useFetchye('http://example.com');
-            return null;
-          })}
-        </FetchyeReduxProvider>
-      </Provider>
-    );
-    expect(fetchyeRes).toMatchInlineSnapshot(`
-      Object {
-        "data": undefined,
-        "error": undefined,
-        "isLoading": true,
-        "run": [Function],
-      }
-    `);
-  });
-  it('should return data success state', async () => {
-    let fetchyeRes;
-    const fetchClient = jest.fn(async () => ({
-      ...defaultPayload,
-    }));
-    render(
-      <Provider store={store}>
-        <FetchyeReduxProvider cache={cache} fetchClient={fetchClient}>
-          {React.createElement(() => {
-            fetchyeRes = useFetchye('http://example.com');
-            return null;
-          })}
-        </FetchyeReduxProvider>
-      </Provider>
-    );
-    await waitFor(() => fetchyeRes.isLoading === false);
-    expect(fetchyeRes).toMatchInlineSnapshot(`
-      Object {
-        "data": Object {
-          "body": Object {
-            "fakeData": true,
-          },
-          "headers": Object {
-            "content-type": "application/json",
-          },
-          "ok": true,
-          "status": 200,
-        },
-        "error": undefined,
-        "isLoading": false,
-        "run": [Function],
-      }
-    `);
-  });
-  it('should delay execution when awaiting the existence of a variable', async () => {
-    let fetchyeResOne;
-    let fetchyeResTwo;
-    const fetchClient = jest.fn(async (url) => {
-      if (url === 'http://example.com/one') {
-        return {
-          ...defaultPayload,
-          json: async () => ({
-            id: 'abc123',
-          }),
-        };
-      }
-      return {
-        ...defaultPayload,
-        json: async () => ({
-          resourceUrl: url,
-        }),
-      };
+  [
+    ['FetchyeReduxProvider', ReduxSetup],
+    ['FetchyeProvider', FetchyeProvider],
+    ['Headless', noop],
+  ].forEach(([name, AFetchyeProvider]) => {
+    beforeEach(() => {
+      global.fetch = jest.fn(async () => {});
     });
-    render(
-      <Provider store={store}>
-        <FetchyeReduxProvider cache={cache} fetchClient={fetchClient}>
-          {React.createElement(() => {
-            fetchyeResOne = useFetchye('http://example.com/one');
-            fetchyeResTwo = useFetchye(
-              () => `http://example.com/two/id/${fetchyeResOne.data.body.id}`
-            );
-            return null;
-          })}
-        </FetchyeReduxProvider>
-      </Provider>
-    );
-    await waitFor(() => fetchyeResOne.isLoading === false && fetchyeResTwo.isLoading === false);
-    expect(fetchyeResTwo).toMatchInlineSnapshot(`
-      Object {
-        "data": Object {
-          "body": Object {
-            "resourceUrl": "http://example.com/two/id/abc123",
-          },
-          "headers": Object {
-            "content-type": "application/json",
-          },
-          "ok": true,
-          "status": 200,
-        },
-        "error": undefined,
-        "isLoading": false,
-        "run": [Function],
-      }
-    `);
-    expect(fetchClient.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          "http://example.com/one",
-          Object {},
-        ],
-        Array [
-          "http://example.com/two/id/abc123",
-          Object {},
-        ],
-      ]
-    `);
-  });
-  it('should operate lazily and not call fetchClient', async () => {
-    let fetchyeRes;
-    const fetchClient = jest.fn(async () => ({
-      ...defaultPayload,
-    }));
-    render(
-      <Provider store={store}>
-        <FetchyeReduxProvider cache={cache} fetchClient={fetchClient}>
-          {React.createElement(() => {
-            fetchyeRes = useFetchye('http://example.com/one', { lazy: true });
-            return null;
-          })}
-        </FetchyeReduxProvider>
-      </Provider>
-    );
-    await waitFor(() => fetchyeRes.isLoading === false);
-    expect(fetchClient).not.toHaveBeenCalled();
-  });
-  it('should return data when run method is called', async () => {
-    let fetchyeRes;
-    const fetchClient = jest.fn(async () => ({
-      ...defaultPayload,
-    }));
-    render(
-      <Provider store={store}>
-        <FetchyeReduxProvider cache={cache} fetchClient={fetchClient}>
-          {React.createElement(() => {
-            fetchyeRes = useFetchye('http://example.com/one', { lazy: true });
-            return null;
-          })}
-        </FetchyeReduxProvider>
-      </Provider>
-    );
-    await fetchyeRes.run();
-    expect(fetchClient.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          "http://example.com/one",
+    describe(name, () => {
+      it('should return loading state', async () => {
+        let fetchyeRes;
+        global.fetch = jest.fn(async () => ({
+          ...defaultPayload,
+        }));
+        render(
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              fetchyeRes = useFetchye('http://example.com');
+              return null;
+            })}
+          </AFetchyeProvider>
+        );
+        expect(fetchyeRes).toMatchInlineSnapshot(`
           Object {
-            "lazy": true,
-          },
-        ],
-      ]
-    `);
-  });
-  it('should use fetcher in hook over provider fetcher', async () => {
-    const customFetchClient = jest.fn(async () => ({
-      ...defaultPayload,
-      status: 201,
-    }));
-    const customFetcher = async (fetchClient, key, options) => {
-      const res = await customFetchClient(key, options);
-      return {
-        payload: {
-          ok: res.ok,
-          status: res.status,
-          body: await res.json(),
-        },
-        error: undefined,
-      };
-    };
-    render(
-      <Provider store={store}>
-        <FetchyeReduxProvider
-          cache={cache}
-          fetchClient={() => {
-            throw new Error('Fake Error');
-          }}
-        >
-          {React.createElement(() => {
-            useFetchye('http://example.com/test', {}, customFetcher);
-            return null;
-          })}
-        </FetchyeReduxProvider>
-      </Provider>
-    );
-    expect(customFetchClient.mock.calls).toMatchInlineSnapshot(`
-      Array [
-        Array [
-          "http://example.com/test",
-          Object {},
-        ],
-      ]
-    `);
+            "data": undefined,
+            "error": undefined,
+            "isLoading": true,
+            "run": [Function],
+          }
+        `);
+      });
+      it('should return data success state', async () => {
+        let fetchyeRes;
+        global.fetch = jest.fn(async () => ({
+          ...defaultPayload,
+        }));
+        render(
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              fetchyeRes = useFetchye('http://example.com');
+              return null;
+            })}
+          </AFetchyeProvider>
+        );
+        await waitFor(() => fetchyeRes.isLoading === false);
+        expect(fetchyeRes).toMatchInlineSnapshot(`
+          Object {
+            "data": Object {
+              "body": Object {
+                "fakeData": true,
+              },
+              "headers": Object {
+                "content-type": "application/json",
+              },
+              "ok": true,
+              "status": 200,
+            },
+            "error": undefined,
+            "isLoading": false,
+            "run": [Function],
+          }
+        `);
+      });
+      it('should delay execution when awaiting the existence of a variable', async () => {
+        let fetchyeResOne;
+        let fetchyeResTwo;
+        global.fetch = jest.fn(async (url) => {
+          if (url === 'http://example.com/one') {
+            return {
+              ...defaultPayload,
+              json: async () => ({
+                id: 'abc123',
+              }),
+            };
+          }
+          return {
+            ...defaultPayload,
+            json: async () => ({
+              resourceUrl: url,
+            }),
+          };
+        });
+        render(
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              fetchyeResOne = useFetchye('http://example.com/one');
+              fetchyeResTwo = useFetchye(
+                () => `http://example.com/two/id/${fetchyeResOne.data.body.id}`
+              );
+              return null;
+            })}
+          </AFetchyeProvider>
+        );
+        await waitFor(() => !!fetchyeResOne.data && !!fetchyeResTwo.data);
+        expect(fetchyeResTwo).toMatchInlineSnapshot(`
+          Object {
+            "data": Object {
+              "body": Object {
+                "resourceUrl": "http://example.com/two/id/abc123",
+              },
+              "headers": Object {
+                "content-type": "application/json",
+              },
+              "ok": true,
+              "status": 200,
+            },
+            "error": undefined,
+            "isLoading": false,
+            "run": [Function],
+          }
+        `);
+        expect(global.fetch.mock.calls).toMatchInlineSnapshot(`
+          Array [
+            Array [
+              "http://example.com/one",
+              Object {},
+            ],
+            Array [
+              "http://example.com/two/id/abc123",
+              Object {},
+            ],
+          ]
+        `);
+      });
+      it('should operate lazily and not call fetchClient', async () => {
+        let fetchyeRes;
+        global.fetch = jest.fn(async () => ({
+          ...defaultPayload,
+        }));
+        render(
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              fetchyeRes = useFetchye('http://example.com/one', { lazy: true });
+              return null;
+            })}
+          </AFetchyeProvider>
+        );
+        await waitFor(() => fetchyeRes.isLoading === false);
+        expect(global.fetch).not.toHaveBeenCalled();
+      });
+      it('should return data when run method is called', async () => {
+        let fetchyeRes;
+        global.fetch = jest.fn(async () => ({
+          ...defaultPayload,
+        }));
+        render(
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              fetchyeRes = useFetchye('http://example.com/one', { lazy: true });
+              return null;
+            })}
+          </AFetchyeProvider>
+        );
+        await fetchyeRes.run();
+        expect(global.fetch.mock.calls).toMatchInlineSnapshot(`
+          Array [
+            Array [
+              "http://example.com/one",
+              Object {
+                "lazy": true,
+              },
+            ],
+          ]
+        `);
+      });
+      it('should use fetcher in hook over provider fetcher', async () => {
+        const customFetchClient = jest.fn(async () => ({
+          ...defaultPayload,
+          status: 201,
+        }));
+        const customFetcher = async (fetchClient, key, options) => {
+          const res = await customFetchClient(key, options);
+          return {
+            payload: {
+              ok: res.ok,
+              status: res.status,
+              body: await res.json(),
+            },
+            error: undefined,
+          };
+        };
+        render(
+          <AFetchyeProvider
+            cache={cache}
+          >
+            {React.createElement(() => {
+              useFetchye('http://example.com/test', {}, customFetcher);
+              return null;
+            })}
+          </AFetchyeProvider>
+        );
+        expect(customFetchClient.mock.calls).toMatchInlineSnapshot(`
+          Array [
+            Array [
+              "http://example.com/test",
+              Object {},
+            ],
+          ]
+        `);
+      });
+      // it('should return initialState', async () => {
+      //   let fetchyeRes;
+      //   global.fetch = jest.fn(async () => ({
+      //     ...defaultPayload,
+      //   }));
+      //   render(
+      //     <>
+      //       <AFetchyeProvider cache={cache}>
+      //         {React.createElement(() => {
+      //           fetchyeRes = useFetchye('http://example.com', {
+      //             initialData: {
+      //               body: {
+      //                 initialData: true,
+      //               },
+      //               loading: false,
+      //               error: null,
+      //             },
+      //           });
+      //           return null;
+      //         })}
+      //       </AFetchyeProvider>
+      //     </>
+      //   );
+      //   expect(global.fetch).not.toHaveBeenCalled();
+      //   expect(fetchyeRes).toMatchInlineSnapshot(`
+      //     Object {
+      //       "data": undefined,
+      //       "error": undefined,
+      //       "isLoading": true,
+      //       "run": [Function],
+      //     }
+      //   `);
+      // });
+    });
   });
 });

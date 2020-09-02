@@ -34,25 +34,29 @@ export const useFetchye = (
   } = useFetchyeContext();
   const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
   const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));
-  const { data, loading, error } = useFetchyeSelector(computedKey.hash);
+  const selectorState = useFetchyeSelector(computedKey.hash);
   const numOfRenders = useRef(0);
   numOfRenders.current += 1;
   useEffect(() => {
     if (options.lazy || !computedKey) {
       return;
     }
-    if (!data && !error && !loading) {
-      (async () => {
-        await runAsync({
-          dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
-        });
-      })();
+    const { loading, data, error } = selectorState.current;
+    if (!loading && !data && !error) {
+      runAsync({
+        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
+      });
     }
-  }, [data, loading, error, computedKey, selectedFetcher, options, dispatch, fetchClient]);
+  });
   return {
-    isLoading: isLoading({ loading, numOfRenders: numOfRenders.current, options }),
-    error: getError(error, numOfRenders.current, options),
-    data: getData(data, numOfRenders.current, options),
+    isLoading: isLoading({
+      loading: selectorState.current.loading,
+      data: selectorState.current.data,
+      numOfRenders: numOfRenders.current,
+      options,
+    }),
+    error: getError(selectorState.current.error, numOfRenders.current, options),
+    data: getData(selectorState.current.data, numOfRenders.current, options),
     run() {
       return runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,

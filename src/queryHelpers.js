@@ -17,32 +17,44 @@
 export const isLoading = ({
   loading, data, numOfRenders, options,
 }) => {
-  if (loading) {
-    return true;
-  }
-  if (!data && numOfRenders === 1) {
+  if (numOfRenders === 1) {
+    if (options?.initialData?.data) {
+      return !options?.initialData?.data;
+    }
     if (options.lazy) {
       return false;
     }
+    if (!data) {
+      return true;
+    }
+  }
+  if (loading) {
     return true;
   }
   return false;
 };
 
 export const getData = (data, numOfRenders, options) => {
-  if (!data && numOfRenders === 1) {
-    return options?.initialData?.data;
+  if (numOfRenders === 1) {
+    if (data) {
+      return data;
+    }
+    if (options?.initialData?.data) {
+      return options?.initialData?.data;
+    }
   }
   return data;
 };
 
 export const getError = (error, numOfRenders, options) => {
-  if (!error && numOfRenders === 1) {
+  if (numOfRenders === 1) {
+    if (error) {
+      return error;
+    }
     return options?.initialData?.error;
   }
   return error;
 };
-
 export const coerceSsrField = (field) => {
   if (!field) {
     return null;

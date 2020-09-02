@@ -49,19 +49,21 @@ const makeFetchyeSelector = ({
   fetchyeState, subscribe, getCacheByKey, equalityChecker,
 }) => (key) => {
   const [, forceRender] = useReducer((state) => state + 1, 0);
-  const selectorValue = useRef(getCacheByKey(fetchyeState.current, key));
+  const nextValue = getCacheByKey(fetchyeState.current, key);
+  const lastSelectorValue = useRef(nextValue);
+  const selectorValue = useRef(nextValue);
+  lastSelectorValue.current = selectorValue.current;
+  selectorValue.current = nextValue;
   useEffect(() => {
     function checkForUpdates() {
-      const nextValue = getCacheByKey(fetchyeState.current, key);
-      if (equalityChecker(selectorValue.current, nextValue)) {
+      if (equalityChecker(selectorValue.current, lastSelectorValue.current)) {
         return;
       }
-      selectorValue.current = nextValue;
       forceRender();
     }
     return subscribe(checkForUpdates);
   }, [key]);
-  return selectorValue.current;
+  return selectorValue;
 };
 
 const defaultEqualityChecker = (a, b) => a.data === b.data

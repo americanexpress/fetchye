@@ -12,7 +12,9 @@ export const useFetchyeContext = (fallbacks = {}) => {
   // Setup headless mode fallbacks
   const [state, fallbackDispatch] = useReducer(fallbackCache.reducer, fallbackCache.reducer(undefined, { type: '' }));
 
-  const fallbackUseFetchyeSelector = (hash) => fallbackCache.getCacheByKey(state, hash);
+  const fallbackUseFetchyeSelector = (hash) => ({
+    current: fallbackCache.getCacheByKey(state, hash),
+  });
 
   const providedContext = useContext(FetchyeContext);
   const {
