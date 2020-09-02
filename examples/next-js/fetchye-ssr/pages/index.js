@@ -4,6 +4,7 @@ import { useFetchye, makeServerFetchye } from "fetchye";
 
 const cache = SimpleCache();
 
+// Codesandbox takes a second to get Next.JS started...
 export default function IndexPage({ initialPerson }) {
   const { isLoading, data } = useFetchye(
     "https://bulyq.sse.codesandbox.io/profile",
@@ -12,7 +13,16 @@ export default function IndexPage({ initialPerson }) {
     }
   );
   return (
-    <Layout>Hello World, {!isLoading && data?.ok && data?.body?.name}</Layout>
+    <Layout>
+      <p>
+        {isLoading && (
+          <span aria-label="loading" role="img">
+            ⏳
+          </span>
+        )}
+        {!isLoading && data?.body.name}
+      </p>
+   </Layout>
   );
 }
 
