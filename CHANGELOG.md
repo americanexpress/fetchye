@@ -1,3 +1,15 @@
+# [1.0.0-nightly.6](https://github.com/americanexpress/fetchye/compare/v1.0.0-nightly.5...v1.0.0-nightly.6) (2020-09-03)
+
+
+### Bug Fixes
+
+* **selector:** ensure selector is called on demand ([b3e3e58](https://github.com/americanexpress/fetchye/commit/b3e3e5803b8c4f0f8b650e195680a90823597956))
+
+
+### Features
+
+* **ssr:** working initialData api ([0a0ebca](https://github.com/americanexpress/fetchye/commit/0a0ebcaa3118710a82a916dd46e948125adb90b7))
+
 # [1.0.0-nightly.5](https://github.com/americanexpress/fetchye/compare/v1.0.0-nightly.4...v1.0.0-nightly.5) (2020-08-29)
 
 
