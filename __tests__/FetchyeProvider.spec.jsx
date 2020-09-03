@@ -6,7 +6,7 @@ import { FetchyeProvider } from '../src/FetchyeProvider';
 
 global.fetch = () => {};
 
-describe('FetchyeReduxProvider', () => {
+describe('FetchyeProvider', () => {
   it('should create fetchye context with global fetch', () => {
     let contextResult;
     render(
@@ -48,9 +48,11 @@ describe('FetchyeReduxProvider', () => {
     );
     expect(res).toMatchInlineSnapshot(`
       Object {
-        "data": undefined,
-        "error": undefined,
-        "loading": "abc123",
+        "current": Object {
+          "data": undefined,
+          "error": undefined,
+          "loading": "abc123",
+        },
       }
     `);
   });
@@ -70,9 +72,11 @@ describe('FetchyeReduxProvider', () => {
     );
     expect(res).toMatchInlineSnapshot(`
       Object {
-        "data": "fakeData",
-        "error": undefined,
-        "loading": undefined,
+        "current": Object {
+          "data": "fakeData",
+          "error": undefined,
+          "loading": undefined,
+        },
       }
     `);
   });
@@ -92,9 +96,11 @@ describe('FetchyeReduxProvider', () => {
     );
     expect(res).toMatchInlineSnapshot(`
       Object {
-        "data": undefined,
-        "error": "fake error",
-        "loading": undefined,
+        "current": Object {
+          "data": undefined,
+          "error": "fake error",
+          "loading": undefined,
+        },
       }
     `);
   });

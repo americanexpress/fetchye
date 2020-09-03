@@ -47,9 +47,11 @@ describe('useFetchyeContext', () => {
     );
     expect(res).toMatchInlineSnapshot(`
       Object {
-        "data": undefined,
-        "error": undefined,
-        "loading": "abc123",
+        "current": Object {
+          "data": undefined,
+          "error": undefined,
+          "loading": "abc123",
+        },
       }
     `);
   });
@@ -69,9 +71,11 @@ describe('useFetchyeContext', () => {
     );
     expect(res).toMatchInlineSnapshot(`
       Object {
-        "data": "fakeData",
-        "error": undefined,
-        "loading": undefined,
+        "current": Object {
+          "data": "fakeData",
+          "error": undefined,
+          "loading": undefined,
+        },
       }
     `);
   });
@@ -91,9 +95,11 @@ describe('useFetchyeContext', () => {
     );
     expect(res).toMatchInlineSnapshot(`
       Object {
-        "data": undefined,
-        "error": "fake error",
-        "loading": undefined,
+        "current": Object {
+          "data": undefined,
+          "error": "fake error",
+          "loading": undefined,
+        },
       }
     `);
   });

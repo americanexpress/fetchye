@@ -19,8 +19,6 @@ import { runAsync } from './runAsync';
 import { computeKey } from './computeKey';
 import {
   isLoading,
-  getData,
-  getError,
 } from './queryHelpers';
 import { useFetchyeContext } from './useFetchyeContext';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
@@ -34,25 +32,32 @@ export const useFetchye = (
   } = useFetchyeContext();
   const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
   const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));
-  const { data, loading, error } = useFetchyeSelector(computedKey.hash);
+  const selectorState = useFetchyeSelector(computedKey.hash);
   const numOfRenders = useRef(0);
   numOfRenders.current += 1;
   useEffect(() => {
     if (options.lazy || !computedKey) {
       return;
     }
-    if (!data && !error && !loading) {
-      (async () => {
-        await runAsync({
-          dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
-        });
-      })();
+    if (numOfRenders.current === 1 && options.initialData?.data) {
+      return;
     }
-  }, [data, loading, error, computedKey, selectedFetcher, options, dispatch, fetchClient]);
+    const { loading, data, error } = selectorState.current;
+    if (!loading && !data && !error) {
+      runAsync({
+        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
+      });
+    }
+  });
   return {
-    isLoading: isLoading({ loading, numOfRenders: numOfRenders.current, options }),
-    error: getError(error, numOfRenders.current, options),
-    data: getData(data, numOfRenders.current, options),
+    isLoading: isLoading({
+      loading: selectorState.current.loading,
+      data: selectorState.current.data || options.initialData?.data,
+      numOfRenders: numOfRenders.current,
+      options,
+    }),
+    error: selectorState.current.error || options.initialData?.error,
+    data: selectorState.current.data || options.initialData?.data,
     run() {
       return runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,

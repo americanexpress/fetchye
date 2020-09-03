@@ -21,12 +21,24 @@ import { useSelector, useDispatch } from 'react-redux';
 import { defaultFetcher } from './defaultFetcher';
 import { FetchyeContext } from './FetchyeContext';
 
-const makeUseFetchyeSelector = (getCacheByKey, cacheSelector) => (key) => useSelector(
-  (state) => getCacheByKey(cacheSelector(state), key)
-);
+const defaultEqualityChecker = (a, b) => a.data === b.data
+&& a.error === b.error
+&& a.loading === b.loading;
+
+const makeUseFetchyeSelector = (getCacheByKey, cacheSelector, equalityChecker) => (key) => (
+  {
+    current: useSelector(
+      (state) => getCacheByKey(cacheSelector(state), key),
+      equalityChecker
+    ),
+  });
 
 export const FetchyeReduxProvider = ({
-  cache, fetcher = defaultFetcher, fetchClient = fetch, children,
+  cache,
+  fetcher = defaultFetcher,
+  equalityChecker = defaultEqualityChecker,
+  fetchClient = fetch,
+  children,
 }) => {
   const dispatch = useDispatch();
   const { cacheSelector, getCacheByKey } = cache;
@@ -34,9 +46,9 @@ export const FetchyeReduxProvider = ({
     cache,
     dispatch,
     defaultFetcher: fetcher,
-    useFetchyeSelector: makeUseFetchyeSelector(getCacheByKey, cacheSelector),
+    useFetchyeSelector: makeUseFetchyeSelector(getCacheByKey, cacheSelector, equalityChecker),
     fetchClient,
-  }), [cache, cacheSelector, dispatch, fetchClient, fetcher, getCacheByKey]);
+  }), [cache, cacheSelector, dispatch, fetchClient, fetcher, getCacheByKey, equalityChecker]);
   return (
     <FetchyeContext.Provider value={memoizedConfig}>
       {children}
@@ -50,6 +62,7 @@ FetchyeReduxProvider.propTypes = {
     getCacheByKey: PropTypes.func.isRequired,
     cacheSelector: PropTypes.func.isRequired,
   }).isRequired,
+  equalityChecker: PropTypes.func,
   fetchClient: PropTypes.func,
   fetcher: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),

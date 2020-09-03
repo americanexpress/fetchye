@@ -69,12 +69,14 @@ const MyComponent = () => {
   return (
     <>
       {!isLoading && (
-        <p>{data.body.name}</p>
+        <p>{data?.body.name}</p>
       )}
     </>
   );
 };
 ```
+
+🏖️[Try this out on Codesandbox](https://codesandbox.io/s/americanexpressfetchye-quick-install-w4ne2)
 
 ### `FetchyeProvider` Install
 
@@ -97,13 +99,11 @@ npm i -S fetchye
 Add the `<FetchyeProvider />` component:
 
 ```jsx
-import { FetchyeProvider, SimpleCache } from 'fetchye';
-
-const fetchyeCache = SimpleCache();
+import { FetchyeProvider } from 'fetchye';
 
 const ParentComponent = ({ children }) => (
   <>
-    <FetchyeProvider cache={fetchyeCache}>
+    <FetchyeProvider>
       {/* Use your Router to supply children components containing useFetchye */}
       {children}
     </FetchyeProvider>
@@ -122,12 +122,14 @@ const MyComponent = () => {
   return (
     <>
       {!isLoading && (
-        <p>{data.body.name}</p>
+        <p>{data?.body.name}</p>
       )}
     </>
   );
 };
 ```
+
+🏖️[Try this out on Codesandbox](https://codesandbox.io/s/americanexpressfetchye-fetchye-provider-install-y7d8j)
 
 ### `FetchyeReduxProvider` Install
 
@@ -151,10 +153,11 @@ npm i -S fetchye redux react-redux
 Add the `<FetchyeReduxProvider />` component under the Redux `<Provider />`:
 
 ```jsx
+import React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import FetchyeReduxProvider from 'fetchye/lib/FetchyeReduxProvider';
-import { SimpleCache } from 'fetchye';
+import { FetchyeReduxProvider } from 'fetchye/lib/FetchyeReduxProvider';
+import { SimpleCache } from 'fetchye/lib/cache';
 
 const fetchyeCache = SimpleCache({
   // Need to tell Fetchye where the cache reducer will be located
@@ -192,6 +195,8 @@ const MyComponent = () => {
 };
 ```
 
+🏖️[Try this out on Codesandbox](https://codesandbox.io/s/americanexpressfetchye-fetchye-redux-provider-install-4d2uz)
+
 ### One App Install
 
 >💡 For when you use the [One App](https://github.com/americanexpress/one-app) Micro-Frontend Framework
@@ -215,7 +220,7 @@ Add the `<FetchyeReduxProvider />` component to your Root Holocron Module:
 ```jsx
 // ...
 import { combineReducers } from 'redux-immutable';
-import FetchyeReduxProvider from 'fetchye/lib/FetchyeReduxProvider';
+import { FetchyeReduxProvider } from 'fetchye/lib/FetchyeReduxProvider';
 import ImmutableCache from 'fetchye/lib/cache/ImmutableCache';
 
 // One App requires ImmutableJS based Cache configuration:
@@ -255,7 +260,7 @@ const MyComponent = () => {
   return (
     <>
       {!isLoading && (
-        <p>{data.body.name}</p>
+        <p>{data?.body.name}</p>
       )}
     </>
   );
@@ -400,20 +405,88 @@ const BookList = ({ genre }) => {
 };
 ```
 
+### Custom Fetcher
+
+Custom fetchers allow for creating reusable data fetching logic for specific
+APIs or custom needs. They also allow for accepting a centrally provided
+`fetchClient` but wrapping that client on a per `useFetchye` request basis.
+
+```jsx
+import React from 'react';
+import { useFetchye } from 'fetchye';
+
+const graphqlFetcher = async (fetchClient, key, options) => {
+  let res;
+  let payload;
+  let error;
+  try {
+    res = await fetchClient('https://example.com/graphql', {
+      ...options,
+      method: 'POST',
+      headers: {
+        'X-Correlation-Id': 12345,
+        'Content-Type': 'application/json',
+      },
+      // The key contains the GraphQL object request rather than a URL in this case
+      body: JSON.stringify(key),
+    });
+    // GraphQL Response
+    const { data, errors } = await res.json();
+    // Pass through GraphQL Data
+    payload = {
+      data,
+      ok: res.ok,
+      status: res.status,
+    };
+    // Assign GraphQL errors to error
+    error = errors;
+  } catch (requestError) {
+    // eslint-disable-next-line no-console
+    console.error(requestError);
+    error = requestError;
+  }
+  return {
+    payload,
+    error,
+  };
+};
+
+const BookList = ({ genre }) => {
+  const { isLoading, data: booksData, run } = useFetchye({
+    query: `
+      query BookList($genre: Genre) {
+        book(genre: $genre) {
+          title
+          author
+        }
+      }
+      `,
+    variables: { genre },
+  }, {}, graphqlFetcher);
+
+  if (isLoading) {
+    return (<p>Loading...</p>);
+  }
+
+  return (
+    <>
+      {/* Render booksData */}
+      <button type="button" onClick={() => run()}>Refresh</button>
+    </>
+  );
+};
+```
+
 ### SSR
 
-> A non-Redux driven `makeServerFetchye` will be introduced in the Beta release
+#### One App SSR
 
 ```jsx
 import React from 'react';
 import { useFetchye, makeServerFetchye } from 'fetchye';
 
-const BookList = ({ genre }) => {
-  const { isLoading, data } = useFetchye(`http://example.com/api/books/?genre=${genre}`, {
-    headers: {
-      'X-Some-Tracer-Id': 1234,
-    },
-  });
+const BookList = () => {
+  const { isLoading, data } = useFetchye('http://example.com/api/books/');
 
   if (isLoading) {
     return (<p>Loading...</p>);
@@ -426,27 +499,75 @@ const BookList = ({ genre }) => {
   );
 };
 
-BookList.someServerSideFunc = async ({ store: { dispatch, getState } }) => {
-  const fetchye = makeServerFetchye({
+BookList.holocron = {
+  loadModuleData: async ({ store: { dispatch, getState } }) => {
+    if (global.BROWSER) {
+      return;
+    }
+    const fetchye = makeServerFetchye({
     // Redux store
-    store: { dispatch, getState },
-    fetchClient: fetch,
-    // Selector to wherever fetchye reducer exists in Redux
-    cacheSelector: (state) => state,
-  });
+      store: { dispatch, getState },
+      fetchClient: fetch,
+      // Selector to wherever fetchye reducer exists in Redux
+      cacheSelector: (state) => state,
+    });
 
-  // async/await fetchye has same arguments as useFetchye
-  const { data, error } = await fetchye(`http://example.com/api/books/?genre=${genre}`, {
-    headers: {
-      'X-Some-Tracer-Id': 1234,
-    },
-  });
-
-  // Server will run a fetchye API call and cache the result.
-  // Client will draw the API call result with matching arguments from the cache
-  // without firing an API call.
+    // async/await fetchye has same arguments as useFetchye
+    // dispatches events into the server side Redux store
+    await fetchye('http://example.com/api/books/');
+  },
 };
+
+export default BookList;
 ```
+
+#### Next.JS SSR
+
+```jsx
+import SimpleCache from 'fetchye/lib/cache/SimpleCache';
+import { useFetchye, makeServerFetchye } from 'fetchye';
+
+const cache = SimpleCache();
+
+// Codesandbox takes a second to get Next.JS started...
+export default function IndexPage({ initialBookList }) {
+  const { isLoading, data } = useFetchye('http://example.com/api/books/', {
+    initialData: initialBookList,
+  });
+
+  if (isLoading) {
+    return (<p>Loading...</p>);
+  }
+
+  return (
+    <>
+      {/* Render data */}
+    </>
+  );
+}
+
+const fetchye = makeServerFetchye({
+  cache,
+  fetchClient: fetch,
+});
+
+export async function getServerSideProps() {
+  try {
+    // returns { data, error } payload for feeding initialData on client side
+    const res = await fetchye('http://example.com/api/books/');
+    return {
+      props: {
+        initialBookList: res,
+      },
+    };
+  } catch (error) {
+    console.error(error.message);
+    return {};
+  }
+}
+```
+
+🏖️[Try this out on Codesandbox](https://codesandbox.io/s/americanexpressfetchye-fetchye-ssr-0ktx9)
 
 ## 🎛️ API
 
@@ -472,6 +593,7 @@ const { isLoading, data, error, run } = useFetchye(key, { lazy: Boolean, mapOpti
 |---|---|---|---|
 | `mapOptionsToKey` | `(options: Options) => transformedOptions` | `false` | A function that maps options to the key that will become part of the cache key |
 | `lazy` | `Boolean` | `false` | Prevents execution of `useFetchye` on each render in favor of using the returned `run` function. *Defaults to `false`* |
+| `initialData` | `Object` | `false` | Seeds the initial data on first render of `useFetchye` to accomodate server side rendering *Defaults to `undefined`* |
 | `...restOptions` | `ES6FetchOptions` | `true` | Contains any ES6 Compatible `fetch` option. (See [Fetch Options](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options)) |
 
 **Returns**
@@ -488,7 +610,7 @@ const { isLoading, data, error, run } = useFetchye(key, { lazy: Boolean, mapOpti
 **Shape**
 
 ```
-const fetchye = makeServerFetchye({ store, cacheSelector, fetchClient });
+const fetchye = makeServerFetchye({ cache, fetchClient });
 
 const { data, error } = await fetchye(key, options, fetcher);
 ```
@@ -497,8 +619,7 @@ const { data, error } = await fetchye(key, options, fetcher);
 
 | name | type | required | description |
 |---|---|---|---|
-| `store` | `ReduxStore` | `true` | A [Redux Store](https://redux.js.org/api/store) instance. |
-| `cacheSelector` | `(state: ReduxState) => state` | `true` | A function that returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+| `cache` | `Cache` | `true` | Fetchye `Cache` object. |
 | `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
 
 **`fetchye` Arguments**
@@ -516,13 +637,38 @@ const { data, error } = await fetchye(key, options, fetcher);
 | `data` | `Object` | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response* |
 | `error?` | `Object` | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
 
-### `FetchyeReduxProvider`
+### Providers
+
+#### `FetchyeProvider`
 
 **Shape**
 
 ```
+<FetchyeProvider cache={SimpleCache()}>
+  {children}
+</FetchyeProvider>
+```
+
+**Props**
+
+| name | type | required | description |
+|---|---|---|---|
+| `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| `cache` | `Cache` | `false` | Fetchye `Cache` object. *Defaults to `SimpleCache`* |
+
+#### `FetchyeReduxProvider`
+
+> 💡Requires additional `redux` and `react-redux` packages installed
+
+**Shape**
+
+```
+import { FetchyeReduxProvider } from "fetchye/lib/FetchyeReduxProvider";
+```
+
+```
 <Provider>
-  <FetchyeReduxProvider fetchClient={fetch} cacheSelector={state => state}>
+  <FetchyeReduxProvider cache={SimpleCache()}>
     {children}
   </FetchyeReduxProvider>
 </Provider>
@@ -536,12 +682,50 @@ const { data, error } = await fetchye(key, options, fetcher);
 
 **Props**
 
-> Note: Changing props after mounting will not result in altering `FetchyeContext`. This was decided upon for memoization reasons.
-
 | name | type | required | description |
 |---|---|---|---|
 | `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
-| `cacheSelector` | `(state: ReduxState) => state` | `true` | A function that returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+| `cache` | `Cache` | `false` | Fetchye `Cache` object. *Defaults to `SimpleCache`* |
+
+### Caches
+
+#### `SimpleCache`
+
+**Shape**
+
+```
+import SimpleCache from 'fetchye/lib/cache/SimpleCache';
+
+const cache = SimpleCache({
+  cacheSelector
+});
+```
+
+**Args**
+
+| name | type | required | description |
+|---|---|---|---|
+| `cacheSelector` | `(state) => state` | `false` | *Required if using `FetchyeReduxProvider`* A function that returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+
+#### `ImmutableCache`
+
+> 💡Requires additional `immutable` package installed
+
+**Shape**
+
+```
+import ImmutableCache from 'fetchye/lib/cache/ImmutableCache';
+
+const cache = ImmutableCache({
+  cacheSelector
+});
+```
+
+**Args**
+
+| name | type | required | description |
+|---|---|---|---|
+| `cacheSelector` | `(state) => state` | `false` | *Required if using `FetchyeReduxProvider`* A function that returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
 
 ## 📢 Mission
 
