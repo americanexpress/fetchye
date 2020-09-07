@@ -23,6 +23,10 @@ import {
 import { useFetchyeContext } from './useFetchyeContext';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
 
+const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders === 1
+  ? value || initialValue
+  : value);
+
 export const useFetchye = (
   key,
   { mapOptionsToKey = (options) => options, ...options } = { },
@@ -56,8 +60,16 @@ export const useFetchye = (
       numOfRenders: numOfRenders.current,
       options,
     }),
-    error: selectorState.current.error || options.initialData?.error,
-    data: selectorState.current.data || options.initialData?.data,
+    error: passInitialData(
+      selectorState.current.error,
+      options.initialData?.error,
+      numOfRenders.current
+    ),
+    data: passInitialData(
+      selectorState.current.data,
+      options.initialData?.data,
+      numOfRenders.current
+    ),
     run() {
       return runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
