@@ -20,6 +20,7 @@ describe('index', () => {
   it('should return public methods', () => {
     expect(Object.keys(fetchye).sort()).toMatchInlineSnapshot(`
       Array [
+        "FetchyeProvider",
         "makeServerFetchye",
         "useFetchye",
       ]

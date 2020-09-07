@@ -14,12 +14,12 @@
  * permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { render, waitFor } from '@testing-library/react';
-// import { Provider } from 'react-redux';
-// import { createStore } from 'redux';
-// // import { FetchyeReduxProvider } from '../src/FetchyeReduxProvider';
-// import { FetchyeProvider } from '../src/FetchyeProvider';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import { FetchyeReduxProvider } from '../src/FetchyeReduxProvider';
+import { FetchyeProvider } from '../src/FetchyeProvider';
 import { useFetchye } from '../src/useFetchye';
 import { SimpleCache } from '../src/cache';
 
@@ -35,23 +35,22 @@ const defaultPayload = {
   }),
 };
 
-// const ReduxSetup = (props) => {
-// eslint-disable-next-line max-len
-//   const currentStore = useRef(createStore(cache.reducer, cache.reducer(undefined, { type: '' })));
-//
-//   return (
-//     <Provider store={currentStore.current}>
-//       <FetchyeReduxProvider {...props} />
-//     </Provider>
-//   );
-// };
+const ReduxSetup = (props) => {
+  const currentStore = useRef(createStore(cache.reducer, cache.reducer(undefined, { type: '' })));
+
+  return (
+    <Provider store={currentStore.current}>
+      <FetchyeReduxProvider {...props} />
+    </Provider>
+  );
+};
 
 const noop = ({ children }) => children;
 
 describe('useFetchye', () => {
   [
-    // ['FetchyeReduxProvider', ReduxSetup],
-    // ['FetchyeProvider', FetchyeProvider],
+    ['FetchyeReduxProvider', ReduxSetup],
+    ['FetchyeProvider', FetchyeProvider],
     ['Headless', noop],
   ].forEach(([name, AFetchyeProvider]) => {
     describe(name, () => {
