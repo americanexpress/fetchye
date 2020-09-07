@@ -15,3 +15,4 @@
  */
 
 export * from './actions';
+export { default as SimpleCache } from './SimpleCache';
