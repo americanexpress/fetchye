@@ -14,5 +14,11 @@
  * permissions and limitations under the License.
  */
 
-export * from './useFetchye';
-export * from './makeServerFetchye';
+import createSharedReactContext from 'create-shared-react-context';
+
+// Touching this will cause a breaking change
+export const SHARED_CONTEXT_ID = 'FetchyeContext';
+
+export const FetchyeContext = createSharedReactContext(null, SHARED_CONTEXT_ID);
+
+export default FetchyeContext;

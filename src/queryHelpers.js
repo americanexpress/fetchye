@@ -14,5 +14,29 @@
  * permissions and limitations under the License.
  */
 
-export * from './useFetchye';
-export * from './makeServerFetchye';
+export const isLoading = ({
+  loading, data, numOfRenders, options,
+}) => {
+  if (numOfRenders === 1) {
+    if (options.lazy) {
+      return false;
+    }
+    if (!data) {
+      return true;
+    }
+  }
+  if (loading) {
+    return true;
+  }
+  return false;
+};
+
+export const coerceSsrField = (field) => {
+  if (!field) {
+    return null;
+  }
+  if (field instanceof Error) {
+    return field.toString?.();
+  }
+  return field;
+};
