@@ -30,8 +30,7 @@ function reducer(state = {
   loading: {},
   data: {},
 }, action) {
-  const [namespace] = action.type.split('/');
-  if (namespace !== ACTION_NAMESPACE) {
+  if (!action.type.startsWith(ACTION_NAMESPACE)) {
     return state;
   }
   switch (action.type) {
