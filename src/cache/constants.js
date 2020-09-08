@@ -14,9 +14,9 @@
  * permissions and limitations under the License.
  */
 
-const PREFIX = '@fetchye';
-export const IS_LOADING = `${PREFIX}/IS_LOADING`;
-export const SET_DATA = `${PREFIX}/SET_DATA`;
-export const DELETE_DATA = `${PREFIX}/DELETE_DATA`;
-export const ERROR = `${PREFIX}/ERROR`;
-export const CLEAR_ERROR = `${PREFIX}/CLEAR_ERROR`;
+export const ACTION_NAMESPACE = '@fetchye';
+export const IS_LOADING = `${ACTION_NAMESPACE}/IS_LOADING`;
+export const SET_DATA = `${ACTION_NAMESPACE}/SET_DATA`;
+export const DELETE_DATA = `${ACTION_NAMESPACE}/DELETE_DATA`;
+export const ERROR = `${ACTION_NAMESPACE}/ERROR`;
+export const CLEAR_ERROR = `${ACTION_NAMESPACE}/CLEAR_ERROR`;

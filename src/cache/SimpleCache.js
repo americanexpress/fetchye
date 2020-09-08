@@ -22,6 +22,7 @@ import {
   DELETE_DATA,
   ERROR,
   CLEAR_ERROR,
+  ACTION_NAMESPACE,
 } from './constants';
 
 function reducer(state = {
@@ -30,7 +31,7 @@ function reducer(state = {
   data: {},
 }, action) {
   const [namespace] = action.type.split('/');
-  if (namespace !== '@fetchye') {
+  if (namespace !== ACTION_NAMESPACE) {
     return state;
   }
   switch (action.type) {
@@ -94,7 +95,7 @@ function reducer(state = {
 
 const getCacheByKey = (cache = {}, key) => {
   const data = cache.data?.[key];
-  const loading = cache.loading?.[key];
+  const loading = !!cache.loading?.[key];
   const error = cache.errors?.[key];
   return { data, loading, error };
 };

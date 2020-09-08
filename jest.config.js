@@ -20,4 +20,5 @@ module.exports = {
   ...baseConfig,
   setupFilesAfterEnv: ['./test-setup.js'],
   snapshotSerializers: [],
+  testPathIgnorePatterns: ['/__utils__/'],
 };

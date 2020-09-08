@@ -23,6 +23,7 @@ import {
   DELETE_DATA,
   ERROR,
   CLEAR_ERROR,
+  ACTION_NAMESPACE,
 } from './constants';
 
 function reducer(state = iMap({
@@ -31,7 +32,7 @@ function reducer(state = iMap({
   data: iMap(),
 }), action) {
   const [namespace] = action.type.split('/');
-  if (namespace !== '@fetchye') {
+  if (namespace !== ACTION_NAMESPACE) {
     return state;
   }
   switch (action.type) {

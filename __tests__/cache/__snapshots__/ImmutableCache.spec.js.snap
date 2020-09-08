@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ImmutableCache getCacheByKey should accept a cacheSelector 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {
+    "def5678": [Error: Fake Error],
+  },
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;
+
+exports[`ImmutableCache getCacheByKey should return data error loading 1`] = `
+Object {
+  "data": Object {
+    "body": Object {
+      "fakeData": true,
+    },
+    "ok": true,
+    "status": 200,
+  },
+  "error": undefined,
+  "loading": false,
+}
+`;
+
+exports[`ImmutableCache getCacheByKey should return default cacheSelector 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {
+    "def5678": [Error: Fake Error],
+  },
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;
+
+exports[`ImmutableCache getCacheByKey should return empty data error loading if cache undefined 1`] = `
+Object {
+  "data": undefined,
+  "error": undefined,
+  "loading": false,
+}
+`;
+
+exports[`ImmutableCache should reflect load state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {},
+  "loading": Immutable.Set [
+    "abc1234",
+  ],
+  "data": Immutable.Map {},
+}
+`;
+
+exports[`ImmutableCache should reflect load to error state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {
+    "abc1234": [Error: Fake Error],
+  },
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;
+
+exports[`ImmutableCache should reflect load to error to clear errors state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {},
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;
+
+exports[`ImmutableCache should reflect load to success state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {},
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {
+    "abc1234": Object {
+      "body": Object {
+        "fakeData": true,
+      },
+      "ok": true,
+      "status": 200,
+    },
+  },
+}
+`;
+
+exports[`ImmutableCache should reflect load to success to delete state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {},
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;
+
+exports[`ImmutableCache should reflect multiple hashes stored 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {
+    "def5678": [Error: Fake Error],
+  },
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {
+    "abc1234": Object {
+      "body": Object {
+        "fakeData": true,
+      },
+      "ok": true,
+      "status": 200,
+    },
+  },
+}
+`;
+
+exports[`ImmutableCache should return default state if unknown @fetchye action type 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {},
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;
