@@ -182,7 +182,7 @@ describe('useFetchye', () => {
         render(
           <AFetchyeProvider cache={cache}>
             {React.createElement(() => {
-              fetchyeRes = useFetchye('http://example.com/one', { lazy: true });
+              fetchyeRes = useFetchye('http://example.com/one', { defer: true });
               return null;
             })}
           </AFetchyeProvider>
@@ -198,7 +198,7 @@ describe('useFetchye', () => {
         render(
           <AFetchyeProvider cache={cache}>
             {React.createElement(() => {
-              fetchyeRes = useFetchye('http://example.com/one', { lazy: true });
+              fetchyeRes = useFetchye('http://example.com/one', { defer: true });
               return null;
             })}
           </AFetchyeProvider>
@@ -209,7 +209,7 @@ describe('useFetchye', () => {
             Array [
               "http://example.com/one",
               Object {
-                "lazy": true,
+                "defer": true,
               },
             ],
           ]

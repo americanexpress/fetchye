@@ -66,7 +66,7 @@ describe('useFetchyeContext', () => {
         "current": Object {
           "data": undefined,
           "error": undefined,
-          "loading": "abc123",
+          "loading": true,
         },
       }
     `);
@@ -90,7 +90,7 @@ describe('useFetchyeContext', () => {
         "current": Object {
           "data": "fakeData",
           "error": undefined,
-          "loading": undefined,
+          "loading": false,
         },
       }
     `);
@@ -114,7 +114,7 @@ describe('useFetchyeContext', () => {
         "current": Object {
           "data": undefined,
           "error": "fake error",
-          "loading": undefined,
+          "loading": false,
         },
       }
     `);

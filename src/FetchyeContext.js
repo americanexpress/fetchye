@@ -20,5 +20,3 @@ import createSharedReactContext from 'create-shared-react-context';
 export const SHARED_CONTEXT_ID = 'FetchyeContext';
 
 export const FetchyeContext = createSharedReactContext(null, SHARED_CONTEXT_ID);
-
-export default FetchyeContext;

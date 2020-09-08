@@ -22,20 +22,22 @@ describe('isLoading', () => {
   it('should return true if loading cache true', () => {
     expect(isLoading({
       loading: true, data: undefined, numOfRenders: 2, options: {},
-    })).toBeTruthy();
+    })).toEqual(true);
   });
   it('should return true if first render is true', () => {
     expect(isLoading({
       loading: false, data: undefined, numOfRenders: 1, options: { },
-    })).toBeTruthy();
+    })).toEqual(true);
   });
-  it('should return false if first render is true and lazy is true', () => {
+  it('should return false if first render is true and defer is true', () => {
     expect(isLoading({
-      loading: false, data: undefined, numOfRenders: 1, options: { lazy: true },
-    })).toBeFalsy();
+      loading: false, data: undefined, numOfRenders: 1, options: { defer: true },
+    })).toEqual(false);
   });
   it('should return false if all args are false', () => {
-    expect(isLoading({ loading: false, numOfRenders: 2, options: { lazy: false } })).toBeFalsy();
+    expect(isLoading({
+      loading: false, numOfRenders: 2, options: { defer: false },
+    })).toEqual(false);
   });
 });
 

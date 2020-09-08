@@ -38,9 +38,9 @@ describe('computeKey', () => {
       computeKey(() => {
         throw new Error('error');
       }, {})
-    ).toBeFalsy();
+    ).toEqual(false);
   });
   it('should return false if key func returns false', () => {
-    expect(computeKey(() => false, {})).toBeFalsy();
+    expect(computeKey(() => false, {})).toEqual(false);
   });
 });

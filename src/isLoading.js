@@ -19,7 +19,7 @@ export const isLoading = (loading, isFirstRender, options) => {
     return true;
   }
   if (isFirstRender?.current) {
-    if (options.lazy) {
+    if (options.defer) {
       return false;
     }
     return true;

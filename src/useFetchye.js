@@ -37,12 +37,14 @@ export const useFetchye = (
   const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
   const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));
   const selectorState = useFetchyeSelector(computedKey.hash);
+  // create a render version manager using refs
   const numOfRenders = useRef(0);
   numOfRenders.current += 1;
   useEffect(() => {
-    if (options.lazy || !computedKey) {
+    if (options.defer || !computedKey) {
       return;
     }
+    // If first render and initialData.data exists from SSR then return early
     if (numOfRenders.current === 1 && options.initialData?.data) {
       return;
     }

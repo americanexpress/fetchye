@@ -17,17 +17,25 @@
 export const isLoading = ({
   loading, data, numOfRenders, options,
 }) => {
+  // If first render
   if (numOfRenders === 1) {
-    if (options.lazy) {
+    // and defer is true
+    if (options.defer) {
+      // isLoading should be false
       return false;
     }
+    // and no data exists and presume loading state isn't present
     if (!data) {
+      // isLoading should be true
       return true;
     }
   }
+  // If not on first render and loading from cache is true
   if (loading) {
+    // isLoading should be true
     return true;
   }
+  // else isLoading should be false
   return false;
 };
 

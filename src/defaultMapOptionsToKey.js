@@ -16,7 +16,7 @@
 
 export const defaultMapOptionsToKey = (options) => {
   const {
-    lazy,
+    defer,
     mapOptionsToKey,
     initialData,
     ...restOfOptions
