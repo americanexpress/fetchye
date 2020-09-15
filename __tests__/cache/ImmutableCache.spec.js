@@ -13,12 +13,9 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+import ImmutableCache from '../../src/cache/ImmutableCache';
+import { testCacheInterface } from '../__utils__/testCacheInterface';
 
-const baseConfig = require('amex-jest-preset-react/jest-preset');
-
-module.exports = {
-  ...baseConfig,
-  setupFilesAfterEnv: ['./test-setup.js'],
-  snapshotSerializers: [],
-  testPathIgnorePatterns: ['/__utils__/'],
-};
+describe('ImmutableCache', () => {
+  testCacheInterface(ImmutableCache);
+});
