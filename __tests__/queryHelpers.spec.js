@@ -48,7 +48,4 @@ describe('coerceSsrField', () => {
   it('should return null if undefined', () => {
     expect(coerceSsrField(undefined)).toEqual(null);
   });
-  it('should pass through field if not error or undefined', () => {
-    expect(coerceSsrField('field')).toEqual('field');
-  });
 });
