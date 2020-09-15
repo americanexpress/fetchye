@@ -16,3 +16,4 @@
 
 export * from './useFetchye';
 export * from './makeServerFetchye';
+export * from './FetchyeProvider';

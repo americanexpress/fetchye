@@ -15,29 +15,44 @@
  */
 
 import { runAsync } from './runAsync';
-import { defaultFetcher } from './defaultFetcher';
 import { computeKey } from './computeKey';
-import { getCacheByKey } from './getCacheByKey';
+import SimpleCache from './cache/SimpleCache';
+import { defaultFetcher } from './defaultFetcher';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
+import { coerceSsrField } from './queryHelpers';
 
 export const makeServerFetchye = ({
-  store: { dispatch, getState },
-  cacheSelector,
+  cache = SimpleCache(),
+  store: { getState, dispatch } = {},
   fetchClient,
 }) => async (
   key,
   { mapOptionsToKey = (options) => options, ...options } = { },
   fetcher = defaultFetcher
 ) => {
-  const cache = cacheSelector(getState());
+  const { cacheSelector } = cache;
   const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));
-  const { data, loading, error } = getCacheByKey(cache, computedKey);
+  if (!getState || !dispatch || !cacheSelector) {
+    const res = await runAsync({
+      dispatch: () => {}, computedKey, fetcher, fetchClient, options,
+    });
+    return {
+      data: coerceSsrField(res.data),
+      error: coerceSsrField(res.error),
+    };
+  }
+  const state = cacheSelector(getState());
+  const { data, loading, error } = cache.getCacheByKey(state, computedKey.hash);
   if (!data && !error && !loading) {
-    return runAsync({
+    const res = await runAsync({
       dispatch, computedKey, fetcher, fetchClient, options,
     });
+    return {
+      data: coerceSsrField(res.data),
+      error: coerceSsrField(res.error),
+    };
   }
-  return { data, error };
+  return { data: coerceSsrField(data), error: coerceSsrField(error) };
 };
 
 export default makeServerFetchye;
