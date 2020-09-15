@@ -23,7 +23,7 @@ const MyComponent = () => {
 ## 📖 Table of Contents
 
 * [Features](#-features)
-* [Install](#%EF%B8%8F-install)
+* [Install & Setup](#%EF%B8%8F-install--setup)
 * [Usage](#-usage)
 * [API](#%EF%B8%8F-api)
 * [Mission](#-mission)
@@ -35,7 +35,7 @@ const MyComponent = () => {
 * Headless per-Hook Cache Mode available
 * SSR-friendly
 
-## ⬇️ Install
+## ⬇️ Install & Setup
 
 **Contents**
 * [Quick Install](#quick-install)
