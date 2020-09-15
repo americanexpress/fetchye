@@ -14,15 +14,9 @@
  * permissions and limitations under the License.
  */
 
-export const isLoading = (loading, isFirstRender, options) => {
-  if (loading) {
-    return true;
-  }
-  if (isFirstRender?.current) {
-    if (options.defer) {
-      return false;
-    }
-    return true;
-  }
-  return false;
-};
+import createSharedReactContext from 'create-shared-react-context';
+
+// Touching this will cause a breaking change
+export const SHARED_CONTEXT_ID = 'FetchyeContext';
+
+export const FetchyeContext = createSharedReactContext(null, SHARED_CONTEXT_ID);

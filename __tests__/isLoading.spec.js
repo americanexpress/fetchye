@@ -18,15 +18,15 @@ import { isLoading } from '../src/isLoading';
 
 describe('defaultMapOptionsToKey', () => {
   it('should return true if loading cache true', () => {
-    expect(isLoading(true, {}, {})).toBeTruthy();
+    expect(isLoading(true, {}, {})).toEqual(true);
   });
   it('should return true if first render is true', () => {
-    expect(isLoading(false, { current: true }, {})).toBeTruthy();
+    expect(isLoading(false, { current: true }, {})).toEqual(true);
   });
-  it('should return false if first render is true and lazy is true', () => {
-    expect(isLoading(false, { current: true }, { lazy: true })).toBeFalsy();
+  it('should return false if first render is true and defer is true', () => {
+    expect(isLoading(false, { current: true }, { defer: true })).toEqual(false);
   });
   it('should return false if all args are false', () => {
-    expect(isLoading(false, { current: false }, { lazy: false })).toBeFalsy();
+    expect(isLoading(false, { current: false }, { defer: false })).toEqual(false);
   });
 });

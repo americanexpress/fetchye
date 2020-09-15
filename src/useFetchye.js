@@ -14,48 +14,67 @@
  * permissions and limitations under the License.
  */
 
-import { useContext, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { runAsync } from './runAsync';
-import { defaultFetcher } from './defaultFetcher';
 import { computeKey } from './computeKey';
-import { isLoading } from './isLoading';
-import { FetchyeContext } from './FetchyeContext';
-import { getCacheByKey } from './getCacheByKey';
+import {
+  isLoading,
+} from './queryHelpers';
+import { useFetchyeContext } from './useFetchyeContext';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
+
+const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders === 1
+  ? value || initialValue
+  : value);
 
 export const useFetchye = (
   key,
   { mapOptionsToKey = (options) => options, ...options } = { },
-  fetcher = defaultFetcher) => {
+  fetcher) => {
   const {
-    useFetchyeSelector, dispatch, fetchClient,
-  } = useContext(FetchyeContext);
-  const cache = useFetchyeSelector();
+    defaultFetcher, useFetchyeSelector, dispatch, fetchClient,
+  } = useFetchyeContext();
+  const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
   const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));
-  const { data, loading, error } = getCacheByKey(cache, computedKey);
-  const isFirstRender = useRef(!data);
+  const selectorState = useFetchyeSelector(computedKey.hash);
+  // create a render version manager using refs
+  const numOfRenders = useRef(0);
+  numOfRenders.current += 1;
   useEffect(() => {
-    if (options.lazy || !computedKey) {
+    if (options.defer || !computedKey) {
       return;
     }
-    if (isFirstRender.current !== false) {
-      isFirstRender.current = false;
+    // If first render and initialData.data exists from SSR then return early
+    if (numOfRenders.current === 1 && options.initialData?.data) {
+      return;
     }
-    if (!data && !error && !loading) {
-      (async () => {
-        await runAsync({
-          dispatch, computedKey, fetcher, fetchClient, options,
-        });
-      })();
+    const { loading, data, error } = selectorState.current;
+    if (!loading && !data && !error) {
+      runAsync({
+        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
+      });
     }
-  }, [data, loading, error, computedKey, fetcher, options, dispatch, fetchClient]);
+  });
   return {
-    isLoading: isLoading(loading, isFirstRender, options),
-    error,
-    data,
+    isLoading: isLoading({
+      loading: selectorState.current.loading,
+      data: selectorState.current.data || options.initialData?.data,
+      numOfRenders: numOfRenders.current,
+      options,
+    }),
+    error: passInitialData(
+      selectorState.current.error,
+      options.initialData?.error,
+      numOfRenders.current
+    ),
+    data: passInitialData(
+      selectorState.current.data,
+      options.initialData?.data,
+      numOfRenders.current
+    ),
     run() {
       return runAsync({
-        dispatch, computedKey, fetcher, fetchClient, options,
+        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
     },
   };

@@ -16,4 +16,3 @@
 
 export * from './useFetchye';
 export * from './makeServerFetchye';
-export { FetchyeReduxProvider } from './FetchyeContext';
