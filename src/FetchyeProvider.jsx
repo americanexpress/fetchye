@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import SimpleCache from './cache/SimpleCache';
 import { defaultFetcher } from './defaultFetcher';
 import { FetchyeContext } from './FetchyeContext';
+import { defaultEqualityChecker } from './defaultEqualityChecker';
 
 const RerenderShield = React.memo(({ children }) => children);
 RerenderShield.propTypes = {
@@ -65,10 +66,6 @@ const makeFetchyeSelector = ({
   }, [key]);
   return selectorValue;
 };
-
-const defaultEqualityChecker = (a, b) => a.data === b.data
-&& a.error === b.error
-&& a.loading === b.loading;
 
 export const FetchyeProvider = ({
   cache = SimpleCache(), initialData = cache.reducer(undefined, { type: '' }), equalityChecker = defaultEqualityChecker, fetcher = defaultFetcher, fetchClient = fetch, children,

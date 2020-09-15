@@ -20,10 +20,7 @@ import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { defaultFetcher } from './defaultFetcher';
 import { FetchyeContext } from './FetchyeContext';
-
-const defaultEqualityChecker = (a, b) => a.data === b.data
-&& a.error === b.error
-&& a.loading === b.loading;
+import { defaultEqualityChecker } from './defaultEqualityChecker';
 
 const makeUseFetchyeSelector = (getCacheByKey, cacheSelector, equalityChecker) => (key) => (
   {
