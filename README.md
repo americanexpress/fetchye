@@ -573,6 +573,78 @@ export async function getServerSideProps() {
 
 🏖️[Try this out on Codesandbox](https://codesandbox.io/s/americanexpressfetchye-fetchye-ssr-0ktx9)
 
+## Write your own Cache
+
+> 💬 **Note**: This is for advanced users with special cases. Advanced users should understand Redux design pattern concepts about [Reducers](https://redux.js.org/basics/reducers) and [Actions](https://redux.js.org/basics/actions) before continuing.
+
+Sometimes, the basic opinions of the cache may not be enough for a project's use case. We can create a very basic new Cache configuration like so:
+
+```js
+import {
+  IS_LOADING,
+  SET_DATA,
+  DELETE_DATA,
+  ERROR,
+  CLEAR_ERROR,
+} from 'fetchye/lib/cache/constants';
+
+export function CustomCache({ cacheSelector = (state) => state }) {
+  return {
+    // The reducer will save each action to state by hash key
+    reducer: (state, action) => {
+      switch (action.type) {
+        case IS_LOADING: {
+          // return is loading state change
+          return state;
+        }
+        case SET_DATA: {
+          // return set data state change
+          return state;
+        }
+        case DELETE_DATA: {
+          // return delete data state change
+          return state;
+        }
+        case ERROR: {
+          // return error state change
+          return state;
+        }
+        case CLEAR_ERROR: {
+          // return clear error state change
+          return state;
+        }
+        default: {
+          return state;
+        }
+      }
+    },
+    getCacheByKey: (state, key) => ({
+      data, // dig into state and return data by key hash value
+      error, // dig into state and return error by key hash value
+      loading, // dig into state and return loading by key hash value
+    }),
+    cacheSelector, // pass through optional cacheSelector property
+  };
+}
+```
+
+Next we may add this to one of the Fetchye Providers and we are done:
+
+```jsx
+import { FetchyeProvider } from 'fetchye';
+import { CustomCache } from './CustomCache';
+
+const ParentComponent = ({ children }) => (
+  <>
+    <FetchyeProvider cache={CustomCache()}>
+      {children}
+    </FetchyeProvider>
+  </>
+);
+```
+
+> 💡 Check out [`actions.js`](./src/cache/actions.js) and [`SimpleCache.js`](./src/cache/SimpleCache.js) source files. Those files will give you practical examples on a working Cache configuration.
+
 ## 🎛️ API
 
 **Contents**
