@@ -575,7 +575,19 @@ export async function getServerSideProps() {
 
 ## 🎛️ API
 
+**Contents**
+* [`useFetchye`](#usefetchye)
+* [`makeServerFetchye`](#makeserverfetchye)
+* [Providers](#providers)
+  * [`FetchyeProvider`](#fetchyeprovider)
+  * [`FetchyeReduxProvider`](#fetchyereduxprovider)
+* [Caches](#caches)
+  * [`SimpleCache`](#simplecache)
+  * [`ImmutableCache`](#immutablecache)
+
 ### `useFetchye`
+
+A React Hook used for dispatching asynchronous API requests.
 
 **Shape**
 
@@ -611,6 +623,8 @@ const { isLoading, data, error, run } = useFetchye(key, { defer: Boolean, mapOpt
 
 ### `makeServerFetchye`
 
+A factory function used to generate an async/await fetchye function used for server-side API calls.
+
 **Shape**
 
 ```
@@ -643,7 +657,11 @@ const { data, error } = await fetchye(key, options, fetcher);
 
 ### Providers
 
+A Provider creates a React Context to connect all the `useFetchye` Hooks into a centrally stored cache.
+
 #### `FetchyeProvider`
+
+A React Context Provider that holds the centralized cache for all the `useFetchye` React Hooks' query data. This Provider uses `useReducer` for cache storage.
 
 **Shape**
 
@@ -663,6 +681,8 @@ const { data, error } = await fetchye(key, options, fetcher);
 #### `FetchyeReduxProvider`
 
 > 💡Requires additional `redux` and `react-redux` packages installed
+
+A React Context Provider that uses Redux to store the centralized cache for all the `useFetchye` React Hooks' query data. 
 
 **Shape**
 
@@ -693,7 +713,11 @@ import { FetchyeReduxProvider } from "fetchye/lib/FetchyeReduxProvider";
 
 ### Caches
 
+A factory function that returns a configuration object, used to instruct a Provider on how to store and retrieve fetchye cache data.
+
 #### `SimpleCache`
+
+This Cache configuration relies on plain old Javascript data structures to back the `reducer` and `getCacheByKey` functions.
 
 **Shape**
 
@@ -705,7 +729,7 @@ const cache = SimpleCache({
 });
 ```
 
-**Args**
+**Arguments**
 
 | name | type | required | description |
 |---|---|---|---|
@@ -714,7 +738,7 @@ const cache = SimpleCache({
 **Returns**
 
 | name | type | description |
-|---|---|---|---|
+|---|---|---|
 | `reducer` | `(state, action) => state` | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)). |
 | `getCacheByKey` | `(cache, key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state. |
 | `cacheSelector?` | `(state) => state` | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
@@ -722,6 +746,8 @@ const cache = SimpleCache({
 #### `ImmutableCache`
 
 > 💡Requires additional `immutable` package installed
+
+This Cache configuration relies on ImmutableJS data structures to back the `reducer` and `getCacheByKey` functions.
 
 **Shape**
 
@@ -733,16 +759,16 @@ const cache = ImmutableCache({
 });
 ```
 
-**Args**
+**Arguments**
 
 | name | type | required | description |
-|---|---|---|---|
+|---|---|---|--|
 | `cacheSelector` | `(state) => state` | `false` | *Required if using `FetchyeReduxProvider`* A function that returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
 
 **Returns**
 
 | name | type | description |
-|---|---|---|---|
+|---|---|---|
 | `reducer` | `(state, action) => state` | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)). |
 | `getCacheByKey` | `(cache = Immutable.Map(), key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state. |
 | `cacheSelector?` | `(state) => state` | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
