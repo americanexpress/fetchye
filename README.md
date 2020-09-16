@@ -244,7 +244,7 @@ MyModuleRoot.holocron = {
   name: 'my-module-root',
   reducer: combineReducers({
     // ... any other reducers
-    fetchye: fetchyeReducer,
+    fetchye: fetchyeCache.reducer,
   }),
 };
 ```
@@ -347,7 +347,7 @@ const NewBookForm = () => {
 };
 ```
 
-### Data Dependent Execution
+### Sequential API Execution
 
 ```jsx
 import React from 'react';
@@ -711,6 +711,14 @@ const cache = SimpleCache({
 |---|---|---|---|
 | `cacheSelector` | `(state) => state` | `false` | *Required if using `FetchyeReduxProvider`* A function that returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
 
+**Returns**
+
+| name | type | description |
+|---|---|---|---|
+| `reducer` | `(state, action) => state` | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)). |
+| `getCacheByKey` | `(cache, key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state. |
+| `cacheSelector?` | `(state) => state` | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+
 #### `ImmutableCache`
 
 > 💡Requires additional `immutable` package installed
@@ -730,6 +738,14 @@ const cache = ImmutableCache({
 | name | type | required | description |
 |---|---|---|---|
 | `cacheSelector` | `(state) => state` | `false` | *Required if using `FetchyeReduxProvider`* A function that returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+
+**Returns**
+
+| name | type | description |
+|---|---|---|---|
+| `reducer` | `(state, action) => state` | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)). |
+| `getCacheByKey` | `(cache = Immutable.Map(), key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state. |
+| `cacheSelector?` | `(state) => state` | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
 
 ## 📢 Mission
 
