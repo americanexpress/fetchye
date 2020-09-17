@@ -46,7 +46,7 @@
     "prepublish": "npm run build",
     "test": "npm run test:unit",
     "test:unit": "jest",
-    "test:git-history": "commitlint --from origin/main --to HEAD",
+    "test:git-history": "commitlint --from origin/beta --to HEAD",
     "test:lockfile": "lockfile-lint -p package-lock.json -t npm -a npm -o https: -c -i",
     "posttest": "npm run lint && npm run test:lockfile && npm run test:git-history"
   },

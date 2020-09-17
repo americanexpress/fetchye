@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: |
-        git remote set-branches --add origin main alpha
+        git remote set-branches --add origin main beta
         git fetch
     - name: Setup Node
       uses: actions/setup-node@v1
