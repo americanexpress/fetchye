@@ -656,6 +656,12 @@ const ParentComponent = ({ children }) => (
 * [Caches](#caches)
   * [`SimpleCache`](#simplecache)
   * [`ImmutableCache`](#immutablecache)
+* [Actions](#actions)
+  * [`IS_LOADING`](#isloading)
+  * [`SET_DATA`](#setdata)
+  * [`DELETE_DATA`](#deletedata)
+  * [`ERROR`](#error)
+  * [`CLEAR_ERROR`](#clearerror)
 
 ### `useFetchye`
 
@@ -844,6 +850,65 @@ const cache = ImmutableCache({
 | `reducer` | `(state, action) => state` | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)). |
 | `getCacheByKey` | `(cache = Immutable.Map(), key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state. |
 | `cacheSelector?` | `(state) => state` | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+
+### Actions
+
+#### `IS_LOADING`
+
+**Shape**
+
+```
+{
+  type: IS_LOADING,
+  hash,
+}
+```
+
+#### `SET_DATA`
+
+**Shape**
+
+```
+{
+  type: SET_DATA,
+  hash,
+  value,
+}
+```
+
+#### `DELETE_DATA`
+
+**Shape**
+
+```
+{
+  type: DELETE_DATA,
+  hash,
+}
+```
+
+#### `ERROR`
+
+**Shape**
+
+```
+{
+  type: ERROR,
+  hash,
+  error,
+}
+```
+
+#### `CLEAR_ERROR`
+
+**Shape**
+
+```
+{
+  type: CLEAR_ERROR,
+  hash,
+}
+```
 
 ## 📢 Mission
 
