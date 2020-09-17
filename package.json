@@ -1,6 +1,6 @@
 {
   "name": "fetchye",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-beta.1",
   "description": "If you know how to use Fetch, you know how to use Fetchye [fetch-yae]. Simple React Hooks, Centralized Cache, Infinitely Extensible.",
   "main": "lib/index.js",
   "files": [
