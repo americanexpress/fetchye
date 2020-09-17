@@ -89,6 +89,7 @@ const MyComponent = () => {
 
 **Cons**
 - No Redux Dev Tools for debugging and cache inspection
+- Limited centralized server-side data hydration support
 
 Install `fetchye`:
 
@@ -140,6 +141,7 @@ const MyComponent = () => {
 - Shared Cache
 - De-duplication of API calls
 - Redux Dev Tools for debugging and cache inspection
+- Excellent centralized server-side data hydration support
 
 **Cons**
 - More steps and dependencies
@@ -205,6 +207,7 @@ const MyComponent = () => {
 - Shared Cache
 - De-duplication of API calls
 - Redux Dev Tools for debugging and cache inspection
+- Excellent centralized server-side data hydration support
 - Shared Cache between Micro Frontend Holocron Modules
 - Immutable Redux State
 
@@ -408,8 +411,8 @@ const BookList = ({ genre }) => {
 ### Custom Fetcher
 
 Custom fetchers allow for creating reusable data fetching logic for specific
-APIs or custom needs. They also allow for accepting a centrally provided
-`fetchClient` but wrapping that client on a per `useFetchye` request basis.
+APIs or custom needs. They allow for a centrally provided
+`fetchClient` which wraps that client on a per `useFetchye` request basis.
 
 ```jsx
 import React from 'react';
@@ -755,6 +758,7 @@ A React Context Provider that holds the centralized cache for all the `useFetchy
 |---|---|---|---|
 | `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
 | `cache` | `Cache` | `false` | Fetchye `Cache` object. *Defaults to `SimpleCache`* |
+| `initialData` | `Object` | `false` | Initial state to feed into Cache Configuration `reducer` |
 
 #### `FetchyeReduxProvider`
 
