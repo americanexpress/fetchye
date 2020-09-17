@@ -657,11 +657,11 @@ const ParentComponent = ({ children }) => (
   * [`SimpleCache`](#simplecache)
   * [`ImmutableCache`](#immutablecache)
 * [Actions](#actions)
-  * [`IS_LOADING`](#isloading)
-  * [`SET_DATA`](#setdata)
-  * [`DELETE_DATA`](#deletedata)
+  * [`IS_LOADING`](#is_loading)
+  * [`SET_DATA`](#set_data)
+  * [`DELETE_DATA`](#delete_data)
   * [`ERROR`](#error)
-  * [`CLEAR_ERROR`](#clearerror)
+  * [`CLEAR_ERROR`](#clear_error)
 
 ### `useFetchye`
 
