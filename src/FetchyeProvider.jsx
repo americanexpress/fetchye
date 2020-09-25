@@ -22,81 +22,64 @@ import SimpleCache from './cache/SimpleCache';
 import { defaultFetcher } from './defaultFetcher';
 import { FetchyeContext } from './FetchyeContext';
 import { defaultEqualityChecker } from './defaultEqualityChecker';
+import useRefReducer from './useRefReducer';
+import useSubscription from './useSubscription';
 
-const RerenderShield = React.memo(({ children }) => children);
-RerenderShield.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-};
-RerenderShield.displayName = 'RerenderShield';
-
-const useSubscription = () => {
-  const subscribers = useRef(new Set());
-  return [
-    function notify() {
-      subscribers.current.forEach((callback) => {
-        callback();
-      });
-    },
-    function subscribe(callback) {
-      subscribers.current.add(callback);
-      return () => {
-        subscribers.current.delete(callback);
-      };
-    },
-  ];
-};
-
-const makeFetchyeSelector = ({
+const makeUseFetchyeSelector = ({
   fetchyeState, subscribe, getCacheByKey, equalityChecker,
 }) => (key) => {
-  const [, forceRender] = useReducer((state) => state + 1, 0);
-  const nextValue = getCacheByKey(fetchyeState.current, key);
-  const lastSelectorValue = useRef(nextValue);
-  const selectorValue = useRef(nextValue);
-  lastSelectorValue.current = selectorValue.current;
-  selectorValue.current = nextValue;
+  const [, forceRender] = useReducer((n) => n + 1, 0);
+  const initialValue = getCacheByKey(fetchyeState.current, key);
+  const lastSelectorValue = useRef(initialValue);
+  const selectorValue = useRef(initialValue);
+
   useEffect(() => {
+    selectorValue.current = getCacheByKey(fetchyeState.current, key);
+
     function checkForUpdates() {
+      const nextValue = getCacheByKey(fetchyeState.current, key);
+      lastSelectorValue.current = selectorValue.current;
+      selectorValue.current = nextValue;
       if (equalityChecker(selectorValue.current, lastSelectorValue.current)) {
         return;
       }
       forceRender();
     }
+
+    checkForUpdates();
     return subscribe(checkForUpdates);
   }, [key]);
+
   return selectorValue;
 };
 
 export const FetchyeProvider = ({
-  cache = SimpleCache(), initialData = cache.reducer(undefined, { type: '' }), equalityChecker = defaultEqualityChecker, fetcher = defaultFetcher, fetchClient = fetch, children,
+  cache = SimpleCache(),
+  fetcher = defaultFetcher,
+  equalityChecker = defaultEqualityChecker,
+  fetchClient = fetch,
+  initialData = cache.reducer(undefined, { type: '' }),
+  children,
 }) => {
-  const [state, dispatch] = useReducer(cache.reducer, initialData);
   const [notify, subscribe] = useSubscription();
-  const fetchyeState = useRef();
-  fetchyeState.current = state;
+  const [fetchyeState, dispatch] = useRefReducer(cache.reducer, initialData, notify);
 
   const memoizedConfig = useMemo(() => ({
     dispatch,
     cache,
     defaultFetcher: fetcher,
-    useFetchyeSelector: makeFetchyeSelector({
+    useFetchyeSelector: makeUseFetchyeSelector({
       fetchyeState,
       subscribe,
       getCacheByKey: cache.getCacheByKey,
       equalityChecker,
     }),
     fetchClient,
-  }), [cache, equalityChecker, fetchClient, fetcher, subscribe]);
-
-  useEffect(() => {
-    notify();
-  }, [notify, state]);
+  }), [cache, equalityChecker, fetchClient, fetcher, subscribe, fetchyeState, dispatch]);
 
   return (
     <FetchyeContext.Provider value={memoizedConfig}>
-      <RerenderShield>
-        {children}
-      </RerenderShield>
+      {children}
     </FetchyeContext.Provider>
   );
 };
