@@ -14,21 +14,46 @@
  * permissions and limitations under the License.
  */
 
-import React, { useMemo } from 'react';
+import React, {
+  useMemo, useRef, useEffect, useReducer, useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useStore } from 'react-redux';
 import { defaultFetcher } from './defaultFetcher';
 import { FetchyeContext } from './FetchyeContext';
 import { defaultEqualityChecker } from './defaultEqualityChecker';
+import useSubscription from './useSubscription';
 
-const makeUseFetchyeSelector = (getCacheByKey, cacheSelector, equalityChecker) => (key) => (
-  {
-    current: useSelector(
-      (state) => getCacheByKey(cacheSelector(state), key),
-      equalityChecker
-    ),
-  });
+const makeUseFetchyeSelector = ({
+  getCacheByKey, cacheSelector, equalityChecker, subscribe,
+}) => (key) => {
+  const [, forceRender] = useReducer((n) => n + 1, 0);
+  const store = useStore();
+  const selector = useCallback((state) => getCacheByKey(cacheSelector(state), key), [key]);
+  const initialValue = selector(store.getState());
+
+  const lastSelectorValue = useRef(initialValue);
+  const selectorValue = useRef(initialValue);
+
+  useEffect(() => {
+    selectorValue.current = selector(store.getState());
+
+    function checkForUpdates() {
+      const nextValue = selector(store.getState());
+      lastSelectorValue.current = selectorValue.current;
+      selectorValue.current = nextValue;
+
+      if (!equalityChecker(selectorValue.current, lastSelectorValue.current)) {
+        forceRender();
+      }
+    }
+    checkForUpdates();
+    return subscribe(checkForUpdates);
+  }, [selector, store]);
+
+  return selectorValue;
+};
 
 export const FetchyeReduxProvider = ({
   cache,
@@ -37,15 +62,35 @@ export const FetchyeReduxProvider = ({
   fetchClient = fetch,
   children,
 }) => {
-  const dispatch = useDispatch();
+  const [notify, subscribe] = useSubscription();
+  const reduxDispatch = useDispatch();
   const { cacheSelector, getCacheByKey } = cache;
+
   const memoizedConfig = useMemo(() => ({
     cache,
-    dispatch,
+    dispatch: (...args) => {
+      reduxDispatch(...args);
+      notify();
+    },
     defaultFetcher: fetcher,
-    useFetchyeSelector: makeUseFetchyeSelector(getCacheByKey, cacheSelector, equalityChecker),
+    useFetchyeSelector: makeUseFetchyeSelector({
+      getCacheByKey,
+      cacheSelector,
+      equalityChecker,
+      subscribe,
+    }),
     fetchClient,
-  }), [cache, cacheSelector, dispatch, fetchClient, fetcher, getCacheByKey, equalityChecker]);
+  }), [
+    cache,
+    cacheSelector,
+    fetchClient,
+    fetcher,
+    getCacheByKey,
+    equalityChecker,
+    reduxDispatch,
+    notify,
+    subscribe,
+  ]);
   return (
     <FetchyeContext.Provider value={memoizedConfig}>
       {children}
