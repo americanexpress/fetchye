@@ -30,7 +30,8 @@ const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders ===
 export const useFetchye = (
   key,
   { mapOptionsToKey = (options) => options, ...options } = { },
-  fetcher) => {
+  fetcher
+) => {
   const {
     defaultFetcher, useFetchyeSelector, dispatch, fetchClient,
   } = useFetchyeContext();
@@ -40,6 +41,7 @@ export const useFetchye = (
   // create a render version manager using refs
   const numOfRenders = useRef(0);
   numOfRenders.current += 1;
+
   useEffect(() => {
     if (options.defer || !computedKey) {
       return;
@@ -55,6 +57,7 @@ export const useFetchye = (
       });
     }
   });
+
   return {
     isLoading: isLoading({
       loading: selectorState.current.loading,

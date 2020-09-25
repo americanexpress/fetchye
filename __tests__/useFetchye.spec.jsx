@@ -286,4 +286,31 @@ describe('useFetchye', () => {
       });
     });
   });
+
+  describe('With provider', () => {
+    [
+      ['FetchyeReduxProvider', ReduxSetup],
+      ['FetchyeProvider', FetchyeProvider],
+    ].forEach(([name, AFetchyeProvider]) => {
+      describe(name, () => {
+        it('ensures fetch is called once per key', async () => {
+          const fakeFetchClient = jest.fn();
+          global.fetch = fakeFetchClient;
+          render(
+            <AFetchyeProvider cache={cache}>
+              {React.createElement(() => {
+                useFetchye('http://example.com');
+                return null;
+              })}
+              {React.createElement(() => {
+                useFetchye('http://example.com');
+                return null;
+              })}
+            </AFetchyeProvider>
+          );
+          expect(fakeFetchClient).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
+  });
 });
