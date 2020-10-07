@@ -13,17 +13,9 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+import SimpleCache from '../src/SimpleCache';
+import { testCacheInterface } from './__utils__/testCacheInterface';
 
-module.exports = {
-  preset: 'amex-jest-preset-react',
-  setupFilesAfterEnv: [
-    './test-setup.js',
-  ],
-  snapshotSerializers: [],
-  testMatch: [
-    '**/__tests__/*.spec.{js,jsx}',
-  ],
-  collectCoverageFrom: [
-    'packages/*/src/*.{js,jsx}',
-  ],
-};
+describe('SimpleCache', () => {
+  testCacheInterface(SimpleCache);
+});

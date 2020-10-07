@@ -13,17 +13,9 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+import ImmutableCache from '../src/ImmutableCache';
+import { testCacheInterface } from '../../fetchye/__tests__/__utils__/testCacheInterface';
 
-module.exports = {
-  preset: 'amex-jest-preset-react',
-  setupFilesAfterEnv: [
-    './test-setup.js',
-  ],
-  snapshotSerializers: [],
-  testMatch: [
-    '**/__tests__/*.spec.{js,jsx}',
-  ],
-  collectCoverageFrom: [
-    'packages/*/src/*.{js,jsx}',
-  ],
-};
+describe('ImmutableCache', () => {
+  testCacheInterface(ImmutableCache);
+});

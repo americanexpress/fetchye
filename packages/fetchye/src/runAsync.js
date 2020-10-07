@@ -14,16 +14,22 @@
  * permissions and limitations under the License.
  */
 
-module.exports = {
-  preset: 'amex-jest-preset-react',
-  setupFilesAfterEnv: [
-    './test-setup.js',
-  ],
-  snapshotSerializers: [],
-  testMatch: [
-    '**/__tests__/*.spec.{js,jsx}',
-  ],
-  collectCoverageFrom: [
-    'packages/*/src/*.{js,jsx}',
-  ],
+import * as actions from './actions';
+
+export const runAsync = async ({
+  dispatch, computedKey, fetcher, fetchClient, options,
+}) => {
+  dispatch(actions.loadingAction({ hash: computedKey.hash }));
+  const {
+    payload: data,
+    error: requestError,
+  } = await fetcher(fetchClient, computedKey.key, options);
+  if (!requestError) {
+    dispatch(actions.setAction({ hash: computedKey.hash, value: data }));
+  } else {
+    dispatch(actions.errorAction({ hash: computedKey.hash, error: requestError }));
+  }
+  return { data, error: requestError };
 };
+
+export default runAsync;
