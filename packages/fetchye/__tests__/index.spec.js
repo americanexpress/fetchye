@@ -14,16 +14,17 @@
  * permissions and limitations under the License.
  */
 
-module.exports = {
-  preset: 'amex-jest-preset-react',
-  setupFilesAfterEnv: [
-    './test-setup.js',
-  ],
-  snapshotSerializers: [],
-  testMatch: [
-    '**/__tests__/*.spec.{js,jsx}',
-  ],
-  collectCoverageFrom: [
-    'packages/*/src/*.{js,jsx}',
-  ],
-};
+import * as fetchye from '../src';
+
+describe('index', () => {
+  it('should return public methods', () => {
+    expect(Object.keys(fetchye).sort()).toMatchInlineSnapshot(`
+      Array [
+        "FetchyeProvider",
+        "SimpleCache",
+        "makeServerFetchye",
+        "useFetchye",
+      ]
+    `);
+  });
+});

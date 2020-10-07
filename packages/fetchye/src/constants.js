@@ -14,16 +14,9 @@
  * permissions and limitations under the License.
  */
 
-module.exports = {
-  preset: 'amex-jest-preset-react',
-  setupFilesAfterEnv: [
-    './test-setup.js',
-  ],
-  snapshotSerializers: [],
-  testMatch: [
-    '**/__tests__/*.spec.{js,jsx}',
-  ],
-  collectCoverageFrom: [
-    'packages/*/src/*.{js,jsx}',
-  ],
-};
+export const ACTION_NAMESPACE = '@fetchye';
+export const IS_LOADING = `${ACTION_NAMESPACE}/IS_LOADING`;
+export const SET_DATA = `${ACTION_NAMESPACE}/SET_DATA`;
+export const DELETE_DATA = `${ACTION_NAMESPACE}/DELETE_DATA`;
+export const ERROR = `${ACTION_NAMESPACE}/ERROR`;
+export const CLEAR_ERROR = `${ACTION_NAMESPACE}/CLEAR_ERROR`;
