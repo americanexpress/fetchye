@@ -5,12 +5,12 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "yarn workspaces run build",
     "lint": "eslint --ignore-path .gitignore --ext js,jsx,md .",
     "test": "yarn test:unit",
     "test:unit": "jest",
     "test:git-history": "commitlint --from origin/beta --to HEAD",
     "test:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts registry.yarnpkg.com --validate-https",
-    "postinstall": "yarn workspaces run build",
     "posttest": "yarn lint && yarn test:lockfile && yarn test:git-history"
   },
   "devDependencies": {
