@@ -20,7 +20,8 @@
     "Jimmy King  <Jimmy.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
     "Jonathan Adshead <Jonathan.Adshead@aexp.com> (https://github.com/JAdshead)",
     "Michael Tobia <Michael.M.Tobia@aexp.com> (https://github.com/Francois-Esquire)",
-    "Nelly Kiboi <Nelly.J.Kiboi@aexp.com> (https://github.com/nellyk)"
+    "Nelly Kiboi <Nelly.J.Kiboi@aexp.com> (https://github.com/nellyk)",
+    "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)"
   ],
   "devDependencies": {
     "@rollup/plugin-babel": "^5.2.1",
