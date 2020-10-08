@@ -1,4 +1,5 @@
 {
+  "buildCommand": "yarn workspaces run build",
   "packages": ["packages/fetchye", "packages/fetchye-immutable-cache"],
   "sandboxes": [
     "/examples/create-react-app/quick-install",
