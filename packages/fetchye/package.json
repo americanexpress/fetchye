@@ -41,7 +41,8 @@
     "Nelly Kiboi <Nelly.J.Kiboi@aexp.com> (https://github.com/nellyk)",
     "Nickolas Oliver <nickolas.oliver@aexp.com> (https://github.com/PixnBits)",
     "Andrew Curtis <andrew.curtis@aexp.com> (https://github.com/drewcur)",
-    "Scott McIntyre <scott.mcintyre@aexp.com> (https://github.com/smackfu)"
+    "Scott McIntyre <scott.mcintyre@aexp.com> (https://github.com/smackfu)",
+    "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)"
   ],
   "dependencies": {
     "@babel/runtime": "^7.11.2",
