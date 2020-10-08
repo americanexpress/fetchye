@@ -10,6 +10,7 @@
     "test:unit": "jest",
     "test:git-history": "commitlint --from origin/beta --to HEAD",
     "test:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts registry.yarnpkg.com --validate-https",
+    "postinstall": "yarn workspaces run build",
     "posttest": "yarn lint && yarn test:lockfile && yarn test:git-history"
   },
   "devDependencies": {
