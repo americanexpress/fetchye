@@ -14,21 +14,4 @@
  * permissions and limitations under the License.
  */
 
-import * as fetchye from "../src";
-
-describe("index", () => {
-  it("should return public methods", () => {
-    expect(Object.keys(fetchye).sort()).toMatchInlineSnapshot(`
-      Array [
-        "FetchyeContext",
-        "FetchyeProvider",
-        "SimpleCache",
-        "defaultEqualityChecker",
-        "defaultFetcher",
-        "makeServerFetchye",
-        "useFetchye",
-        "useSubscription",
-      ]
-    `);
-  });
-});
+export { default as FetchyeReduxProvider } from './FetchyeReduxProvider';

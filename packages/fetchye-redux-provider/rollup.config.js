@@ -8,7 +8,7 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      name: 'fetchye',
+      name: 'fetchye-redux-provider',
       file: pkg.browser,
       format: 'umd',
     },
@@ -35,10 +35,9 @@ export default [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),
       babel({
-        babelHelpers: 'runtime',
+        babelHelpers: 'bundled',
         exclude: 'node_modules/**',
         presets: ['amex'],
-        plugins: [['@babel/plugin-transform-runtime', { useESModules: false }]],
       }),
       terser(),
     ],
@@ -54,10 +53,9 @@ export default [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),
       babel({
-        babelHelpers: 'runtime',
+        babelHelpers: 'bundled',
         exclude: 'node_modules/**',
         presets: ['amex'],
-        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),
       terser(),
     ],

@@ -18,9 +18,8 @@ import React, { useContext } from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import SimpleCache from '../src/SimpleCache';
-import { FetchyeContext } from '../src/FetchyeContext';
-import { FetchyeReduxProvider } from '../src/FetchyeReduxProvider';
+import { FetchyeContext, SimpleCache } from 'fetchye';
+import FetchyeReduxProvider from '../src/FetchyeReduxProvider';
 
 const store = createStore((state) => state, { initialState: {} });
 

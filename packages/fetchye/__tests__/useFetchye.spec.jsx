@@ -18,7 +18,7 @@ import React, { useRef } from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { FetchyeReduxProvider } from '../src/FetchyeReduxProvider';
+import { FetchyeReduxProvider } from 'fetchye-redux-provider';
 import { FetchyeProvider } from '../src/FetchyeProvider';
 import { useFetchye } from '../src/useFetchye';
 import SimpleCache from '../src/SimpleCache';

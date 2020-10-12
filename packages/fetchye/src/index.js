@@ -17,4 +17,8 @@
 export * from './useFetchye';
 export * from './makeServerFetchye';
 export * from './FetchyeProvider';
+export { default as defaultFetcher } from './defaultFetcher';
+export { FetchyeContext } from './FetchyeContext';
+export { defaultEqualityChecker } from './defaultEqualityChecker';
+export { default as useSubscription } from './useSubscription';
 export { default as SimpleCache } from './SimpleCache';
