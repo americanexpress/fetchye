@@ -18,12 +18,10 @@ import React, {
   useMemo, useRef, useEffect, useReducer, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { useDispatch, useStore } from 'react-redux';
-import { defaultFetcher } from './defaultFetcher';
-import { FetchyeContext } from './FetchyeContext';
-import { defaultEqualityChecker } from './defaultEqualityChecker';
-import useSubscription from './useSubscription';
+import {
+  defaultFetcher, FetchyeContext, defaultEqualityChecker, useSubscription,
+} from 'fetchye';
 
 const makeUseFetchyeSelector = ({
   getCacheByKey, cacheSelector, equalityChecker, subscribe,
@@ -55,7 +53,7 @@ const makeUseFetchyeSelector = ({
   return selectorValue;
 };
 
-export const FetchyeReduxProvider = ({
+const FetchyeReduxProvider = ({
   cache,
   fetcher = defaultFetcher,
   equalityChecker = defaultEqualityChecker,
@@ -109,3 +107,5 @@ FetchyeReduxProvider.propTypes = {
   fetcher: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
+
+export default FetchyeReduxProvider;

@@ -1,12 +1,16 @@
 {
   "name": "fetchye",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.2",
   "description": "If you know how to use Fetch, you know how to use Fetchye [fetch-yae]. Simple React Hooks, Centralized Cache, Infinitely Extensible.",
   "license": "Apache-2.0",
   "main": "lib/index.cjs.js",
   "module": "lib/index.esm.js",
   "browser": "lib/index.umd.js",
-  "repository": "americanexpress/fetchye",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/americanexpress/fetchye.git",
+    "directory": "packages/fetchye"
+  },
   "bugs": {
     "url": "https://github.com/americanexpress/fetchye/issues"
   },
@@ -54,17 +58,13 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
-  "optionalDependencies": {
-    "immutable": "^4.0.0-rc.12",
-    "react-redux": "^7.2.1",
-    "redux": "^4.0.5"
-  },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.11.5",
     "@rollup/plugin-babel": "^5.2.1",
     "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@testing-library/react": "^11.0.4",
+    "fetchye-redux-provider": "*",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",

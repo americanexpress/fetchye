@@ -5,7 +5,6 @@ import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 export default [
-  // browser-friendly UMD build
   {
     input: 'src/index.js',
     output: {
@@ -29,7 +28,6 @@ export default [
       file: pkg.main,
       format: 'cjs',
     },
-    external: ['immutable'],
     plugins: [
       babel({
         babelHelpers: 'bundled',
@@ -45,7 +43,6 @@ export default [
       file: pkg.module,
       format: 'es',
     },
-    external: ['immutable'],
     plugins: [
       babel({
         babelHelpers: 'bundled',
