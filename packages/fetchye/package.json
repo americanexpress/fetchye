@@ -64,7 +64,6 @@
     "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@testing-library/react": "^11.0.4",
-    "fetchye-redux-provider": "*",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
