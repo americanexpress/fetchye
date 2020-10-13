@@ -158,8 +158,8 @@ Add the `<FetchyeReduxProvider />` component under the Redux `<Provider />`:
 import React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import { FetchyeReduxProvider } from 'fetchye/lib/FetchyeReduxProvider';
-import { SimpleCache } from 'fetchye/lib/cache';
+import { FetchyeReduxProvider } from 'fetchye-redux-provider';
+import { SimpleCache } from 'fetchye';
 
 const fetchyeCache = SimpleCache({
   // Need to tell Fetchye where the cache reducer will be located
@@ -223,8 +223,8 @@ Add the `<FetchyeReduxProvider />` component to your Root Holocron Module:
 ```jsx
 // ...
 import { combineReducers } from 'redux-immutable';
-import { FetchyeReduxProvider } from 'fetchye/lib/FetchyeReduxProvider';
-import ImmutableCache from 'fetchye/lib/cache/ImmutableCache';
+import { FetchyeReduxProvider } from 'fetchye-redux-provider';
+import ImmutableCache from 'fetchye-immutable-cache';
 
 // One App requires ImmutableJS based Cache configuration:
 const fetchyeCache = ImmutableCache({
@@ -311,7 +311,7 @@ const BookList = ({ genre }) => {
 
 ### Deferred execution
 
-When you need to delay execution of a `useFetchye` call, you may use 
+When you need to delay execution of a `useFetchye` call, you may use
 `{ defer: true }` option. This is great for forms:
 
 ```jsx
@@ -486,7 +486,7 @@ const BookList = ({ genre }) => {
 
 ```jsx
 import React from 'react';
-import ImmutableCache from 'fetchye/lib/cache/ImmutableCache';
+import ImmutableCache from 'fetchye-immutable-cache';
 import { useFetchye, makeServerFetchye } from 'fetchye';
 
 const BookList = () => {
@@ -531,8 +531,7 @@ export default BookList;
 #### Next.JS SSR
 
 ```jsx
-import SimpleCache from 'fetchye/lib/cache/SimpleCache';
-import { useFetchye, makeServerFetchye } from 'fetchye';
+import { useFetchye, makeServerFetchye, SimpleCache } from 'fetchye';
 
 const cache = SimpleCache();
 
@@ -589,7 +588,7 @@ import {
   DELETE_DATA,
   ERROR,
   CLEAR_ERROR,
-} from 'fetchye/lib/cache/constants';
+} from 'fetchye';
 
 export function CustomCache({ cacheSelector = (state) => state }) {
   return {
@@ -651,6 +650,7 @@ const ParentComponent = ({ children }) => (
 ## 🎛️ API
 
 **Contents**
+
 * [`useFetchye`](#usefetchye)
 * [`makeServerFetchye`](#makeserverfetchye)
 * [Providers](#providers)
@@ -764,12 +764,12 @@ A React Context Provider that holds the centralized cache for all the `useFetchy
 
 > 💡Requires additional `redux` and `react-redux` packages installed
 
-A React Context Provider that uses Redux to store the centralized cache for all the `useFetchye` React Hooks' query data. 
+A React Context Provider that uses Redux to store the centralized cache for all the `useFetchye` React Hooks' query data.
 
 **Shape**
 
 ```
-import { FetchyeReduxProvider } from "fetchye/lib/FetchyeReduxProvider";
+import { FetchyeReduxProvider } from "fetchye-redux-provider";
 ```
 
 ```
@@ -804,10 +804,10 @@ This Cache configuration relies on plain old Javascript data structures to back 
 **Shape**
 
 ```
-import SimpleCache from 'fetchye/lib/cache/SimpleCache';
+import { SimpleCache } from 'fetchye';
 
 const cache = SimpleCache({
-  cacheSelector
+  cacheSelector,
 });
 ```
 
@@ -834,7 +834,7 @@ This Cache configuration relies on ImmutableJS data structures to back the `redu
 **Shape**
 
 ```
-import ImmutableCache from 'fetchye/lib/cache/ImmutableCache';
+import ImmutableCache from 'fetchye-immutable-cache';
 
 const cache = ImmutableCache({
   cacheSelector
@@ -867,7 +867,7 @@ by hash key.
 **Shape**
 
 ```
-import { IS_LOADING } from 'fetchye/lib/cache/constants';
+import { IS_LOADING } from 'fetchye';
 ```
 
 ```
@@ -891,7 +891,7 @@ field and transition away from loading state by hash key.
 **Shape**
 
 ```
-import { SET_DATA } from 'fetchye/lib/cache/constants';
+import { SET_DATA } from 'fetchye';
 ```
 
 ```
@@ -916,7 +916,7 @@ An event signaling a state transition inside a reducer to remove the data field 
 **Shape**
 
 ```
-import { DELETE_DATA } from 'fetchye/lib/cache/constants';
+import { DELETE_DATA } from 'fetchye';
 ```
 
 ```
@@ -939,7 +939,7 @@ An event signaling a state transition inside a reducer to insert an error and tr
 **Shape**
 
 ```
-import { ERROR } from 'fetchye/lib/cache/constants';
+import { ERROR } from 'fetchye';
 ```
 
 ```
@@ -964,7 +964,7 @@ An event signaling a state transition inside a reducer to remove an error by has
 **Shape**
 
 ```
-import { CLEAR_ERROR } from 'fetchye/lib/cache/constants';
+import { CLEAR_ERROR } from 'fetchye';
 ```
 
 ```
@@ -988,7 +988,7 @@ to choose how their data is stored. Fetchye provides React Context driven
 caching options backed by your choice of pure React (via `useReducer`) or Redux.
 Unlike many data fetching solutions, Fetchye Context Providers do not rely on
 singleton statics and can be instantiated throughout an application multiple
-times for multiple caches if so desired. 
+times for multiple caches if so desired.
 
 ## 🏆 Contributing
 
