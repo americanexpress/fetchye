@@ -26,4 +26,8 @@ module.exports = {
   collectCoverageFrom: [
     'packages/*/src/*.{js,jsx}',
   ],
+  moduleNameMapper: {
+    '^fetchye-redux-provider$': '<rootDir>/packages/fetchye-redux-provider/src/index.js',
+    '^fetchye$': '<rootDir>/packages/fetchye/src/index.js',
+  },
 };
