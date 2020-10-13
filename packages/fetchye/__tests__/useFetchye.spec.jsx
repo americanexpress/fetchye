@@ -18,7 +18,7 @@ import React, { useRef } from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-// eslint-disable-next-line import/no-extraneous-dependencies
+// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
 import { FetchyeReduxProvider } from 'fetchye-redux-provider';
 import { FetchyeProvider } from '../src/FetchyeProvider';
 import { useFetchye } from '../src/useFetchye';
