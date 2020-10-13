@@ -43,6 +43,7 @@
     "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@testing-library/react": "^11.0.4",
+    "fetchye": "*",
     "rimraf": "^3.0.2",
     "rollup": "^2.29.0",
     "rollup-plugin-terser": "^7.0.2"
