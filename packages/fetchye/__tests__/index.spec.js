@@ -20,8 +20,14 @@ describe('index', () => {
   it('should return public methods', () => {
     expect(Object.keys(fetchye).sort()).toMatchInlineSnapshot(`
       Array [
+        "ACTION_NAMESPACE",
+        "CLEAR_ERROR",
+        "DELETE_DATA",
+        "ERROR",
         "FetchyeContext",
         "FetchyeProvider",
+        "IS_LOADING",
+        "SET_DATA",
         "SimpleCache",
         "defaultEqualityChecker",
         "defaultFetcher",
