@@ -14,8 +14,6 @@
  * permissions and limitations under the License.
  */
 
-// Immutable is an optional dependency
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Map as iMap, Set as iSet } from 'immutable';
 import {
   IS_LOADING,
@@ -24,7 +22,8 @@ import {
   ERROR,
   CLEAR_ERROR,
   ACTION_NAMESPACE,
-} from './constants';
+// eslint-disable-next-line import/no-extraneous-dependencies
+} from 'fetchye';
 
 function reducer(state = iMap({
   errors: iMap(),
