@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useStore } from 'react-redux';
 import {
   defaultFetcher, FetchyeContext, defaultEqualityChecker, useSubscription,
+// eslint-disable-next-line import/no-unresolved
 } from 'fetchye';
 
 const makeUseFetchyeSelector = ({
