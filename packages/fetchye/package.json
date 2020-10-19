@@ -59,11 +59,13 @@
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
+    "@babel/core": "7.11.6",
     "@babel/plugin-transform-runtime": "^7.11.5",
     "@rollup/plugin-babel": "^5.2.1",
     "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@testing-library/react": "^11.0.4",
+    "babel-preset-amex": "^3.4.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
