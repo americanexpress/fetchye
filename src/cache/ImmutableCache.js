@@ -61,7 +61,7 @@ function reducer(state = iMap({
 const getCacheByKey = (cache = iMap(), key) => {
   const data = cache.getIn(['data', key]);
   const loading = cache.hasIn(['loading', key]);
-  const error = cache.getIn(['error', key]);
+  const error = cache.getIn(['errors', key]);
   return { data, loading, error };
 };
 

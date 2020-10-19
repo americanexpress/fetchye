@@ -1,44 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SimpleCache getCacheByKey should accept a cacheSelector 1`] = `
-Object {
-  "data": Object {},
-  "errors": Object {
-    "def5678": [Error: Fake Error],
-  },
-  "loading": Object {},
-}
-`;
-
-exports[`SimpleCache getCacheByKey should return data error loading 1`] = `
-Object {
-  "data": Object {
-    "body": Object {
-      "fakeData": true,
-    },
-    "ok": true,
-    "status": 200,
-  },
-  "error": undefined,
-  "loading": false,
-}
-`;
-
-exports[`SimpleCache getCacheByKey should return default cacheSelector 1`] = `
-Object {
-  "data": Object {},
-  "errors": Object {
-    "def5678": [Error: Fake Error],
-  },
-  "loading": Object {},
-}
-`;
-
 exports[`SimpleCache getCacheByKey should return empty data error loading if cache undefined 1`] = `
 Object {
   "data": undefined,
   "error": undefined,
   "loading": false,
+}
+`;
+
+exports[`SimpleCache should accept a cacheSelector 1`] = `
+Object {
+  "data": Object {},
+  "errors": Object {
+    "def5678": [Error: Fake Error],
+  },
+  "loading": Object {},
 }
 `;
 
@@ -105,6 +81,16 @@ Object {
       "status": 200,
     },
   },
+  "errors": Object {
+    "def5678": [Error: Fake Error],
+  },
+  "loading": Object {},
+}
+`;
+
+exports[`SimpleCache should return default cacheSelector 1`] = `
+Object {
+  "data": Object {},
   "errors": Object {
     "def5678": [Error: Fake Error],
   },
