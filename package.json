@@ -78,7 +78,7 @@
     "@semantic-release/github": "^7.0.7",
     "@semantic-release/npm": "^7.0.5",
     "@semantic-release/release-notes-generator": "^9.0.1",
-    "@testing-library/react": "^10.4.8",
+    "@testing-library/react": "^11.1.0",
     "amex-jest-preset-react": "^6.1.0",
     "babel-preset-amex": "^3.4.0",
     "core-js-compat": "3.6.5",
@@ -89,7 +89,7 @@
     "jest": "^26.4.0",
     "lockfile-lint": "^4.3.7",
     "react": "16.x.x",
-    "react-dom": "16.x.x",
+    "react-dom": "^16.14.0",
     "react-redux": "7.x.x",
     "redux": "4.x.x",
     "semantic-release": "^17.1.1"
