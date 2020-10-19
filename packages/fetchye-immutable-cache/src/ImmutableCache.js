@@ -22,7 +22,7 @@ import {
   ERROR,
   CLEAR_ERROR,
   ACTION_NAMESPACE,
-// eslint-disable-next-line import/no-extraneous-dependencies
+// eslint-disable-next-line import/no-unresolved
 } from 'fetchye';
 
 function reducer(state = iMap({
