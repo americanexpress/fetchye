@@ -23,6 +23,7 @@ import {
   DELETE_DATA,
   ERROR,
   CLEAR_ERROR,
+  ACTION_NAMESPACE,
 } from '../constants';
 
 export function fetchyeReducer(state = iMap({
@@ -30,8 +31,7 @@ export function fetchyeReducer(state = iMap({
   loading: iSet(),
   data: iMap(),
 }), action) {
-  const [namespace] = action.type.split('/');
-  if (namespace !== '@fetchye') {
+  if (!action.type.startsWith(ACTION_NAMESPACE)) {
     return state;
   }
   switch (action.type) {

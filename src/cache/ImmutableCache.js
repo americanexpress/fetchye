@@ -16,47 +16,8 @@
 
 // Immutable is an optional dependency
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Map as iMap, Set as iSet } from 'immutable';
-import {
-  IS_LOADING,
-  SET_DATA,
-  DELETE_DATA,
-  ERROR,
-  CLEAR_ERROR,
-  ACTION_NAMESPACE,
-} from './constants';
-
-function reducer(state = iMap({
-  errors: iMap(),
-  loading: iSet(),
-  data: iMap(),
-}), action) {
-  if (!action.type.startsWith(ACTION_NAMESPACE)) {
-    return state;
-  }
-  switch (action.type) {
-    case DELETE_DATA:
-      return state.deleteIn(['data', action.hash]);
-    case CLEAR_ERROR:
-      return state.deleteIn(['errors', action.hash]);
-    case ERROR:
-      return state.withMutations(
-        (nextState) => nextState
-          .setIn(['errors', action.hash], action.error)
-          .deleteIn(['loading', action.hash])
-      );
-    case IS_LOADING:
-      return state.updateIn(['loading'], (loading) => loading.add(action.hash));
-    case SET_DATA:
-      return state.withMutations(
-        (nextState) => nextState
-          .deleteIn(['loading', action.hash])
-          .setIn(['data', action.hash], action.value)
-      );
-    default:
-      return state;
-  }
-}
+import { Map as iMap } from 'immutable';
+import reducer from './immutable/reducer';
 
 const getCacheByKey = (cache = iMap(), key) => {
   const data = cache.getIn(['data', key]);
