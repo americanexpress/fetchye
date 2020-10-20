@@ -30,44 +30,44 @@ export function testCacheInterface(CacheFunc) {
   beforeEach(() => {
     store = createStore(cache.reducer, cache.reducer(undefined, { type: '' }));
   });
-  it('should reflect load state', () => {
+  it('reflects load state', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction'], 'abc1234');
     expect(getState()).toMatchSnapshot();
   });
-  it('should reflect load to success state', () => {
+  it('reflects load to success state', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'setAction'], 'abc1234');
     expect(getState()).toMatchSnapshot();
   });
-  it('should reflect load to error state', () => {
+  it('reflects load to error state', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'errorAction'], 'abc1234');
     expect(getState()).toMatchSnapshot();
   });
-  it('should reflect load to success to delete state', () => {
+  it('reflects load to success to delete state', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'setAction', 'deleteAction'], 'abc1234');
     expect(getState()).toMatchSnapshot();
   });
-  it('should reflect load to error to clear errors state', () => {
+  it('reflects load to error to clear errors state', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'errorAction', 'clearErrorsAction'], 'abc1234');
     expect(getState()).toMatchSnapshot();
   });
-  it('should reflect multiple hashes stored', () => {
+  it('reflects multiple hashes stored', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'setAction'], 'abc1234');
     createScenario(dispatch, ['loadingAction', 'errorAction'], 'def5678');
     expect(getState()).toMatchSnapshot();
   });
-  it(`should return default state if unknown ${ACTION_NAMESPACE} action type`, () => {
+  it(`returns default state if unknown ${ACTION_NAMESPACE} action type`, () => {
     const { dispatch, getState } = store;
     dispatch({ type: ACTION_NAMESPACE });
     expect(getState()).toMatchSnapshot();
   });
 
-  it('should accept a cacheSelector', () => {
+  it('accepts a cacheSelector', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'errorAction'], 'def5678');
     const cacheSelector = (state) => state.someSliceOfState;
@@ -75,7 +75,7 @@ export function testCacheInterface(CacheFunc) {
     expect(nextCache.cacheSelector({ someSliceOfState: getState() })).toMatchSnapshot();
   });
 
-  it('should return default cacheSelector', () => {
+  it('returns default cacheSelector', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'errorAction'], 'def5678');
     const nextCache = CacheFunc();
@@ -107,7 +107,7 @@ export function testCacheInterface(CacheFunc) {
       expect(cache.getCacheByKey(getState(), 'def5678').error).toEqual(fakeError);
     });
 
-    it('should return empty data error loading if cache undefined', () => {
+    it('returns empty data error loading if cache undefined', () => {
       expect(cache.getCacheByKey(undefined, 'abc1234')).toMatchSnapshot();
     });
   });

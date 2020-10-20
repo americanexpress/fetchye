@@ -1,14 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SimpleCache getCacheByKey should return empty data error loading if cache undefined 1`] = `
-Object {
-  "data": undefined,
-  "error": undefined,
-  "loading": false,
-}
-`;
-
-exports[`SimpleCache should accept a cacheSelector 1`] = `
+exports[`SimpleCache accepts a cacheSelector 1`] = `
 Object {
   "data": Object {},
   "errors": Object {
@@ -18,7 +10,15 @@ Object {
 }
 `;
 
-exports[`SimpleCache should reflect load state 1`] = `
+exports[`SimpleCache getCacheByKey returns empty data error loading if cache undefined 1`] = `
+Object {
+  "data": undefined,
+  "error": undefined,
+  "loading": false,
+}
+`;
+
+exports[`SimpleCache reflects load state 1`] = `
 Object {
   "data": Object {},
   "errors": Object {},
@@ -28,7 +28,7 @@ Object {
 }
 `;
 
-exports[`SimpleCache should reflect load to error state 1`] = `
+exports[`SimpleCache reflects load to error state 1`] = `
 Object {
   "data": Object {},
   "errors": Object {
@@ -38,7 +38,7 @@ Object {
 }
 `;
 
-exports[`SimpleCache should reflect load to error to clear errors state 1`] = `
+exports[`SimpleCache reflects load to error to clear errors state 1`] = `
 Object {
   "data": Object {},
   "errors": Object {},
@@ -46,7 +46,7 @@ Object {
 }
 `;
 
-exports[`SimpleCache should reflect load to success state 1`] = `
+exports[`SimpleCache reflects load to success state 1`] = `
 Object {
   "data": Object {
     "abc1234": Object {
@@ -62,7 +62,7 @@ Object {
 }
 `;
 
-exports[`SimpleCache should reflect load to success to delete state 1`] = `
+exports[`SimpleCache reflects load to success to delete state 1`] = `
 Object {
   "data": Object {},
   "errors": Object {},
@@ -70,7 +70,7 @@ Object {
 }
 `;
 
-exports[`SimpleCache should reflect multiple hashes stored 1`] = `
+exports[`SimpleCache reflects multiple hashes stored 1`] = `
 Object {
   "data": Object {
     "abc1234": Object {
@@ -88,7 +88,7 @@ Object {
 }
 `;
 
-exports[`SimpleCache should return default cacheSelector 1`] = `
+exports[`SimpleCache returns default cacheSelector 1`] = `
 Object {
   "data": Object {},
   "errors": Object {
@@ -98,7 +98,7 @@ Object {
 }
 `;
 
-exports[`SimpleCache should return default state if unknown @fetchye action type 1`] = `
+exports[`SimpleCache returns default state if unknown @fetchye action type 1`] = `
 Object {
   "data": Object {},
   "errors": Object {},
