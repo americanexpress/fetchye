@@ -34,10 +34,6 @@ jobs:
       run: yarn test:git-history
       env:
         NODE_ENV: production
-    - name: Lockfile Lint Test
-      run: yarn test:lockfile
-      env:
-        NODE_ENV: production
     - name: Lint
       run: yarn lint
       env:

@@ -10,8 +10,7 @@
     "test": "yarn test:unit",
     "test:unit": "jest",
     "test:git-history": "commitlint --from origin/beta --to HEAD",
-    "test:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts registry.yarnpkg.com --validate-https",
-    "posttest": "yarn lint && yarn test:lockfile && yarn test:git-history"
+    "posttest": "yarn lint && yarn test:git-history"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.10.4",
@@ -26,7 +25,6 @@
     "husky": "^4.2.5",
     "jest": "^26.5.2",
     "lerna": "^3.22.1",
-    "lockfile-lint": "^4.3.7",
     "semantic-release": "^17.2.1"
   },
   "husky": {

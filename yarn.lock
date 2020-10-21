@@ -3367,13 +3367,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/lockfile@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@yarnpkg/lockfile@npm:1.1.0"
-  checksum: 76f3f2625334fb4d37881408643b61ae08e1cfcdeb5db3e3e92f626b3535f99e963df8bafe5c07d85aa1dd09a308939eb4d0667ed4a4e93e645417b6af6e9a2f
-  languageName: node
-  linkType: hard
-
 "@zkochan/cmd-shim@npm:^3.1.0":
   version: 3.1.0
   resolution: "@zkochan/cmd-shim@npm:3.1.0"
@@ -6795,7 +6788,6 @@ __metadata:
     husky: ^4.2.5
     jest: ^26.5.2
     lerna: ^3.22.1
-    lockfile-lint: ^4.3.7
     semantic-release: ^17.2.1
   languageName: unknown
   linkType: soft
@@ -9772,31 +9764,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lockfile-lint-api@npm:^5.1.6":
-  version: 5.1.6
-  resolution: "lockfile-lint-api@npm:5.1.6"
-  dependencies:
-    "@yarnpkg/lockfile": ^1.1.0
-    debug: ^4.1.1
-    object-hash: ^2.0.1
-  checksum: 10ecdeb84dd74b1d915abce028c22ad12ac1133f58aad038b32e62aa6dd4d501623a7db00a8e435f208f6a9f20cdabad6a93a1469832eb855d74f25765519c3a
-  languageName: node
-  linkType: hard
-
-"lockfile-lint@npm:^4.3.7":
-  version: 4.3.7
-  resolution: "lockfile-lint@npm:4.3.7"
-  dependencies:
-    cosmiconfig: ^6.0.0
-    debug: ^4.1.1
-    lockfile-lint-api: ^5.1.6
-    yargs: ^15.0.2
-  bin:
-    lockfile-lint: ./bin/lockfile-lint.js
-  checksum: b149adc8b004433ef935d7a72944f2f56185b361ea0500288a959be094499eac9fa8bbb86f855c12d0b5f2ca64d67e6fbc0cd7ed25de052d2e4dc87998c31a61
-  languageName: node
-  linkType: hard
-
 "lockfile@npm:^1.0.4":
   version: 1.0.4
   resolution: "lockfile@npm:1.0.4"
@@ -11186,7 +11153,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-hash@npm:^2.0.1, object-hash@npm:^2.0.3":
+"object-hash@npm:^2.0.3":
   version: 2.0.3
   resolution: "object-hash@npm:2.0.3"
   checksum: e633ae67cd6c5f3cd52af5bef0fe7f25d597b415a6d92a601be0b97a47642908cf333cedfc9e848d25b6c51fd6cf6e64ff6eb3af710eae249a42f6a69ad6b12d
@@ -15433,7 +15400,7 @@ typescript@^3.8.3:
   languageName: node
   linkType: hard
 
-"yargs@npm:^15.0.1, yargs@npm:^15.0.2, yargs@npm:^15.1.0, yargs@npm:^15.4.1":
+"yargs@npm:^15.0.1, yargs@npm:^15.1.0, yargs@npm:^15.4.1":
   version: 15.4.1
   resolution: "yargs@npm:15.4.1"
   dependencies:
