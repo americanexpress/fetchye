@@ -4,9 +4,11 @@ import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
+const inputSrc = 'src/index.js';
+
 export default [
   {
-    input: 'src/index.js',
+    input: inputSrc,
     output: {
       name: 'fetchye-immutable-cache',
       file: pkg.browser,
@@ -23,7 +25,7 @@ export default [
     ],
   },
   {
-    input: 'src/index.js',
+    input: inputSrc,
     output: {
       file: pkg.main,
       format: 'cjs',
@@ -38,7 +40,7 @@ export default [
     ],
   },
   {
-    input: 'src/index.js',
+    input: inputSrc,
     output: {
       file: pkg.module,
       format: 'es',

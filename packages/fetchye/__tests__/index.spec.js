@@ -14,10 +14,10 @@
  * permissions and limitations under the License.
  */
 
-import * as fetchye from '../src';
+import * as fetchye from "../src";
 
-describe('index', () => {
-  it('should return public methods', () => {
+describe("index", () => {
+  it("should return public methods", () => {
     expect(Object.keys(fetchye).sort()).toMatchInlineSnapshot(`
       Array [
         "ACTION_NAMESPACE",
@@ -29,9 +29,14 @@ describe('index', () => {
         "IS_LOADING",
         "SET_DATA",
         "SimpleCache",
+        "clearErrorsAction",
         "defaultEqualityChecker",
         "defaultFetcher",
+        "deleteAction",
+        "errorAction",
+        "loadingAction",
         "makeServerFetchye",
+        "setAction",
         "useFetchye",
         "useSubscription",
       ]

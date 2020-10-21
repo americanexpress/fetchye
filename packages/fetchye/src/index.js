@@ -18,6 +18,7 @@ export * from './useFetchye';
 export * from './makeServerFetchye';
 export * from './FetchyeProvider';
 export * from './constants';
+export * from './actions';
 export { default as defaultFetcher } from './defaultFetcher';
 export { FetchyeContext } from './FetchyeContext';
 export { defaultEqualityChecker } from './defaultEqualityChecker';
