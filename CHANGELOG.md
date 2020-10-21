@@ -1,3 +1,10 @@
+# [1.0.0-beta.3](https://github.com/americanexpress/fetchye/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2020-10-21)
+
+
+### Bug Fixes
+
+* **immitable-cache:** correctly retrieve error ([bd45e4d](https://github.com/americanexpress/fetchye/commit/bd45e4d05d4e76e40f1a13b126d0c475f572f1a8))
+
 # [1.0.0-beta.2](https://github.com/americanexpress/fetchye/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2020-09-25)
 
 
