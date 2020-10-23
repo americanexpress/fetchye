@@ -1,6 +1,6 @@
 {
   "name": "fetchye-redux-provider",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "Redux provider for fetchye.",
   "license": "Apache-2.0",
   "main": "lib/index.cjs.js",
