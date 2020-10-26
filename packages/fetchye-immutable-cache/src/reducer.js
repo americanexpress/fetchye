@@ -23,7 +23,7 @@ import {
   CLEAR_ERROR,
   ACTION_NAMESPACE,
 // eslint-disable-next-line import/no-unresolved
-} from 'fetchye';
+} from 'fetchye-core';
 
 export function fetchyeReducer(state = iMap({
   errors: iMap(),

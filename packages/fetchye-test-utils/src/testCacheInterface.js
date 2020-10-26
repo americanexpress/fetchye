@@ -1,7 +1,22 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createStore } from 'redux';
-import * as actions from '../../fetchye/src/actions';
-import { ACTION_NAMESPACE } from '../../fetchye/src/constants';
+import {
+  loadingAction,
+  setAction,
+  deleteAction,
+  errorAction,
+  clearErrorsAction,
+  ACTION_NAMESPACE,
+  // eslint-disable-next-line import/no-unresolved
+} from 'fetchye-core';
+
+const actions = {
+  loadingAction,
+  setAction,
+  deleteAction,
+  errorAction,
+  clearErrorsAction,
+};
 
 const fakeError = new Error('Fake Error');
 export const createScenario = (dispatch, actionKeys, hash) => {

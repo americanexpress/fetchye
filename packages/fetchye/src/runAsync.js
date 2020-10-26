@@ -14,8 +14,22 @@
  * permissions and limitations under the License.
  */
 
-// eslint-disable-next-line import/no-unresolved
-import * as actions from 'fetchye-core';
+import {
+  loadingAction,
+  setAction,
+  deleteAction,
+  errorAction,
+  clearErrorsAction,
+  // eslint-disable-next-line import/no-unresolved
+} from 'fetchye-core';
+
+const actions = {
+  loadingAction,
+  setAction,
+  deleteAction,
+  errorAction,
+  clearErrorsAction,
+};
 
 export const runAsync = async ({
   dispatch, computedKey, fetcher, fetchClient, options,

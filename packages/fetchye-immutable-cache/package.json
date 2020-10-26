@@ -33,6 +33,7 @@
     "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)"
   ],
   "dependencies": {
+    "fetchye-core": "workspace:*",
     "immutable": "^4.0.0-rc.12"
   },
   "devDependencies": {
@@ -41,7 +42,6 @@
     "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "babel-preset-amex": "^3.4.1",
-    "fetchye-core": "workspace:*",
     "redux": "^4.0.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.28.2",
