@@ -16,9 +16,13 @@
 
 import { createStore } from 'redux';
 import {
-  loadingAction, setAction, deleteAction, errorAction, clearErrorsAction,
-// eslint-disable-next-line import/no-unresolved
-} from 'fetchye';
+  loadingAction,
+  setAction,
+  deleteAction,
+  errorAction,
+  clearErrorsAction,
+  // eslint-disable-next-line import/no-unresolved
+} from 'fetchye-core';
 import reducer from '../src/reducer';
 
 const fakeError = new Error('Fake Error');
@@ -31,7 +35,11 @@ const fakeData = {
 };
 
 const actions = {
-  loadingAction, setAction, deleteAction, errorAction, clearErrorsAction,
+  loadingAction,
+  setAction,
+  deleteAction,
+  errorAction,
+  clearErrorsAction,
 };
 
 const createScenario = (dispatch, actionKeys, hash) => {
@@ -58,9 +66,7 @@ describe('Immutable Reducer', () => {
     expect(getState()).toMatchInlineSnapshot(`
       Immutable.Map {
         "errors": Immutable.Map {},
-        "loading": Immutable.Set [
-          "abc1234",
-        ],
+        "loading": Immutable.Set [],
         "data": Immutable.Map {},
       }
     `);
@@ -72,15 +78,7 @@ describe('Immutable Reducer', () => {
       Immutable.Map {
         "errors": Immutable.Map {},
         "loading": Immutable.Set [],
-        "data": Immutable.Map {
-          "abc1234": Object {
-            "body": Object {
-              "fakeData": true,
-            },
-            "ok": true,
-            "status": 200,
-          },
-        },
+        "data": Immutable.Map {},
       }
     `);
   });
@@ -89,9 +87,7 @@ describe('Immutable Reducer', () => {
     createScenario(dispatch, ['loadingAction', 'errorAction'], 'abc1234');
     expect(getState()).toMatchInlineSnapshot(`
       Immutable.Map {
-        "errors": Immutable.Map {
-          "abc1234": [Error: Fake Error],
-        },
+        "errors": Immutable.Map {},
         "loading": Immutable.Set [],
         "data": Immutable.Map {},
       }
@@ -125,19 +121,9 @@ describe('Immutable Reducer', () => {
     createScenario(dispatch, ['loadingAction', 'errorAction'], 'def5678');
     expect(getState()).toMatchInlineSnapshot(`
       Immutable.Map {
-        "errors": Immutable.Map {
-          "def5678": [Error: Fake Error],
-        },
+        "errors": Immutable.Map {},
         "loading": Immutable.Set [],
-        "data": Immutable.Map {
-          "abc1234": Object {
-            "body": Object {
-              "fakeData": true,
-            },
-            "ok": true,
-            "status": 200,
-          },
-        },
+        "data": Immutable.Map {},
       }
     `);
   });

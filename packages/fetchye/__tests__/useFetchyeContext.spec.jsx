@@ -16,10 +16,20 @@
 
 import React, { useEffect } from 'react';
 import { render } from '@testing-library/react';
-import * as actions from '../src/actions';
-import { useFetchyeContext } from '../src/useFetchyeContext';
+import {
+  useFetchyeContext, loadingAction, setAction, deleteAction, errorAction, clearErrorsAction,
+// eslint-disable-next-line import/no-unresolved
+} from 'fetchye-core';
 
 global.fetch = () => {};
+
+const actions = {
+  loadingAction,
+  setAction,
+  deleteAction,
+  errorAction,
+  clearErrorsAction,
+};
 
 describe('useFetchyeContext', () => {
   it('should return fetchye context shape', () => {

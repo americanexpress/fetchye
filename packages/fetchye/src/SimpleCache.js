@@ -14,8 +14,6 @@
  * permissions and limitations under the License.
  */
 
-// Immutable is an optional dependency
-// eslint-disable-next-line import/no-extraneous-dependencies
 import {
   IS_LOADING,
   SET_DATA,
@@ -23,7 +21,8 @@ import {
   ERROR,
   CLEAR_ERROR,
   ACTION_NAMESPACE,
-} from './constants';
+// eslint-disable-next-line import/no-unresolved
+} from 'fetchye-core';
 
 function reducer(state = {
   errors: {},

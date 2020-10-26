@@ -22,7 +22,7 @@ import { useDispatch, useStore } from 'react-redux';
 import {
   defaultFetcher, FetchyeContext, defaultEqualityChecker, useSubscription,
 // eslint-disable-next-line import/no-unresolved
-} from 'fetchye';
+} from 'fetchye-core';
 
 const makeUseFetchyeSelector = ({
   getCacheByKey, cacheSelector, equalityChecker, subscribe,

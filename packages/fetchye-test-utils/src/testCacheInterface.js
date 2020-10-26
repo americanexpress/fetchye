@@ -1,7 +1,7 @@
-/* eslint-disable jest/no-export */
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { createStore } from 'redux';
-import * as actions from '../../src/actions';
-import { ACTION_NAMESPACE } from '../../src/constants';
+import * as actions from '../../fetchye/src/actions';
+import { ACTION_NAMESPACE } from '../../fetchye/src/constants';
 
 const fakeError = new Error('Fake Error');
 export const createScenario = (dispatch, actionKeys, hash) => {

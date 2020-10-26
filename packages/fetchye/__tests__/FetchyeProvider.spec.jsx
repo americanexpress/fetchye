@@ -16,11 +16,21 @@
 
 import React, { useContext, useEffect } from 'react';
 import { render } from '@testing-library/react';
-import * as actions from '../src/actions';
-import { FetchyeContext } from '../src/FetchyeContext';
+import {
+  FetchyeContext, loadingAction, setAction, deleteAction, errorAction, clearErrorsAction,
+// eslint-disable-next-line import/no-unresolved
+} from 'fetchye-core';
 import { FetchyeProvider } from '../src/FetchyeProvider';
 
 global.fetch = () => {};
+
+const actions = {
+  loadingAction,
+  setAction,
+  deleteAction,
+  errorAction,
+  clearErrorsAction,
+};
 
 describe('FetchyeProvider', () => {
   it('should create fetchye context with global fetch', () => {

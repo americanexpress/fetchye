@@ -18,12 +18,12 @@ import React, {
   useMemo, useReducer, useEffect, useRef,
 } from 'react';
 import PropTypes from 'prop-types';
+import {
+  defaultEqualityChecker, useSubscription, defaultFetcher, FetchyeContext,
+// eslint-disable-next-line import/no-unresolved
+} from 'fetchye-core';
 import SimpleCache from './SimpleCache';
-import { defaultFetcher } from './defaultFetcher';
-import { FetchyeContext } from './FetchyeContext';
-import { defaultEqualityChecker } from './defaultEqualityChecker';
 import useRefReducer from './useRefReducer';
-import useSubscription from './useSubscription';
 
 const makeUseFetchyeSelector = ({
   fetchyeState, subscribe, getCacheByKey, equalityChecker,

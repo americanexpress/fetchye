@@ -6753,6 +6753,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fetchye-core@workspace:*, fetchye-core@workspace:packages/fetchye-core":
+  version: 0.0.0-use.local
+  resolution: "fetchye-core@workspace:packages/fetchye-core"
+  dependencies:
+    "@rollup/plugin-babel": ^5.2.1
+    "@rollup/plugin-commonjs": ^15.1.0
+    "@rollup/plugin-node-resolve": ^9.0.0
+    babel-preset-amex: ^3.4.1
+    create-shared-react-context: ^1.0.3
+    react: ^16.14.0
+    rimraf: ^3.0.2
+    rollup: ^2.32.1
+    rollup-plugin-terser: ^7.0.2
+  languageName: unknown
+  linkType: soft
+
 "fetchye-immutable-cache@workspace:packages/fetchye-immutable-cache":
   version: 0.0.0-use.local
   resolution: "fetchye-immutable-cache@workspace:packages/fetchye-immutable-cache"
@@ -6762,7 +6778,7 @@ __metadata:
     "@rollup/plugin-commonjs": ^15.1.0
     "@rollup/plugin-node-resolve": ^9.0.0
     babel-preset-amex: ^3.4.1
-    fetchye: "*"
+    fetchye-core: "workspace:*"
     immutable: ^4.0.0-rc.12
     redux: ^4.0.5
     rimraf: ^3.0.2
@@ -6803,7 +6819,8 @@ __metadata:
     "@rollup/plugin-node-resolve": ^9.0.0
     "@testing-library/react": ^11.0.4
     babel-preset-amex: ^3.4.1
-    fetchye: "*"
+    fetchye: "workspace:*"
+    fetchye-core: "workspace:*"
     prop-types: ^15.7.2
     react: ^16.13.1
     react-redux: ^7.2.1
@@ -6816,14 +6833,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"fetchye@npm:*":
-  version: 0.0.1
-  resolution: "fetchye@npm:0.0.1"
-  checksum: 85fc43c6732a182079b744f8c8cdd69f9204f41a239926e427590218de005281d3aacea361d3d4b32025a6fbf1edd0e00f2557f5099fda3ad0b387d7ec3026cc
-  languageName: node
-  linkType: hard
+"fetchye-test-utils@workspace:packages/fetchye-test-utils":
+  version: 0.0.0-use.local
+  resolution: "fetchye-test-utils@workspace:packages/fetchye-test-utils"
+  dependencies:
+    redux: ^4.0.5
+  languageName: unknown
+  linkType: soft
 
-"fetchye@workspace:packages/fetchye":
+"fetchye@workspace:*, fetchye@workspace:packages/fetchye":
   version: 0.0.0-use.local
   resolution: "fetchye@workspace:packages/fetchye"
   dependencies:
@@ -6836,6 +6854,7 @@ __metadata:
     "@testing-library/react": ^11.0.4
     babel-preset-amex: ^3.4.1
     create-shared-react-context: ^1.0.3
+    fetchye-core: "workspace:*"
     object-hash: ^2.0.3
     prop-types: ^15.7.2
     react: ^16.13.1
@@ -12303,6 +12322,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react@npm:^16.14.0":
+  version: 16.14.0
+  resolution: "react@npm:16.14.0"
+  dependencies:
+    loose-envify: ^1.1.0
+    object-assign: ^4.1.1
+    prop-types: ^15.6.2
+  checksum: 2769580b22952a52de3b5b2ea0f09cb904030b762d759739f49ab4da0b1f550e5c087ce3728c4be90f423d09481e0c075483c0c30b1ea9c549445c8b12020fd3
+  languageName: node
+  linkType: hard
+
 "read-cmd-shim@npm:^1.0.1, read-cmd-shim@npm:^1.0.5":
   version: 1.0.5
   resolution: "read-cmd-shim@npm:1.0.5"
@@ -13012,6 +13042,20 @@ __metadata:
   bin:
     rollup: dist/bin/rollup
   checksum: c5d8b9d8b19a5213e854132cea54bc4d3c9c3e7b66e994de590032c85ff74193721789b1867595182f91e6b15e9a2caaaca4262840957da9cdc3369940754c86
+  languageName: node
+  linkType: hard
+
+"rollup@npm:^2.32.1":
+  version: 2.32.1
+  resolution: "rollup@npm:2.32.1"
+  dependencies:
+    fsevents: ~2.1.2
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    rollup: dist/bin/rollup
+  checksum: b231dfa7b00c1238cc12eeddb29fb80acc21e74ba2f5a3a97610f1de8381a67e8cc43283a98454caa2a4d0bc3462c87599f0dd61f7ffef17055450647499d614
   languageName: node
   linkType: hard
 

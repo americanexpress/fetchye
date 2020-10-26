@@ -14,7 +14,24 @@
  * permissions and limitations under the License.
  */
 
-export * from './useFetchye';
-export * from './makeServerFetchye';
-export * from './FetchyeProvider';
-export { default as SimpleCache } from './SimpleCache';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useRef } from 'react';
+
+const useSubscription = () => {
+  const subscribers = useRef(new Set());
+  return [
+    function notify() {
+      subscribers.current.forEach((callback) => {
+        callback();
+      });
+    },
+    function subscribe(callback) {
+      subscribers.current.add(callback);
+      return () => {
+        subscribers.current.delete(callback);
+      };
+    },
+  ];
+};
+
+export default useSubscription;

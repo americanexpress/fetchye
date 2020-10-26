@@ -14,10 +14,11 @@
  * permissions and limitations under the License.
  */
 
+// eslint-disable-next-line import/no-unresolved
+import { defaultFetcher } from 'fetchye-core';
 import SimpleCache from './SimpleCache';
 import { runAsync } from './runAsync';
 import { computeKey } from './computeKey';
-import { defaultFetcher } from './defaultFetcher';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
 import { coerceSsrField } from './queryHelpers';
 

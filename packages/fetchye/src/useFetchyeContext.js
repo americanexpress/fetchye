@@ -15,9 +15,9 @@
  */
 
 import { useContext, useReducer } from 'react';
+// eslint-disable-next-line import/no-unresolved
+import { defaultFetcher as libraryFetcher, FetchyeContext } from 'fetchye-core';
 import SimpleCache from './SimpleCache';
-import { FetchyeContext } from './FetchyeContext';
-import { defaultFetcher as libraryFetcher } from './defaultFetcher';
 
 export const useFetchyeContext = (fallbacks = {}) => {
   const {
