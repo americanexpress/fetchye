@@ -16,12 +16,25 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import useSubscription from '../src/useSubscription';
 
-test('should increment counter', () => {
+it('calls the subscriber', () => {
+  const subscriber = jest.fn();
   const { result } = renderHook(() => useSubscription());
-
+  const [notify, subscribe] = result.current;
   act(() => {
-    result.current.subscribe();
+    subscribe(subscriber);
+    notify();
   });
+  expect(subscriber).toHaveBeenCalled();
+});
 
-  expect(result.current.subscribe).toHaveBeenCalled();
+it('does not call the subscriber', () => {
+  const subscriber = jest.fn();
+  const { result } = renderHook(() => useSubscription());
+  const [notify, subscribe] = result.current;
+  act(() => {
+    const removeSubscriber = subscribe(subscriber);
+    removeSubscriber();
+    notify();
+  });
+  expect(subscriber).not.toHaveBeenCalled();
 });
