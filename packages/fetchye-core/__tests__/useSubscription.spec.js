@@ -20,8 +20,8 @@ test('should increment counter', () => {
   const { result } = renderHook(() => useSubscription());
 
   act(() => {
-    result.current.increment();
+    result.current.subscribe();
   });
 
-  expect(result.current.count).toBe(1);
+  expect(result.current.subscribe).toHaveBeenCalled();
 });
