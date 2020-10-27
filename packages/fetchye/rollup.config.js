@@ -27,6 +27,9 @@ export default [
     input: inputSrc,
     output: {
       name: 'fetchye',
+      globals: {
+        react: 'React',
+      },
       file: pkg.browser,
       format: 'umd',
     },

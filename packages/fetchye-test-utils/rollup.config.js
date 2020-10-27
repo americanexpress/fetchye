@@ -27,6 +27,9 @@ export default [
     input: inputSrc,
     output: {
       name: 'fetchye-test-utils',
+      globals: {
+        react: 'React',
+      },
       file: pkg.browser,
       format: 'umd',
     },

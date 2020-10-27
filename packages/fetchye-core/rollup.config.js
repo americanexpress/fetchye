@@ -27,6 +27,9 @@ export default [
     input: inputSrc,
     output: {
       name: 'fetchye-core',
+      globals: {
+        react: 'React',
+      },
       file: pkg.browser,
       format: 'umd',
     },
@@ -73,7 +76,7 @@ export default [
       commonjs(),
       babel({
         babelHelpers: 'runtime',
-        exclude: 'node_modules/**',
+        exclude: '/node_modules/',
         presets: ['amex'],
         plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),

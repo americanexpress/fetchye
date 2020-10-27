@@ -27,6 +27,9 @@ export default [
     input: inputSrc,
     output: {
       name: 'fetchye-redux-provider',
+      globals: {
+        react: 'React',
+      },
       file: pkg.browser,
       format: 'umd',
     },
