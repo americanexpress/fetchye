@@ -26,11 +26,11 @@ export default [
   {
     input: inputSrc,
     output: {
-      name: 'fetchye',
+      name: 'fetchye-core',
       file: pkg.browser,
       format: 'umd',
     },
-    external: ['react'],
+    external: ['react', 'react-dom'],
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
       commonjs(),
@@ -48,7 +48,7 @@ export default [
       file: pkg.main,
       format: 'cjs',
     },
-    external: ['react'],
+    external: ['react', 'react-dom'],
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),
@@ -67,7 +67,7 @@ export default [
       file: pkg.module,
       format: 'es',
     },
-    external: ['react'],
+    external: ['react', 'react-dom'],
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),

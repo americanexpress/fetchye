@@ -13,9 +13,15 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-import { testCacheInterface } from 'fetchye-test-utils';
-import SimpleCache from '../src/SimpleCache';
+import { renderHook, act } from '@testing-library/react-hooks';
+import useSubscription from '../src/useSubscription';
 
-describe('SimpleCache', () => {
-  testCacheInterface(SimpleCache);
+test('should increment counter', () => {
+  const { result } = renderHook(() => useSubscription());
+
+  act(() => {
+    result.current.increment();
+  });
+
+  expect(result.current.count).toBe(1);
 });

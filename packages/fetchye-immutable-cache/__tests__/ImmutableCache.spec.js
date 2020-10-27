@@ -13,8 +13,8 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+import { testCacheInterface } from 'fetchye-test-utils';
 import ImmutableCache from '../src/ImmutableCache';
-import { testCacheInterface } from '../../fetchye/__tests__/__utils__/testCacheInterface';
 
 describe('ImmutableCache', () => {
   testCacheInterface(ImmutableCache);

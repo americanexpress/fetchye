@@ -1297,7 +1297,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.6":
+"@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.5.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.6":
   version: 7.11.2
   resolution: "@babel/runtime@npm:7.11.2"
   dependencies:
@@ -3096,6 +3096,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@testing-library/react-hooks@npm:^3.4.2":
+  version: 3.4.2
+  resolution: "@testing-library/react-hooks@npm:3.4.2"
+  dependencies:
+    "@babel/runtime": ^7.5.4
+    "@types/testing-library__react-hooks": ^3.4.0
+  peerDependencies:
+    react: ">=16.9.0"
+    react-test-renderer: ">=16.9.0"
+  checksum: 25c3d881fe4ba755388b2120f430a8eafe3d057a0056660c831ca52b48c43a919a9f133dfe4f7bfa6d1762060c77c861bbdb057bdc4f049e09b55a8bc33fb2d8
+  languageName: node
+  linkType: hard
+
 "@testing-library/react@npm:^11.0.4":
   version: 11.0.4
   resolution: "@testing-library/react@npm:11.0.4"
@@ -3287,6 +3300,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/prop-types@npm:*":
+  version: 15.7.3
+  resolution: "@types/prop-types@npm:15.7.3"
+  checksum: bd0eab69d5120ad3784d0c9985f902653d5924707a7f2b3702a330e762dfd61b6494954cb54ad0c52b918ffd6f1e7e27c9270e4442bc15250de348596f2f60cb
+  languageName: node
+  linkType: hard
+
+"@types/react-test-renderer@npm:*":
+  version: 16.9.3
+  resolution: "@types/react-test-renderer@npm:16.9.3"
+  dependencies:
+    "@types/react": "*"
+  checksum: 43465f5866e2636170ce8baa519aaccc3fee65bb6a312ce7099a29f88b65d10b0b2db0062e81c9aa26f6cfe17ed879a6963ef84442e57496f588c995b5c713aa
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:*":
+  version: 16.9.53
+  resolution: "@types/react@npm:16.9.53"
+  dependencies:
+    "@types/prop-types": "*"
+    csstype: ^3.0.2
+  checksum: 01c646c8f08306660441a14495e926c0362114da7813c3bc3d4d58b47590ee92274bbbff18f3fafd465a09369daa25982d68ba6628f1080120b62d40ce75ca40
+  languageName: node
+  linkType: hard
+
 "@types/resolve@npm:1.17.1":
   version: 1.17.1
   resolution: "@types/resolve@npm:1.17.1"
@@ -3316,6 +3355,15 @@ __metadata:
   version: 2.0.0
   resolution: "@types/stack-utils@npm:2.0.0"
   checksum: 662312302e07685c99a1c45c6753eb997b31d2af66e646c5937f62d593a63a111289503d0b06a8d1e6f3922b67fc2ed94889d84653a08861a7fee67b81ce5b92
+  languageName: node
+  linkType: hard
+
+"@types/testing-library__react-hooks@npm:^3.4.0":
+  version: 3.4.1
+  resolution: "@types/testing-library__react-hooks@npm:3.4.1"
+  dependencies:
+    "@types/react-test-renderer": "*"
+  checksum: dba2d75c168f6377cb4bbb5443b4238bb0db85271998ef5d9297ee13719df044b0f0af088eb15dca14f8551cee88c6587ce85d9d60f5c7c1e218d50aa63395a5
   languageName: node
   linkType: hard
 
@@ -5278,6 +5326,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"csstype@npm:^3.0.2":
+  version: 3.0.4
+  resolution: "csstype@npm:3.0.4"
+  checksum: 90cd2ff9aced9049010c5c69470b30643761d511b4250f6ce2bbdbab23229822c325fd841be6066a94a9ba800112026e3c046be879cd44a066e8705991cdc700
+  languageName: node
+  linkType: hard
+
 "currently-unhandled@npm:^0.4.1":
   version: 0.4.1
   resolution: "currently-unhandled@npm:0.4.1"
@@ -6760,9 +6815,11 @@ __metadata:
     "@rollup/plugin-babel": ^5.2.1
     "@rollup/plugin-commonjs": ^15.1.0
     "@rollup/plugin-node-resolve": ^9.0.0
+    "@testing-library/react-hooks": ^3.4.2
     babel-preset-amex: ^3.4.1
     create-shared-react-context: ^1.0.3
     react: ^16.14.0
+    react-dom: ^16.14.0
     rimraf: ^3.0.2
     rollup: ^2.32.1
     rollup-plugin-terser: ^7.0.2
@@ -6779,6 +6836,7 @@ __metadata:
     "@rollup/plugin-node-resolve": ^9.0.0
     babel-preset-amex: ^3.4.1
     fetchye-core: "workspace:*"
+    fetchye-test-utils: "workspace:*"
     immutable: ^4.0.0-rc.12
     redux: ^4.0.5
     rimraf: ^3.0.2
@@ -6822,7 +6880,8 @@ __metadata:
     fetchye: "workspace:*"
     fetchye-core: "workspace:*"
     prop-types: ^15.7.2
-    react: ^16.13.1
+    react: ^16.14.0
+    react-dom: ^16.14.0
     react-redux: ^7.2.1
     redux: ^4.0.5
     rimraf: ^3.0.2
@@ -6833,11 +6892,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"fetchye-test-utils@workspace:packages/fetchye-test-utils":
+"fetchye-test-utils@workspace:*, fetchye-test-utils@workspace:packages/fetchye-test-utils":
   version: 0.0.0-use.local
   resolution: "fetchye-test-utils@workspace:packages/fetchye-test-utils"
   dependencies:
+    "@rollup/plugin-babel": ^5.2.1
+    "@rollup/plugin-commonjs": ^15.1.0
+    "@rollup/plugin-node-resolve": ^9.0.0
+    fetchye-core: "workspace:*"
     redux: ^4.0.5
+    rollup: ^2.32.1
+    rollup-plugin-terser: ^7.0.2
   languageName: unknown
   linkType: soft
 
@@ -6855,18 +6920,19 @@ __metadata:
     babel-preset-amex: ^3.4.1
     create-shared-react-context: ^1.0.3
     fetchye-core: "workspace:*"
+    fetchye-test-utils: "workspace:*"
     object-hash: ^2.0.3
     prop-types: ^15.7.2
-    react: ^16.13.1
-    react-dom: ^16.13.1
+    react: ^16.14.0
+    react-dom: ^16.14.0
     react-redux: ^7.2.1
     redux: ^4.0.5
     rimraf: ^3.0.2
     rollup: ^2.28.2
     rollup-plugin-terser: ^7.0.2
   peerDependencies:
-    react: ^16.13.1
-    react-dom: ^16.13.1
+    react: ^16.14.0
+    react-dom: ^16.14.0
   languageName: unknown
   linkType: soft
 
@@ -12255,17 +12321,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^16.13.1":
-  version: 16.13.1
-  resolution: "react-dom@npm:16.13.1"
+"react-dom@npm:^16.14.0":
+  version: 16.14.0
+  resolution: "react-dom@npm:16.14.0"
   dependencies:
     loose-envify: ^1.1.0
     object-assign: ^4.1.1
     prop-types: ^15.6.2
     scheduler: ^0.19.1
   peerDependencies:
-    react: ^16.13.1
-  checksum: fb5c3ad41360c6a8674f33916aa895d05e79d063d31a6963074220c1cda9e07e880799d01670b4ebd570b4d3457584f13cc898b5033a05641e8e801f5611607e
+    react: ^16.14.0
+  checksum: a13558f0e7c6d1a98684214460bcd4b9005500015b5048fb1b0d2856786b8764dbc713e6b078a5b1a56e17866400e1d862183c7a0a513ae8351de11f6f6749d2
   languageName: node
   linkType: hard
 
@@ -12308,17 +12374,6 @@ __metadata:
   peerDependencies:
     react: ^16.13.1
   checksum: e9c3c068d09a4252103eed270635d05897e23cbb86c6f0f74beced9345ed1b94a0fff44f16f97526e6f7a8337669156616e1e02eacb6d7b8f40295c92d91be12
-  languageName: node
-  linkType: hard
-
-"react@npm:^16.13.1":
-  version: 16.13.1
-  resolution: "react@npm:16.13.1"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    prop-types: ^15.6.2
-  checksum: 13dcc9ba8a7521ecc3d7e69998dbc5703ae9515308d06a94a474ad34b42f1fc109372265e924a8c9b11d20fa1828407c290b8f61617c36734c4ca907ae7e5f45
   languageName: node
   linkType: hard
 
