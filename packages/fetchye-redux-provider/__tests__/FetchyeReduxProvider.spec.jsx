@@ -19,7 +19,8 @@ import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
-import { FetchyeContext, SimpleCache } from 'fetchye';
+import { FetchyeContext } from 'fetchye-core';
+import { SimpleCache } from 'fetchye';
 import FetchyeReduxProvider from '../src/FetchyeReduxProvider';
 
 const store = createStore((state) => state, { initialState: {} });
