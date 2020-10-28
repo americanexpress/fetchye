@@ -1,7 +1,7 @@
 {
-  "name": "quick-install",
+  "name": "fetchye-redux-provider",
   "version": "1.0.0",
-  "description": "React example starter project",
+  "description": "Example using fetchye-redux-provider",
   "keywords": [
     "react",
     "starter"
