@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-import { createStore } from "redux";
+import { createStore } from 'redux';
 import {
   loadingAction,
   setAction,
@@ -22,10 +22,10 @@ import {
   errorAction,
   clearErrorsAction,
   // eslint-disable-next-line import/no-unresolved
-} from "fetchye-core";
-import reducer from "../src/reducer";
+} from 'fetchye-core';
+import reducer from '../src/reducer';
 
-const fakeError = new Error("Fake Error");
+const fakeError = new Error('Fake Error');
 const fakeData = {
   status: 200,
   ok: true,
@@ -55,14 +55,14 @@ const createScenario = (dispatch, actionKeys, hash) => {
   });
 };
 
-describe("Immutable Reducer", () => {
+describe('Immutable Reducer', () => {
   let store;
   beforeEach(() => {
-    store = createStore(reducer, reducer(undefined, { type: "" }));
+    store = createStore(reducer, reducer(undefined, { type: '' }));
   });
-  it("should reflect load state", () => {
+  it('should reflect load state', () => {
     const { dispatch, getState } = store;
-    createScenario(dispatch, ["loadingAction"], "abc1234");
+    createScenario(dispatch, ['loadingAction'], 'abc1234');
     expect(getState()).toMatchInlineSnapshot(`
       Immutable.Map {
         "errors": Immutable.Map {},
@@ -73,9 +73,9 @@ describe("Immutable Reducer", () => {
       }
     `);
   });
-  it("should reflect load to success state", () => {
+  it('should reflect load to success state', () => {
     const { dispatch, getState } = store;
-    createScenario(dispatch, ["loadingAction", "setAction"], "abc1234");
+    createScenario(dispatch, ['loadingAction', 'setAction'], 'abc1234');
     expect(getState()).toMatchInlineSnapshot(`
       Immutable.Map {
         "errors": Immutable.Map {},
@@ -92,9 +92,9 @@ describe("Immutable Reducer", () => {
       }
     `);
   });
-  it("should reflect load to error state", () => {
+  it('should reflect load to error state', () => {
     const { dispatch, getState } = store;
-    createScenario(dispatch, ["loadingAction", "errorAction"], "abc1234");
+    createScenario(dispatch, ['loadingAction', 'errorAction'], 'abc1234');
     expect(getState()).toMatchInlineSnapshot(`
       Immutable.Map {
         "errors": Immutable.Map {
@@ -105,9 +105,9 @@ describe("Immutable Reducer", () => {
       }
     `);
   });
-  it("should reflect load to success to delete state", () => {
+  it('should reflect load to success to delete state', () => {
     const { dispatch, getState } = store;
-    createScenario(dispatch, ["loadingAction", "setAction", "deleteAction"], "abc1234");
+    createScenario(dispatch, ['loadingAction', 'setAction', 'deleteAction'], 'abc1234');
     expect(getState()).toMatchInlineSnapshot(`
       Immutable.Map {
         "errors": Immutable.Map {},
@@ -116,9 +116,9 @@ describe("Immutable Reducer", () => {
       }
     `);
   });
-  it("should reflect load to error to clear errors state", () => {
+  it('should reflect load to error to clear errors state', () => {
     const { dispatch, getState } = store;
-    createScenario(dispatch, ["loadingAction", "errorAction", "clearErrorsAction"], "abc1234");
+    createScenario(dispatch, ['loadingAction', 'errorAction', 'clearErrorsAction'], 'abc1234');
     expect(getState()).toMatchInlineSnapshot(`
       Immutable.Map {
         "errors": Immutable.Map {},
@@ -127,10 +127,10 @@ describe("Immutable Reducer", () => {
       }
     `);
   });
-  it("should reflect multiple hashes stored", () => {
+  it('should reflect multiple hashes stored', () => {
     const { dispatch, getState } = store;
-    createScenario(dispatch, ["loadingAction", "setAction"], "abc1234");
-    createScenario(dispatch, ["loadingAction", "errorAction"], "def5678");
+    createScenario(dispatch, ['loadingAction', 'setAction'], 'abc1234');
+    createScenario(dispatch, ['loadingAction', 'errorAction'], 'def5678');
     expect(getState()).toMatchInlineSnapshot(`
       Immutable.Map {
         "errors": Immutable.Map {
@@ -149,9 +149,9 @@ describe("Immutable Reducer", () => {
       }
     `);
   });
-  it("should return default state if unknown @fetchye action type", () => {
+  it('should return default state if unknown @fetchye action type', () => {
     const { dispatch, getState } = store;
-    dispatch({ type: "@fetchye" });
+    dispatch({ type: '@fetchye' });
     expect(getState()).toMatchInlineSnapshot(`
       Immutable.Map {
         "errors": Immutable.Map {},
