@@ -70,7 +70,6 @@ export default [
       file: pkg.module,
       format: 'es',
     },
-    external: ['react', 'react-dom'],
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),
