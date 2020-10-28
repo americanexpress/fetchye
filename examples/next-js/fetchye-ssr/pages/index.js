@@ -1,6 +1,5 @@
 import { Layout } from "../components/Layout";
-import SimpleCache from "fetchye/lib/cache/SimpleCache";
-import { useFetchye, makeServerFetchye } from "fetchye";
+import { useFetchye, makeServerFetchye, SimpleCache } from "fetchye";
 
 const cache = SimpleCache();
 
