@@ -215,7 +215,7 @@ const MyComponent = () => {
 - More steps and dependencies
 
 ```
-npm i -S fetchye redux react-redux immutable redux-immutable
+npm i -S fetchye redux-immutable fetchye-redux-provider fetchye-immutable-cache
 ```
 
 Add the `<FetchyeReduxProvider />` component to your Root Holocron Module:
@@ -224,7 +224,7 @@ Add the `<FetchyeReduxProvider />` component to your Root Holocron Module:
 // ...
 import { combineReducers } from 'redux-immutable';
 import { FetchyeReduxProvider } from 'fetchye-redux-provider';
-import ImmutableCache from 'fetchye-immutable-cache';
+import { ImmutableCache } from 'fetchye-immutable-cache';
 
 // One App requires ImmutableJS based Cache configuration:
 const fetchyeCache = ImmutableCache({
@@ -486,7 +486,7 @@ const BookList = ({ genre }) => {
 
 ```jsx
 import React from 'react';
-import ImmutableCache from 'fetchye-immutable-cache';
+import { ImmutableCache } from 'fetchye-immutable-cache';
 import { useFetchye, makeServerFetchye } from 'fetchye';
 
 const BookList = () => {
@@ -834,7 +834,7 @@ This Cache configuration relies on ImmutableJS data structures to back the `redu
 **Shape**
 
 ```
-import ImmutableCache from 'fetchye-immutable-cache';
+import { ImmutableCache } from 'fetchye-immutable-cache';
 
 const cache = ImmutableCache({
   cacheSelector
