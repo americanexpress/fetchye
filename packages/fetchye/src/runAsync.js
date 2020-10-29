@@ -17,32 +17,22 @@
 import {
   loadingAction,
   setAction,
-  deleteAction,
   errorAction,
-  clearErrorsAction,
   // eslint-disable-next-line import/no-unresolved
 } from 'fetchye-core';
-
-const actions = {
-  loadingAction,
-  setAction,
-  deleteAction,
-  errorAction,
-  clearErrorsAction,
-};
 
 export const runAsync = async ({
   dispatch, computedKey, fetcher, fetchClient, options,
 }) => {
-  dispatch(actions.loadingAction({ hash: computedKey.hash }));
+  dispatch(loadingAction({ hash: computedKey.hash }));
   const {
     payload: data,
     error: requestError,
   } = await fetcher(fetchClient, computedKey.key, options);
   if (!requestError) {
-    dispatch(actions.setAction({ hash: computedKey.hash, value: data }));
+    dispatch(setAction({ hash: computedKey.hash, value: data }));
   } else {
-    dispatch(actions.errorAction({ hash: computedKey.hash, error: requestError }));
+    dispatch(errorAction({ hash: computedKey.hash, error: requestError }));
   }
   return { data, error: requestError };
 };
