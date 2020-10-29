@@ -33,7 +33,7 @@ export default [
       file: pkg.browser,
       format: 'umd',
     },
-    external: ['react', 'react-dom'],
+    external: ['react', 'react-dom', 'react-redux'],
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
       commonjs(),
@@ -51,7 +51,7 @@ export default [
       file: pkg.main,
       format: 'cjs',
     },
-    external: ['react', 'react-dom'],
+    external: ['react', 'react-dom', 'react-redux'],
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),
@@ -69,7 +69,7 @@ export default [
       file: pkg.module,
       format: 'es',
     },
-    external: ['react', 'react-dom'],
+    external: ['react', 'react-dom', 'react-redux'],
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),
