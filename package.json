@@ -12,7 +12,10 @@
     "test:git-history": "commitlint --from origin/beta --to HEAD",
     "test:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts registry.yarnpkg.com --validate-https",
     "posttest": "yarn lint && yarn test:git-history && yarn test:lockfile",
-    "postinstall": "yarn build"
+    "postinstall": "yarn build",
+    "lerna:version": "lerna version",
+    "lerna:publish": "lerna publish from-package --yes",
+    "lerna:deploy": "node lernaDeploy.js"
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx": "^7.12.1",

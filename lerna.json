@@ -6,15 +6,8 @@
   ],
   "command": {
     "version": {
-      "exact": true
-    },
-    "publish": {
-      "npmClient": "npm",
-      "allowBranch": [
-        "main",
-        "canary"
-      ],
-      "registry": "https://registry.npmjs.org/"
+      "conventionalCommits": true,
+      "allowBranch": "chore/release-*"
     }
   },
   "version": "1.0.0-beta.3"

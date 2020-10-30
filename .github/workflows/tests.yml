@@ -33,6 +33,6 @@ jobs:
     - name: Git History Test
       run: yarn test:git-history
     - name: Lockfile Lint Test
-      run: yarn test:lockfile-lint
+      run: yarn test:lockfile
     - name: Lint
       run: yarn lint
