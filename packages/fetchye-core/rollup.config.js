@@ -38,9 +38,10 @@ export default [
       nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
       commonjs(),
       babel({
-        babelHelpers: 'bundled',
+        babelHelpers: 'runtime',
         exclude: 'node_modules/**',
         presets: [['amex', { 'preset-env': { modules: false } }]],
+        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),
       terser(),
     ],
@@ -70,7 +71,7 @@ export default [
       file: pkg.module,
       format: 'es',
     },
-    // external: ['react', 'react-dom'],
+    external: ['react', 'react-dom'],
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),

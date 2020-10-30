@@ -34,12 +34,14 @@ export default [
       format: 'umd',
     },
     plugins: [
-      babel({
-        babelHelpers: 'bundled',
-        exclude: 'node_modules/**',
-      }),
       nodeResolve({ browser: true }),
       commonjs(),
+      babel({
+        babelHelpers: 'runtime',
+        exclude: 'node_modules/**',
+        presets: [['amex', { 'preset-env': { modules: false } }]],
+        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
+      }),
       terser(),
     ],
   },
@@ -50,11 +52,14 @@ export default [
       format: 'cjs',
     },
     plugins: [
-      babel({
-        babelHelpers: 'bundled',
-        exclude: 'node_modules/**',
-      }),
       nodeResolve(),
+      commonjs(),
+      babel({
+        babelHelpers: 'runtime',
+        exclude: 'node_modules/**',
+        presets: [['amex', { 'preset-env': { modules: false } }]],
+        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
+      }),
       terser(),
     ],
   },
@@ -65,11 +70,14 @@ export default [
       format: 'es',
     },
     plugins: [
-      babel({
-        babelHelpers: 'bundled',
-        exclude: 'node_modules/**',
-      }),
       nodeResolve(),
+      commonjs(),
+      babel({
+        babelHelpers: 'runtime',
+        exclude: 'node_modules/**',
+        presets: [['amex', { 'preset-env': { modules: false } }]],
+        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
+      }),
       terser(),
     ],
   },

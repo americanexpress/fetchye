@@ -38,9 +38,10 @@ export default [
       nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
       commonjs(),
       babel({
-        babelHelpers: 'bundled',
+        babelHelpers: 'runtime',
         exclude: 'node_modules/**',
-        presets: ['amex'],
+        presets: [['amex', { 'preset-env': { modules: false } }]],
+        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),
       terser(),
     ],
@@ -58,8 +59,8 @@ export default [
       babel({
         babelHelpers: 'runtime',
         exclude: 'node_modules/**',
-        presets: ['amex'],
-        plugins: [['@babel/plugin-transform-runtime', { useESModules: false }]],
+        presets: [['amex', { 'preset-env': { modules: false } }]],
+        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),
       terser(),
     ],
@@ -77,7 +78,7 @@ export default [
       babel({
         babelHelpers: 'runtime',
         exclude: 'node_modules/**',
-        presets: ['amex'],
+        presets: [['amex', { 'preset-env': { modules: false } }]],
         plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),
       terser(),
