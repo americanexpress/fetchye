@@ -20,7 +20,7 @@ import {
   FetchyeContext, loadingAction, setAction, deleteAction, errorAction, clearErrorsAction,
 // eslint-disable-next-line import/no-unresolved
 } from 'fetchye-core';
-import { FetchyeProvider } from '../src/FetchyeProvider';
+import FetchyeProvider from '../src/FetchyeProvider';
 
 global.fetch = () => {};
 

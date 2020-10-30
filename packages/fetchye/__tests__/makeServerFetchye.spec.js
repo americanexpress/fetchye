@@ -15,7 +15,7 @@
  */
 
 import { createStore } from 'redux';
-import { makeServerFetchye } from '../src/makeServerFetchye';
+import makeServerFetchye from '../src/makeServerFetchye';
 import SimpleCache from '../src/SimpleCache';
 
 const cache = SimpleCache();
