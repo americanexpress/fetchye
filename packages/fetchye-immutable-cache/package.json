@@ -11,7 +11,7 @@
     "clean": "rimraf es",
     "prebuild": "yarn clean",
     "build:rollup": "rollup -c",
-    "build": "babel --extensions .js ./src --out-dir es"
+    "build": "babel --extensions .js,.jsx ./src --out-dir es"
   },
   "keywords": [
     "fetchye-immutable-cache",

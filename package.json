@@ -15,6 +15,7 @@
     "postinstall": "yarn workspaces run build"
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.12.1",
     "@babel/polyfill": "^7.10.4",
     "@commitlint/cli": "^9.1.1",
     "@commitlint/config-conventional": "^9.1.1",
