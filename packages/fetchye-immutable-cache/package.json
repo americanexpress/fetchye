@@ -3,16 +3,15 @@
   "version": "1.0.0-beta.3",
   "description": "Immutable cache library to use with fetchye.",
   "license": "Apache-2.0",
-  "main": "lib/index.cjs.js",
-  "module": "lib/index.esm.js",
-  "browser": "lib/index.umd.js",
+  "main": "es/index.js",
   "files": [
-    "lib"
+    "es"
   ],
   "scripts": {
-    "clean": "rimraf lib",
+    "clean": "rimraf es",
     "prebuild": "yarn clean",
-    "build": "rollup -c"
+    "build:rollup": "rollup -c",
+    "build": "babel --extensions .js ./src --out-dir es"
   },
   "keywords": [
     "fetchye-immutable-cache",
@@ -37,6 +36,7 @@
     "immutable": "^4.0.0-rc.12"
   },
   "devDependencies": {
+    "@babel/cli": "^7.12.1",
     "@babel/core": "7.11.6",
     "@rollup/plugin-babel": "^5.2.1",
     "@rollup/plugin-commonjs": "^15.1.0",

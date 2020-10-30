@@ -15,6 +15,7 @@ node_modules
 
 # build
 lib
+es
 .webpack-stats*
 bundle.integrity.manifest.json
 .build-cache
