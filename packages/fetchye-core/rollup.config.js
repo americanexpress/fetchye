@@ -33,14 +33,14 @@ export default [
       file: pkg.browser,
       format: 'umd',
     },
-    external: ['react', 'react-dom'],
+    external: ['react'],
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
       commonjs(),
       babel({
         babelHelpers: 'bundled',
         exclude: 'node_modules/**',
-        presets: ['amex'],
+        presets: [['amex', { 'preset-env': { modules: false } }]],
       }),
       terser(),
     ],
@@ -58,8 +58,8 @@ export default [
       babel({
         babelHelpers: 'runtime',
         exclude: 'node_modules/**',
-        presets: ['amex'],
-        plugins: [['@babel/plugin-transform-runtime', { useESModules: false }]],
+        presets: [['amex', { 'preset-env': { modules: false } }]],
+        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),
       terser(),
     ],
@@ -70,13 +70,14 @@ export default [
       file: pkg.module,
       format: 'es',
     },
+    external: ['react', 'react-dom'],
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),
       babel({
         babelHelpers: 'runtime',
         exclude: '/node_modules/',
-        presets: ['amex'],
+        presets: [['amex', { 'preset-env': { modules: false } }]],
         plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),
       terser(),

@@ -27,7 +27,7 @@ const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders ===
   ? value || initialValue
   : value);
 
-export const useFetchye = (
+const useFetchye = (
   key,
   { mapOptionsToKey = (options) => options, ...options } = { },
   fetcher

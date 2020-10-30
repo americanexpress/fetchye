@@ -14,7 +14,14 @@
  * permissions and limitations under the License.
  */
 
-export * from './useFetchye';
-export * from './makeServerFetchye';
-export * from './FetchyeProvider';
-export { default as SimpleCache } from './SimpleCache';
+import useFetchye from './useFetchye';
+import makeServerFetchye from './makeServerFetchye';
+import FetchyeProvider from './FetchyeProvider';
+import SimpleCache from './SimpleCache';
+
+export {
+  useFetchye,
+  makeServerFetchye,
+  FetchyeProvider,
+  SimpleCache,
+};

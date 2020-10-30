@@ -53,7 +53,7 @@ const makeUseFetchyeSelector = ({
   return selectorValue;
 };
 
-export const FetchyeProvider = ({
+const FetchyeProvider = ({
   cache = SimpleCache(),
   fetcher = defaultFetcher,
   equalityChecker = defaultEqualityChecker,
@@ -95,3 +95,5 @@ FetchyeProvider.propTypes = {
   fetcher: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
+
+export default FetchyeProvider;

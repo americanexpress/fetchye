@@ -98,10 +98,11 @@ const getCacheByKey = (cache = {}, key) => {
   return { data, loading, error };
 };
 
-export default function SimpleCache({ cacheSelector = (state) => state } = {}) {
+function SimpleCache({ cacheSelector = (state) => state } = {}) {
   return {
     getCacheByKey,
     reducer,
     cacheSelector,
   };
 }
+export default SimpleCache;

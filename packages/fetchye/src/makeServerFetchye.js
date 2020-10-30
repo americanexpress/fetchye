@@ -22,7 +22,7 @@ import { computeKey } from './computeKey';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
 import { coerceSsrField } from './queryHelpers';
 
-export const makeServerFetchye = ({
+const makeServerFetchye = ({
   cache = SimpleCache(),
   store: { getState, dispatch } = {},
   fetchClient,
