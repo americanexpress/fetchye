@@ -867,7 +867,7 @@ by hash key.
 **Shape**
 
 ```
-import { IS_LOADING } from 'fetchye';
+import { IS_LOADING } from 'fetchye-core';
 ```
 
 ```
@@ -891,7 +891,7 @@ field and transition away from loading state by hash key.
 **Shape**
 
 ```
-import { SET_DATA } from 'fetchye';
+import { SET_DATA } from 'fetchye-core';
 ```
 
 ```
@@ -916,7 +916,7 @@ An event signaling a state transition inside a reducer to remove the data field 
 **Shape**
 
 ```
-import { DELETE_DATA } from 'fetchye';
+import { DELETE_DATA } from 'fetchye-core';
 ```
 
 ```
@@ -939,7 +939,7 @@ An event signaling a state transition inside a reducer to insert an error and tr
 **Shape**
 
 ```
-import { ERROR } from 'fetchye';
+import { ERROR } from 'fetchye-core';
 ```
 
 ```
@@ -964,7 +964,7 @@ An event signaling a state transition inside a reducer to remove an error by has
 **Shape**
 
 ```
-import { CLEAR_ERROR } from 'fetchye';
+import { CLEAR_ERROR } from 'fetchye-core';
 ```
 
 ```
