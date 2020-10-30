@@ -1,8 +1,8 @@
 import React from "react";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
-import { FetchyeReduxProvider } from "fetchye/lib/FetchyeReduxProvider";
-import SimpleCache from "fetchye/lib/cache/SimpleCache";
+import { FetchyeReduxProvider } from "fetchye-redux-provider";
+import { SimpleCache } from "fetchye";
 import Profile from "./Profile";
 import "./styles.css";
 

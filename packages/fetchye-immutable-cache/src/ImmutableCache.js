@@ -14,21 +14,20 @@
  * permissions and limitations under the License.
  */
 
-module.exports = {
-  preset: 'amex-jest-preset-react',
-  setupFilesAfterEnv: [
-    './test-setup.js',
-  ],
-  snapshotSerializers: [],
-  testMatch: [
-    '**/__tests__/*.spec.{js,jsx}',
-  ],
-  collectCoverageFrom: [
-    'packages/*/src/*.{js,jsx}',
-  ],
-  moduleNameMapper: {
-    '^fetchye-redux-provider$': '<rootDir>/packages/fetchye-redux-provider/src/index.js',
-    '^fetchye$': '<rootDir>/packages/fetchye/src/index.js',
-  },
-  coveragePathIgnorePatterns: ['packages/fetchye-test-utils/src/testCacheInterface.js'],
+import { Map as iMap } from 'immutable';
+import reducer from './reducer';
+
+const getCacheByKey = (cache = iMap(), key) => {
+  const data = cache.getIn(['data', key]);
+  const loading = cache.hasIn(['loading', key]);
+  const error = cache.getIn(['errors', key]);
+  return { data, loading, error };
 };
+
+export default function ImmutableCache({ cacheSelector = (state) => state } = {}) {
+  return {
+    getCacheByKey,
+    reducer,
+    cacheSelector,
+  };
+}

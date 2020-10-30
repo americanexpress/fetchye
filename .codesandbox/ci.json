@@ -1,4 +1,5 @@
 {
+  "packages": ["packages/*"],
   "sandboxes": [
     "/examples/create-react-app/quick-install",
     "/examples/create-react-app/fetchye-provider-install",

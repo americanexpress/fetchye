@@ -14,21 +14,14 @@
  * permissions and limitations under the License.
  */
 
-module.exports = {
-  preset: 'amex-jest-preset-react',
-  setupFilesAfterEnv: [
-    './test-setup.js',
-  ],
-  snapshotSerializers: [],
-  testMatch: [
-    '**/__tests__/*.spec.{js,jsx}',
-  ],
-  collectCoverageFrom: [
-    'packages/*/src/*.{js,jsx}',
-  ],
-  moduleNameMapper: {
-    '^fetchye-redux-provider$': '<rootDir>/packages/fetchye-redux-provider/src/index.js',
-    '^fetchye$': '<rootDir>/packages/fetchye/src/index.js',
-  },
-  coveragePathIgnorePatterns: ['packages/fetchye-test-utils/src/testCacheInterface.js'],
-};
+import createSharedReactContext from 'create-shared-react-context';
+import { SHARED_CONTEXT_ID } from '../src/FetchyeContext';
+
+jest.mock('create-shared-react-context', () => jest.fn());
+
+describe('FetchyeContext', () => {
+  it('is called with SHARED_CONTEXT_ID', () => {
+    expect(createSharedReactContext).toHaveBeenCalledWith(null, SHARED_CONTEXT_ID);
+    expect(createSharedReactContext).toMatchSnapshot();
+  });
+});

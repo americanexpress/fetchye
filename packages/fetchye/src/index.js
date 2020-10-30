@@ -14,21 +14,14 @@
  * permissions and limitations under the License.
  */
 
-module.exports = {
-  preset: 'amex-jest-preset-react',
-  setupFilesAfterEnv: [
-    './test-setup.js',
-  ],
-  snapshotSerializers: [],
-  testMatch: [
-    '**/__tests__/*.spec.{js,jsx}',
-  ],
-  collectCoverageFrom: [
-    'packages/*/src/*.{js,jsx}',
-  ],
-  moduleNameMapper: {
-    '^fetchye-redux-provider$': '<rootDir>/packages/fetchye-redux-provider/src/index.js',
-    '^fetchye$': '<rootDir>/packages/fetchye/src/index.js',
-  },
-  coveragePathIgnorePatterns: ['packages/fetchye-test-utils/src/testCacheInterface.js'],
+import useFetchye from './useFetchye';
+import makeServerFetchye from './makeServerFetchye';
+import FetchyeProvider from './FetchyeProvider';
+import SimpleCache from './SimpleCache';
+
+export {
+  useFetchye,
+  makeServerFetchye,
+  FetchyeProvider,
+  SimpleCache,
 };

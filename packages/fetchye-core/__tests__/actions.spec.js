@@ -14,21 +14,27 @@
  * permissions and limitations under the License.
  */
 
-module.exports = {
-  preset: 'amex-jest-preset-react',
-  setupFilesAfterEnv: [
-    './test-setup.js',
-  ],
-  snapshotSerializers: [],
-  testMatch: [
-    '**/__tests__/*.spec.{js,jsx}',
-  ],
-  collectCoverageFrom: [
-    'packages/*/src/*.{js,jsx}',
-  ],
-  moduleNameMapper: {
-    '^fetchye-redux-provider$': '<rootDir>/packages/fetchye-redux-provider/src/index.js',
-    '^fetchye$': '<rootDir>/packages/fetchye/src/index.js',
+import * as actions from '../src/actions';
+
+const fakeHash = 'abc1234';
+const fakeError = new Error('Fake Error');
+const fakeData = {
+  status: 200,
+  ok: true,
+  body: {
+    fakeData: true,
   },
-  coveragePathIgnorePatterns: ['packages/fetchye-test-utils/src/testCacheInterface.js'],
 };
+describe('Actions', () => {
+  Object.keys(actions)
+    .forEach((action) => {
+      test(`${action} should have correct shape`, () => {
+        const actionCreator = actions[action];
+        expect(actionCreator({
+          hash: fakeHash,
+          error: fakeError,
+          value: fakeData,
+        })).toMatchSnapshot();
+      });
+    });
+});

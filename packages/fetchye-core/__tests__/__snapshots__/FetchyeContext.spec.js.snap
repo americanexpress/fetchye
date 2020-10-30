@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FetchyeContext is called with SHARED_CONTEXT_ID 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      null,
+      "FetchyeContext",
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;

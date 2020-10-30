@@ -14,21 +14,23 @@
  * permissions and limitations under the License.
  */
 
-module.exports = {
-  preset: 'amex-jest-preset-react',
-  setupFilesAfterEnv: [
-    './test-setup.js',
-  ],
-  snapshotSerializers: [],
-  testMatch: [
-    '**/__tests__/*.spec.{js,jsx}',
-  ],
-  collectCoverageFrom: [
-    'packages/*/src/*.{js,jsx}',
-  ],
-  moduleNameMapper: {
-    '^fetchye-redux-provider$': '<rootDir>/packages/fetchye-redux-provider/src/index.js',
-    '^fetchye$': '<rootDir>/packages/fetchye/src/index.js',
-  },
-  coveragePathIgnorePatterns: ['packages/fetchye-test-utils/src/testCacheInterface.js'],
+import { useRef } from 'react';
+
+const useSubscription = () => {
+  const subscribers = useRef(new Set());
+  return [
+    function notify() {
+      subscribers.current.forEach((callback) => {
+        callback();
+      });
+    },
+    function subscribe(callback) {
+      subscribers.current.add(callback);
+      return () => {
+        subscribers.current.delete(callback);
+      };
+    },
+  ];
 };
+
+export default useSubscription;
