@@ -1,6 +1,6 @@
 {
   "name": "fetchye-test-utils",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Core components of the Fetchye library",
   "license": "Apache-2.0",
   "main": "lib/index.cjs.js",
@@ -28,6 +28,8 @@
   ],
   "peerDependencies": {
     "fetchye-core": "1.0.0-beta.3"
+  "dependencies": {
+    "fetchye-core": "^1.0.0-beta.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",

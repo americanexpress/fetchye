@@ -13,7 +13,11 @@
     "test:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts registry.yarnpkg.com --validate-https",
     "posttest": "yarn lint && yarn test:git-history && yarn test:lockfile",
     "postinstall": "yarn workspaces run build",
-    "packit": "find ./packages/* -type d -name fetchye\\* | xargs -L1 bash -c 'cd \"$0\" && yarn build && yarn pack'"
+    "packit": "find ./packages/* -type d -name fetchye\\* | xargs -L1 bash -c 'cd \"$0\" && yarn build && yarn pack'",
+    "lerna:beta": "lerna version prerelease --preid beta --no-push",
+    "lerna:version": "lerna version",
+    "lerna:publish": "lerna publish from-package --yes",
+    "lerna:deploy": "node lernaDeploy.js"
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx": "^7.12.1",
@@ -28,8 +32,7 @@
     "husky": "^4.2.5",
     "jest": "^26.5.2",
     "lerna": "^3.22.1",
-    "lockfile-lint": "^4.3.7",
-    "semantic-release": "^17.2.1"
+    "lockfile-lint": "^4.3.7"
   },
   "husky": {
     "hooks": {
