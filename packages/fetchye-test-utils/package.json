@@ -26,7 +26,7 @@
     "Nelly Kiboi <Nelly.J.Kiboi@aexp.com> (https://github.com/nellyk)",
     "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)"
   ],
-  "dependencies": {
+  "peerDependencies": {
     "fetchye-core": "^1.0.0-beta.4"
   },
   "devDependencies": {

@@ -21,39 +21,40 @@ import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 const inputSrc = 'src/index.js';
+const external = ['react', 'react-dom', 'react-redux', 'fetchye-core', 'fetchye'];
 
 export default [
-  {
-    input: inputSrc,
-    output: {
-      name: 'fetchye-redux-provider',
-      globals: {
-        react: 'React',
-        'react-redux': 'ReactRedux',
-      },
-      file: pkg.browser,
-      format: 'umd',
-    },
-    external: ['react', 'react-dom', 'react-redux'],
-    plugins: [
-      nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
-      commonjs(),
-      babel({
-        babelHelpers: 'runtime',
-        exclude: 'node_modules/**',
-        presets: [['amex', { 'preset-env': { modules: false } }]],
-        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
-      }),
-      terser(),
-    ],
-  },
+  // {
+  //   input: inputSrc,
+  //   output: {
+  //     name: 'fetchye-redux-provider',
+  //     globals: {
+  //       react: 'React',
+  //       'react-redux': 'ReactRedux',
+  //     },
+  //     file: pkg.browser,
+  //     format: 'umd',
+  //   },
+  //   external,
+  //   plugins: [
+  //     nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
+  //     commonjs(),
+  //     babel({
+  //       babelHelpers: 'runtime',
+  //       exclude: 'node_modules/**',
+  //       presets: [['amex', { 'preset-env': { modules: false } }]],
+  //       plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
+  //     }),
+  //     terser(),
+  //   ],
+  // },
   {
     input: inputSrc,
     output: {
       file: pkg.main,
       format: 'cjs',
     },
-    external: ['react', 'react-dom', 'react-redux'],
+    external,
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),
@@ -72,7 +73,7 @@ export default [
       file: pkg.module,
       format: 'es',
     },
-    external: ['react', 'react-dom', 'react-redux'],
+    external,
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),

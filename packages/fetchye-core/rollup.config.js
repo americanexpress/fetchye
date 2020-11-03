@@ -23,29 +23,29 @@ import pkg from './package.json';
 const inputSrc = 'src/index.js';
 
 export default [
-  {
-    input: inputSrc,
-    output: {
-      name: 'fetchye-core',
-      globals: {
-        react: 'React',
-      },
-      file: pkg.browser,
-      format: 'umd',
-    },
-    external: ['react'],
-    plugins: [
-      nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
-      commonjs(),
-      babel({
-        babelHelpers: 'runtime',
-        exclude: 'node_modules/**',
-        presets: [['amex', { 'preset-env': { modules: false } }]],
-        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
-      }),
-      terser(),
-    ],
-  },
+  // {
+  //   input: inputSrc,
+  //   output: {
+  //     name: 'fetchye-core',
+  //     globals: {
+  //       react: 'React',
+  //     },
+  //     file: pkg.browser,
+  //     format: 'umd',
+  //   },
+  //   external: ['react'],
+  //   plugins: [
+  //     nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
+  //     commonjs(),
+  //     babel({
+  //       babelHelpers: 'runtime',
+  //       exclude: 'node_modules/**',
+  //       presets: [['amex', { 'preset-env': { modules: false } }]],
+  //       plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
+  //     }),
+  //     terser(),
+  //   ],
+  // },
   {
     input: inputSrc,
     output: {

@@ -21,43 +21,46 @@ import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 const inputSrc = 'src/index.js';
+const external = ['react', 'react-dom'];
+// const globals = {
+//   react: 'React',
+// };
 
 export default [
-  {
-    input: inputSrc,
-    output: {
-      name: 'fetchye',
-      globals: {
-        react: 'React',
-      },
-      file: pkg.browser,
-      format: 'umd',
-    },
-    external: ['react', 'react-dom'],
-    plugins: [
-      nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
-      commonjs(),
-      babel({
-        babelHelpers: 'runtime',
-        exclude: 'node_modules/**',
-        presets: [['amex', { 'preset-env': { modules: false } }]],
-        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
-      }),
-      terser(),
-    ],
-  },
+  // {
+  //   input: inputSrc,
+  //   output: {
+  //     name: 'fetchye',
+  //     globals,
+  //     file: pkg.browser,
+  //     format: 'umd',
+  //   },
+  //   external,
+  //   plugins: [
+  //     nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
+  //     commonjs(),
+  //     babel({
+  //       babelHelpers: 'runtime',
+  //       exclude: 'node_modules/**',
+  //       presets: [['amex', { 'preset-env': { modules: false } }]],
+  //       plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
+  //     }),
+  //     terser(),
+  //   ],
+  // },
   {
     input: inputSrc,
     output: {
       file: pkg.main,
       format: 'cjs',
     },
-    external: ['react', 'react-dom'],
+    external,
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),
       babel({
         babelHelpers: 'runtime',
+        babelrc: false,
         exclude: 'node_modules/**',
         presets: [['amex', { 'preset-env': { modules: false } }]],
         plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
@@ -71,12 +74,13 @@ export default [
       file: pkg.module,
       format: 'es',
     },
-    external: ['react', 'react-dom'],
+    external,
     plugins: [
       nodeResolve({ extensions: ['.js', '.jsx'] }),
       commonjs(),
       babel({
         babelHelpers: 'runtime',
+        babelrc: false,
         exclude: 'node_modules/**',
         presets: [['amex', { 'preset-env': { modules: false } }]],
         plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
