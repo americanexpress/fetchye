@@ -21,36 +21,15 @@ import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 const inputSrc = 'src/index.js';
-
+const external = ['fetchye-core'];
 export default [
-  {
-    input: inputSrc,
-    output: {
-      name: 'fetchye-test-utils',
-      globals: {
-        react: 'React',
-      },
-      file: pkg.browser,
-      format: 'umd',
-    },
-    plugins: [
-      nodeResolve({ browser: true }),
-      commonjs(),
-      babel({
-        babelHelpers: 'runtime',
-        exclude: 'node_modules/**',
-        presets: [['amex', { 'preset-env': { modules: false } }]],
-        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
-      }),
-      terser(),
-    ],
-  },
   {
     input: inputSrc,
     output: {
       file: pkg.main,
       format: 'cjs',
     },
+    external,
     plugins: [
       nodeResolve(),
       commonjs(),
@@ -69,6 +48,7 @@ export default [
       file: pkg.module,
       format: 'es',
     },
+    external,
     plugins: [
       nodeResolve(),
       commonjs(),

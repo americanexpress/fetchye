@@ -5,7 +5,6 @@
   "license": "Apache-2.0",
   "main": "lib/index.cjs.js",
   "module": "lib/index.esm.js",
-  "browser": "lib/index.umd.js",
   "files": [
     "lib"
   ],

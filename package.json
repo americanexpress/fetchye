@@ -12,7 +12,8 @@
     "test:git-history": "commitlint --from origin/beta --to HEAD",
     "test:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts registry.yarnpkg.com --validate-https",
     "posttest": "yarn lint && yarn test:git-history && yarn test:lockfile",
-    "postinstall": "yarn workspaces run build"
+    "postinstall": "yarn workspaces run build",
+    "packit": "find ./packages/* -type d -name fetchye\\* | xargs -L1 bash -c 'cd \"$0\" && yarn build && yarn pack'"
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx": "^7.12.1",
