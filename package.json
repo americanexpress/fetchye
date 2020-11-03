@@ -13,6 +13,7 @@
     "test:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts registry.yarnpkg.com --validate-https",
     "posttest": "yarn lint && yarn test:git-history && yarn test:lockfile",
     "postinstall": "yarn build",
+    "lerna:beta": "lerna version prerelease --preid beta --no-push",
     "lerna:version": "lerna version",
     "lerna:publish": "lerna publish from-package --yes",
     "lerna:deploy": "node lernaDeploy.js"
