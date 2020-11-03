@@ -64,26 +64,26 @@ export default [
         presets: [['amex', { 'preset-env': { modules: false } }]],
         plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),
-      terser(),
+      // terser(),
     ],
   },
-  {
-    input: inputSrc,
-    output: {
-      file: pkg.module,
-      format: 'es',
-    },
-    external,
-    plugins: [
-      nodeResolve({ extensions: ['.js', '.jsx'] }),
-      commonjs(),
-      babel({
-        babelHelpers: 'runtime',
-        exclude: 'node_modules/**',
-        presets: [['amex', { 'preset-env': { modules: false } }]],
-        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
-      }),
-      terser(),
-    ],
-  },
+  // {
+  //   input: inputSrc,
+  //   output: {
+  //     file: pkg.module,
+  //     format: 'es',
+  //   },
+  //   external,
+  //   plugins: [
+  //     nodeResolve({ extensions: ['.js', '.jsx'] }),
+  //     commonjs(),
+  //     babel({
+  //       babelHelpers: 'runtime',
+  //       exclude: 'node_modules/**',
+  //       presets: [['amex', { 'preset-env': { modules: false } }]],
+  //       plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
+  //     }),
+  //     terser(),
+  //   ],
+  // },
 ];
