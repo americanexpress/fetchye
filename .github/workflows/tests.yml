@@ -23,11 +23,7 @@ jobs:
       with:
         node-version: ${{ matrix.node }}
     - name: Install Dependencies
-      run: yarn install --immutable
-      env:
-        NODE_ENV: development
-    - name: Build Packages
-      run: yarn build
+      run: yarn
       env:
         NODE_ENV: development
     - name: Unit Tests
@@ -36,9 +32,7 @@ jobs:
         NODE_ENV: production
     - name: Git History Test
       run: yarn test:git-history
-      env:
-        NODE_ENV: production
+    - name: Lockfile Lint Test
+      run: yarn test:lockfile
     - name: Lint
       run: yarn lint
-      env:
-        NODE_ENV: production
