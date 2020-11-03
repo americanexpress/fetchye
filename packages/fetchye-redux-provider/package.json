@@ -1,6 +1,6 @@
 {
   "name": "fetchye-redux-provider",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Redux provider for fetchye.",
   "license": "Apache-2.0",
   "main": "es/index.js",
@@ -32,7 +32,7 @@
     "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)"
   ],
   "dependencies": {
-    "fetchye-core": "1.0.0-beta.3",
+    "fetchye-core": "^1.0.0-beta.4",
     "prop-types": "^15.7.2",
     "react-redux": "^7.2.1",
     "redux": "^4.0.5"
@@ -46,7 +46,7 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@testing-library/react": "^11.0.4",
     "babel-preset-amex": "^3.4.1",
-    "fetchye": "1.0.0-beta.3",
+    "fetchye": "^1.0.0-beta.4",
     "rimraf": "^3.0.2",
     "rollup": "^2.29.0",
     "rollup-plugin-terser": "^7.0.2"

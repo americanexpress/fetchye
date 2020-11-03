@@ -1,6 +1,6 @@
 {
   "name": "fetchye-test-utils",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Core components of the Fetchye library",
   "license": "Apache-2.0",
   "main": "es/index.js",
@@ -26,7 +26,7 @@
     "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)"
   ],
   "dependencies": {
-    "fetchye-core": "1.0.0-beta.3"
+    "fetchye-core": "^1.0.0-beta.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
