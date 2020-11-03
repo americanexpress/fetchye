@@ -3,16 +3,14 @@
   "version": "1.0.0-beta.4",
   "description": "Core components of the Fetchye library",
   "license": "Apache-2.0",
-  "main": "lib/index.cjs.js",
-  "module": "lib/index.esm.js",
-  "browser": "lib/index.umd.js",
+  "main": "lib/index.js",
   "files": [
     "lib"
   ],
   "scripts": {
     "clean": "rimraf lib",
     "prebuild": "yarn clean",
-    "build": "rollup -c"
+    "build": "babel --extensions .js,.jsx ./src --out-dir lib"
   },
   "keywords": [
     "fetchye-test-utils",

@@ -3,15 +3,18 @@
   "version": "1.0.0-beta.4",
   "description": "Redux provider for fetchye.",
   "license": "Apache-2.0",
-  "main": "lib/index.cjs.js",
-  "module": "lib/index.esm.js",
+  "main": "lib/index.js",
+  "module": "es/fetchye-redux-provider.esm.js",
   "files": [
-    "lib"
+    "lib",
+    "es"
   ],
   "scripts": {
-    "clean": "rimraf lib",
+    "clean": "rimraf lib && rimraf es",
     "prebuild": "yarn clean",
-    "build": "rollup -c"
+    "build:cjs": "babel --extensions .js,.jsx ./src --out-dir lib",
+    "build:esm": "rollup -c",
+    "build": "yarn build:cjs && yarn build:esm"
   },
   "keywords": [
     "fetchye-redux-provider",
