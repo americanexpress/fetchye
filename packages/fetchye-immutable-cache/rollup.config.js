@@ -62,7 +62,7 @@ export default [
         presets: [['amex', { 'preset-env': { modules: false } }]],
         plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),
-      // terser(),
+      terser(),
     ],
   },
   // {
