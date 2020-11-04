@@ -16,7 +16,8 @@
     "lerna:beta": "lerna version prerelease --preid beta --no-push",
     "lerna:version": "lerna version",
     "lerna:publish": "lerna publish from-package --yes",
-    "lerna:deploy": "node lernaDeploy.js"
+    "lerna:deploy": "node lernaDeploy.js",
+    "packit": "find ./packages/* -type d -name fetchye\\* | xargs -L1 bash -c 'cd \"$0\" && yarn build && yarn pack'"
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx": "^7.12.1",
