@@ -1,6 +1,6 @@
 {
   "name": "fetchye",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "If you know how to use Fetch, you know how to use Fetchye [fetch-yae]. Simple React Hooks, Centralized Cache, Infinitely Extensible.",
   "license": "Apache-2.0",
   "main": "lib/index.js",
@@ -52,7 +52,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "fetchye-core": "^1.0.0-beta.4",
+    "fetchye-core": "^1.0.0-beta.5",
     "object-hash": "^2.0.3",
     "prop-types": "^15.7.2"
   },
@@ -66,7 +66,7 @@
     "@testing-library/react": "^11.0.4",
     "babel-preset-amex": "^3.4.1",
     "cross-env": "^7.0.2",
-    "fetchye-test-utils": "^1.0.0-beta.4",
+    "fetchye-test-utils": "^1.0.0-beta.5",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-redux": "^7.2.1",

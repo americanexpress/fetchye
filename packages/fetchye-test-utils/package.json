@@ -1,6 +1,6 @@
 {
   "name": "fetchye-test-utils",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "Core components of the Fetchye library",
   "license": "Apache-2.0",
   "main": "lib/index.js",
