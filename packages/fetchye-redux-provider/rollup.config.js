@@ -24,35 +24,11 @@ const inputSrc = 'src/index.js';
 const external = ['react', 'react-dom', 'react-redux', 'fetchye-core', 'fetchye'];
 
 export default [
-  // {
-  //   input: inputSrc,
-  //   output: {
-  //     name: 'fetchye-redux-provider',
-  //     globals: {
-  //       react: 'React',
-  //       'react-redux': 'ReactRedux',
-  //     },
-  //     file: pkg.browser,
-  //     format: 'umd',
-  //   },
-  //   external,
-  //   plugins: [
-  //     nodeResolve({ extensions: ['.js', '.jsx'], browser: true }),
-  //     commonjs(),
-  //     babel({
-  //       babelHelpers: 'runtime',
-  //       exclude: 'node_modules/**',
-  //       presets: [['amex', { 'preset-env': { modules: false } }]],
-  //       plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
-  //     }),
-  //     terser(),
-  //   ],
-  // },
   {
     input: inputSrc,
     output: {
-      file: pkg.main,
-      format: 'cjs',
+      file: pkg.module,
+      format: 'es',
     },
     external,
     plugins: [
@@ -61,29 +37,10 @@ export default [
       babel({
         babelHelpers: 'runtime',
         exclude: 'node_modules/**',
-        presets: [['amex', { 'preset-env': { modules: false } }]],
+        presets: [['amex', { 'preset-env': { modules: false }, modern: true }]],
         plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),
       terser(),
     ],
   },
-  // {
-  //   input: inputSrc,
-  //   output: {
-  //     file: pkg.module,
-  //     format: 'es',
-  //   },
-  //   external,
-  //   plugins: [
-  //     nodeResolve({ extensions: ['.js', '.jsx'] }),
-  //     commonjs(),
-  //     babel({
-  //       babelHelpers: 'runtime',
-  //       exclude: 'node_modules/**',
-  //       presets: [['amex', { 'preset-env': { modules: false } }]],
-  //       plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]],
-  //     }),
-  //     terser(),
-  //   ],
-  // },
 ];

@@ -3,10 +3,11 @@
   "version": "1.0.0-beta.4",
   "description": "If you know how to use Fetch, you know how to use Fetchye [fetch-yae]. Simple React Hooks, Centralized Cache, Infinitely Extensible.",
   "license": "Apache-2.0",
-  "main": "lib/index.cjs.js",
-  "module": "lib/index.esm.js",
+  "main": "lib/index.js",
+  "module": "es/fetchye.esm.js",
   "files": [
-    "lib"
+    "lib",
+    "es"
   ],
   "repository": {
     "type": "git",
@@ -20,7 +21,9 @@
   "scripts": {
     "clean": "rimraf lib",
     "prebuild": "yarn clean",
-    "build": "rollup -c"
+    "build": "yarn build:cjs && yarn build:esm",
+    "build:cjs": "babel --extensions .js,.jsx ./src --out-dir lib",
+    "build:esm": "rollup -c"
   },
   "keywords": [
     "async",
