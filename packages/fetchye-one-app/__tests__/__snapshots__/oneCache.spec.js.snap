@@ -1,0 +1,99 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`oneCache accepts a cacheSelector 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {
+    "def5678": [Error: Fake Error],
+  },
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;
+
+exports[`oneCache getCacheByKey returns empty data error loading if cache undefined 1`] = `
+Object {
+  "data": undefined,
+  "error": undefined,
+  "loading": false,
+}
+`;
+
+exports[`oneCache reflects load state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {},
+  "loading": Immutable.Set [
+    "abc1234",
+  ],
+  "data": Immutable.Map {},
+}
+`;
+
+exports[`oneCache reflects load to error state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {
+    "abc1234": [Error: Fake Error],
+  },
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;
+
+exports[`oneCache reflects load to error to clear errors state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {},
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;
+
+exports[`oneCache reflects load to success state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {},
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {
+    "abc1234": Object {
+      "body": Object {
+        "fakeData": true,
+      },
+      "ok": true,
+      "status": 200,
+    },
+  },
+}
+`;
+
+exports[`oneCache reflects load to success to delete state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {},
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;
+
+exports[`oneCache reflects multiple hashes stored 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {
+    "def5678": [Error: Fake Error],
+  },
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {
+    "abc1234": Object {
+      "body": Object {
+        "fakeData": true,
+      },
+      "ok": true,
+      "status": 200,
+    },
+  },
+}
+`;
+
+exports[`oneCache returns default cacheSelector 1`] = `undefined`;
+
+exports[`oneCache returns default state if unknown @fetchye action type 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {},
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;

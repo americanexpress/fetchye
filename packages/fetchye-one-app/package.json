@@ -1,0 +1,67 @@
+{
+  "name": "fetchye-one-app",
+  "version": "1.0.0-beta.4",
+  "description": "Collection of helpers to aid integration with One App",
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
+  "es": "es/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/americanexpress/fetchye.git",
+    "directory": "packages/fetchye-one-app"
+  },
+  "bugs": {
+    "url": "https://github.com/americanexpress/fetchye/issues"
+  },
+  "homepage": "https://github.com/americanexpress/fetchye#readme",
+  "files": [
+    "es",
+    "lib"
+  ],
+  "scripts": {
+    "clean": "rimraf es && rimraf lib",
+    "prebuild": "yarn clean",
+    "build:esm": "babel --extensions .js,.jsx ./src --out-dir es",
+    "build:cjs": "cross-env BABEL_ENV=commonjs babel --extensions .js,.jsx ./src --out-dir lib",
+    "build": "yarn build:esm && yarn build:cjs"
+  },
+  "keywords": [
+    "react",
+    "one-app"
+  ],
+  "author": "Jonny Adshead <Jonathan.Adshead@aexp.com>",
+  "contributors": [
+    "James Singleton <James.Singleton1@aexp.com> https://github.com/JamesSingleton)",
+    "Jimmy King  <Jimmy.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
+    "Jonny Adshead <Jonathan.Adshead@aexp.com> (https://github.com/JAdshead)",
+    "Michael Tobia <Michael.M.Tobia@aexp.com> (https://github.com/Francois-Esquire)",
+    "Nelly Kiboi <Nelly.J.Kiboi@aexp.com> (https://github.com/nellyk)",
+    "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)"
+  ],
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "fetchye-core": "^1.0.0-beta.4",
+    "fetchye-immutable-cache": "^1.0.0-beta.4",
+    "fetchye-redux-provider": "^1.0.0-beta.4",
+    "fetchye-test-utils": "^1.0.0-beta.5",
+    "prop-types": "^15.7.2"
+  },
+  "peerDependencies": {
+    "fetchye": "^1.0.0-beta.4",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "7.11.6",
+    "@testing-library/react": "^11.0.4",
+    "babel-preset-amex": "^3.4.1",
+    "cross-env": "^7.0.2",
+    "immutable": "^4.0.0-rc.12",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5",
+    "rimraf": "^3.0.2"
+  }
+}

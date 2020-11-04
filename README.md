@@ -210,34 +210,31 @@ const MyComponent = () => {
 - Excellent centralized server-side data hydration support
 - Shared Cache between Micro Frontend Holocron Modules
 - Immutable Redux State
+- Minimal configuration
 
 **Cons**
 - More steps and dependencies
 
 ```
-npm i -S fetchye redux-immutable fetchye-redux-provider fetchye-immutable-cache
+npm i -S fetchye fetchye-one-app
 ```
 
-Add the `<FetchyeReduxProvider />` component to your Root Holocron Module:
+`fetchye-one-app` provides uses a pre-configured cache to ensure
+that all modules will use a shared cache.
+
+Add the `<OneFetchyeProvider />` component from `fetchye-one-app` to your Root Holocron Module:
 
 ```jsx
 // ...
 import { combineReducers } from 'redux-immutable';
-import { FetchyeReduxProvider } from 'fetchye-redux-provider';
-import { ImmutableCache } from 'fetchye-immutable-cache';
-
-// One App requires ImmutableJS based Cache configuration:
-const fetchyeCache = ImmutableCache({
-  // Need to tell Fetchye where the cache reducer will be located
-  cacheSelector: (state) => state.getIn(['modules', 'my-module-root', 'fetchye']),
-});
+import { OneFetchyeProvider, oneCache } from 'fetchye-one-app';
 
 const MyModuleRoot = ({ children }) => (
   <>
-    <FetchyeReduxProvider cache={fetchyeCache}>
+    <OneFetchyeProvider>
       {/* Use your Router to supply children components containing useFetchye */}
       {children}
-    </FetchyeReduxProvider>
+    </OneFetchyeProvider>
   </>
 );
 
@@ -247,7 +244,7 @@ MyModuleRoot.holocron = {
   name: 'my-module-root',
   reducer: combineReducers({
     // ... any other reducers
-    fetchye: fetchyeCache.reducer,
+    fetchye: oneCache.reducer,
   }),
 };
 ```
@@ -484,10 +481,13 @@ const BookList = ({ genre }) => {
 
 #### One App SSR
 
+Using `makeOneServerFetchye` from `fetchye-one-app` ensures that the cache will
+always be configured correctly.
+
 ```jsx
 import React from 'react';
-import { ImmutableCache } from 'fetchye-immutable-cache';
-import { useFetchye, makeServerFetchye } from 'fetchye';
+import { useFetchye } from 'fetchye';
+import { makeOneServerFetchye } from 'fetchye-one-app';
 
 const BookList = () => {
   const { isLoading, data } = useFetchye('http://example.com/api/books/');
@@ -508,14 +508,9 @@ BookList.holocron = {
     if (global.BROWSER) {
       return;
     }
-    const fetchye = makeServerFetchye({
+    const fetchye = makeOneServerFetchye({
       // Redux store
       store: { dispatch, getState },
-      // Use ImmutableCache as One App uses ImmutableJS
-      cache: ImmutableCache({
-        // Selector to wherever fetchye reducer exists in Redux
-        cacheSelector: (state) => state.getIn(['modules', 'my-module-root', 'fetchye']),
-      }),
       fetchClient,
     });
 
