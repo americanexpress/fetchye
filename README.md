@@ -220,17 +220,19 @@ npm i -S fetchye fetchye-one-app
 ```
 
 `fetchye-one-app` provides uses a pre-configured cache to ensure
-that all modules will use a shared cache.
+that all modules will use the same cache.
 
-Add the `<OneFetchyeProvider />` component from `fetchye-one-app` to your Root Holocron Module:
+Add the `<OneFetchyeProvider />` component from `fetchye-one-app` to your Root Holocron Module,
+and add the reducer from `OneCache` scoped under `fetchye`:
 
 ```jsx
 // ...
 import { combineReducers } from 'redux-immutable';
-import { OneFetchyeProvider, oneCache } from 'fetchye-one-app';
+import { OneFetchyeProvider, OneCache } from 'fetchye-one-app';
 
 const MyModuleRoot = ({ children }) => (
   <>
+    { /* OneFetchyeProvider is configured to use OneCache by default */ }
     <OneFetchyeProvider>
       {/* Use your Router to supply children components containing useFetchye */}
       {children}
@@ -244,7 +246,8 @@ MyModuleRoot.holocron = {
   name: 'my-module-root',
   reducer: combineReducers({
     // ... any other reducers
-    fetchye: oneCache.reducer,
+    // ensure you scope the reducer under fetchye
+    fetchye: OneCache.reducer,
   }),
 };
 ```
@@ -731,6 +734,43 @@ const { data, error } = await fetchye(key, options, fetcher);
 | `data` | `Object` | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response* |
 | `error?` | `Object` | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
 
+
+### `makeOneServerFetchye`
+
+A factory function used to generate an async/await fetchye function used for making One App server-side API calls.
+
+**Shape**
+
+```
+const fetchye = makeOneServerFetchye({ store, fetchClient });
+
+const { data, error } = await fetchye(key, options, fetcher);
+```
+
+**`makeServerFetchye` Arguments**
+
+| name | type | required | description |
+|---|---|---|---|
+| `cache` | `Cache` | `false` | *Defaults to OneCache* Fetchye `Cache` object. |
+| `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| `store` | `Store` | `true` | A [Redux Store](https://redux.js.org/api/store)
+
+**`fetchye` Arguments**
+
+| name | type | required | description |
+|---|---|---|---|
+| `key` | `String` or `() => String` | `true` | A string or function returning a string that factors into cache key creation. *Defaults to URL compatible string*. |
+| `options` | `ES6FetchOptions` | `false` | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). |
+| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false` | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+
+**`fetchye` Returns**
+
+| name | type | description |
+|---|---|---|
+| `data` | `Object` | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response* |
+| `error?` | `Object` | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
+
+
 ### Providers
 
 A Provider creates a React Context to connect all the `useFetchye` Hooks into a centrally stored cache.
@@ -787,6 +827,40 @@ import { FetchyeReduxProvider } from "fetchye-redux-provider";
 |---|---|---|---|
 | `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
 | `cache` | `Cache` | `false` | Fetchye `Cache` object. *Defaults to `SimpleCache`* |
+
+#### `OneFetchyeProvider`
+
+> 💡Requires additional `redux` and `react-redux` packages installed
+
+A Context Provider that is specifically designed for use with One App.
+
+**Shape**
+
+```js
+import { OneFetchyeProvider } from 'fetchye-one-app';
+```
+
+```js
+<Provider>
+  <OneFetchyeProvider>
+    {children}
+  </OneFetchyeProvider>
+</Provider>;
+```
+
+**Context**
+
+| name | type | required | description |
+|---|---|---|---|
+| `ReactReduxContext` | `ReactReduxContext` | `true` | A [Redux Context](https://react-redux.js.org/api/provider) from a `<Provider />`. |
+
+**Props**
+
+| name | type | required | description |
+|---|---|---|---|
+| `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| `cache` | `Cache` | `false` | Fetchye `Cache` object. *Defaults to `OneCache`* |
+
 
 ### Caches
 
@@ -849,6 +923,29 @@ const cache = ImmutableCache({
 | `reducer` | `(state, action) => state` | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)). |
 | `getCacheByKey` | `(cache = Immutable.Map(), key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state. |
 | `cacheSelector?` | `(state) => state` | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+
+#### `OneCache`
+
+> 💡Requires additional `immutable` package installed
+
+This Cache configuration is specifically designed to work with One App, it relies on ImmutableJS data structures to back the `reducer` and `getCacheByKey` functions.
+
+**Shape**
+
+```
+import { OneCache } from 'fetchye-one-app';
+
+const cache = OneCache();
+```
+
+**Returns**
+
+| name | type | description |
+|---|---|---|
+| `reducer` | `(state, action) => state` | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)). |
+| `getCacheByKey` | `(cache = Immutable.Map(), key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state. |
+| `cacheSelector?` | `(state) => state` | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+
 
 ### Actions
 
