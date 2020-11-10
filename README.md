@@ -247,7 +247,7 @@ MyModuleRoot.holocron = {
   reducer: combineReducers({
     // ... any other reducers
     // ensure you scope the reducer under fetchye
-    fetchye: OneCache.reducer,
+    fetchye: OneCache().reducer,
   }),
 };
 ```
