@@ -4805,11 +4805,6 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fetchye-test-utils@^1.0.0-beta.5:
-  version "1.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/fetchye-test-utils/-/fetchye-test-utils-1.0.0-beta.5.tgz#ef605a7725dd768d493800d4dee11f730315976b"
-  integrity sha512-E6NsaBS9OIpMATBBB7Frf7aQRtGSE2VKYmsqwHq83eNzMFjXS5w+SMga6IV2clHehbrwlU97WubtyO+9SvEmXA==
-
 figgy-pudding@^3.4.1, figgy-pudding@^3.5.1:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/figgy-pudding/-/figgy-pudding-3.5.2.tgz#b4eee8148abb01dcf1d1ac34367d59e12fa61d6e"
@@ -5603,6 +5598,13 @@ internal-slot@^1.0.2:
     es-abstract "^1.17.0-next.1"
     has "^1.0.3"
     side-channel "^1.0.2"
+
+invariant@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
+  integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
+  dependencies:
+    loose-envify "^1.0.0"
 
 ip-regex@^2.1.0:
   version "2.1.0"
@@ -6774,7 +6776,7 @@ lodash@^4.15.0, lodash@^4.17.12, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
 
-loose-envify@^1.1.0, loose-envify@^1.4.0:
+loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
   integrity sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==

@@ -15,14 +15,21 @@
  */
 
 import { makeServerFetchye } from 'fetchye';
+import invariant from 'invariant';
 import OneCache from './OneCache';
 
 export const makeOneServerFetchye = ({
   store,
   fetchClient,
   cache,
-}) => makeServerFetchye({
-  store,
-  fetchClient,
-  cache: cache || OneCache(),
-});
+}) => {
+  invariant(
+    !cache,
+    '"cache" is not a permitted argument for makeOneServerFetchye, please use the makeServerFetchye provided by fetchye instead: https://github.com/americanexpress/fetchye#makeserverfetchye'
+  );
+  return makeServerFetchye({
+    store,
+    fetchClient,
+    cache: OneCache(),
+  });
+};

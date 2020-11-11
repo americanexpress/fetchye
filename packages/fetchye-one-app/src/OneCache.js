@@ -15,15 +15,19 @@
  */
 
 import { ImmutableCache } from 'fetchye-immutable-cache';
+import invariant from 'invariant';
 
 export const oneCacheSelector = (state) => {
   const rootModuleName = state.getIn(['config', 'rootModuleName']);
   return state.getIn(['modules', rootModuleName, 'fetchye']);
 };
 
-export default function OneCache(args) {
+export default function OneCache(args = {}) {
+  invariant(
+    !args.cacheSelector,
+    '"cache" is not a permitted argument for OneCache, please use the ImmutableCache provided by fetchye-immutable-cache: https://github.com/americanexpress/fetchye#immutablecache'
+  );
   return ImmutableCache({
     cacheSelector: oneCacheSelector,
-    ...args,
   });
 }

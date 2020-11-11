@@ -44,18 +44,15 @@ describe('makeOneServerFetchye', () => {
     });
   });
 
-  it('calls makeServerFetchye with given arguments', () => {
+  it('throws when cache given', () => {
     const store = jest.fn();
     const fetchClient = jest.fn();
     const cache = jest.fn();
-    makeOneServerFetchye({
+
+    expect(() => makeOneServerFetchye({
       store,
       fetchClient,
       cache,
-    });
-
-    expect(makeServerFetchye).toHaveBeenCalledWith({
-      store, fetchClient, cache,
-    });
+    })).toThrowErrorMatchingSnapshot();
   });
 });

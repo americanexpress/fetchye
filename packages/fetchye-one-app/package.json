@@ -44,6 +44,7 @@
     "fetchye-immutable-cache": "^1.0.0-beta.4",
     "fetchye-redux-provider": "^1.0.0-beta.4",
     "fetchye-test-utils": "^1.0.0-beta.5",
+    "invariant": "^2.2.4",
     "prop-types": "^15.7.2"
   },
   "peerDependencies": {

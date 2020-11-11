@@ -15,23 +15,36 @@
  */
 
 import { fromJS } from 'immutable';
-import { testCacheInterface } from 'fetchye-test-utils';
+import { ImmutableCache } from 'fetchye-immutable-cache';
 import OneCache, { oneCacheSelector } from '../src/OneCache';
 
-describe('oneCache', () => {
-  testCacheInterface(OneCache);
-});
+jest.mock('fetchye-immutable-cache', () => ({
+  ImmutableCache: jest.fn(),
+}));
 
-describe('oneCacheSelector', () => {
-  it('uses root module name to select state', () => {
-    const rootModuleName = 'some-root-modules-name';
-    const state = fromJS({
-      config: { rootModuleName },
-      modules: {
-        [rootModuleName]: { fetchye: 'fetchye-cache' },
-      },
+describe('oneCache', () => {
+  it('uses ImmutableCache', () => {
+    OneCache();
+    expect(ImmutableCache).toHaveBeenCalledWith({
+      cacheSelector: oneCacheSelector,
     });
-    const fetchyeState = oneCacheSelector(state);
-    expect(fetchyeState).toEqual('fetchye-cache');
+  });
+
+  it('throws when cacheSelector provided', () => {
+    expect(() => OneCache({ cacheSelector: 'some-selector' })).toThrowErrorMatchingSnapshot();
+  });
+
+  describe('oneCacheSelector', () => {
+    it('uses root module name to select state', () => {
+      const rootModuleName = 'some-root-modules-name';
+      const state = fromJS({
+        config: { rootModuleName },
+        modules: {
+          [rootModuleName]: { fetchye: 'fetchye-cache' },
+        },
+      });
+      const fetchyeState = oneCacheSelector(state);
+      expect(fetchyeState).toEqual('fetchye-cache');
+    });
   });
 });

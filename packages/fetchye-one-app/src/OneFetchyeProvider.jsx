@@ -17,24 +17,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FetchyeReduxProvider } from 'fetchye-redux-provider';
+import invariant from 'invariant';
 import OneCache from './OneCache';
 
 const OneFetchyeProvider = ({
   children,
   fetcher,
+  fetchClient,
   equalityChecker,
-  fetchClient = fetch,
   cache,
-}) => (
-  <FetchyeReduxProvider
-    cache={cache || OneCache()}
-    fetcher={fetcher}
-    equalityChecker={equalityChecker}
-    fetchClient={fetchClient}
-  >
-    {children}
-  </FetchyeReduxProvider>
-);
+}) => {
+  invariant(
+    !cache,
+    '"cache" is not a permitted argument for OneFetchyeProvider, please use the FetchyeReduxProvider provided by fetchye-redux-provider instead: https://github.com/americanexpress/fetchye#fetchyereduxprovider'
+  );
+  invariant(
+    !equalityChecker,
+    '"equalityChecker" is not a permitted argument for OneFetchyeProvider, please use the FetchyeReduxProvider provided by fetchye-redux-provider instead: https://github.com/americanexpress/fetchye#fetchyereduxprovider'
+  );
+  invariant(
+    !fetcher,
+    '"fetcher" is not a permitted argument for OneFetchyeProvider, please use the FetchyeReduxProvider provided by fetchye-redux-provider instead: https://github.com/americanexpress/fetchye#fetchyereduxprovider'
+  );
+  return (
+    <FetchyeReduxProvider
+      cache={OneCache()}
+      fetchClient={fetchClient}
+    >
+      {children}
+    </FetchyeReduxProvider>
+  );
+};
 
 OneFetchyeProvider.propTypes = {
   cache: PropTypes.shape({

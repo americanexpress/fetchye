@@ -219,8 +219,10 @@ const MyComponent = () => {
 npm i -S fetchye fetchye-one-app
 ```
 
-`fetchye-one-app` provides uses a pre-configured cache to ensure
-that all modules will use the same cache.
+`fetchye-one-app` provides pre-configured `provider`, `cache`, `makeOneServerFetchye`
+and `oneCacheSelector` to ensure that all modules use the same cache and reduce the chance for cache misses.
+These all have restricted APIs to reduce the chance for misconfiguration however if you require more control/customization
+use [`ImmutableCache`](#immutablecache), [`FetchyeReduxProvider`](#fetchyereduxprovider) and [`makeServerFetchye`](#makeserverfetchye). Please bear in mind that this can impact modules which are do not use the same configuration.
 
 Add the `<OneFetchyeProvider />` component from `fetchye-one-app` to your Root Holocron Module,
 and add the reducer from `OneCache` scoped under `fetchye`:
@@ -232,7 +234,7 @@ import { OneFetchyeProvider, OneCache } from 'fetchye-one-app';
 
 const MyModuleRoot = ({ children }) => (
   <>
-    { /* OneFetchyeProvider is configured to use OneCache by default */ }
+    { /* OneFetchyeProvider is configured to use OneCache */ }
     <OneFetchyeProvider>
       {/* Use your Router to supply children components containing useFetchye */}
       {children}
@@ -245,9 +247,10 @@ const MyModuleRoot = ({ children }) => (
 MyModuleRoot.holocron = {
   name: 'my-module-root',
   reducer: combineReducers({
-    // ... any other reducers
-    // ensure you scope the reducer under fetchye
+    // ensure you scope the reducer under "fetchye", this is important
+    // to ensure that child modules can make use of the single cache
     fetchye: OneCache().reducer,
+    // ... other reducers
   }),
 };
 ```
@@ -269,6 +272,9 @@ const MyComponent = () => {
   );
 };
 ```
+
+This minimal configuration works as the provider, cache and makeOneServerFetchye, mentioned later,
+all follow expected conventions.
 
 ## 🤹‍ Usage
 

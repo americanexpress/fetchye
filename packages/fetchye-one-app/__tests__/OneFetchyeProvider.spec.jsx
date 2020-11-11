@@ -52,4 +52,28 @@ describe('OneFetchyeProvider', () => {
       }
     `);
   });
+
+  it('throws when cache provided', () => {
+    expect(() => render(
+      <OneFetchyeProvider cache="boom">
+        <fake-element />
+      </OneFetchyeProvider>
+    )).toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws when equalityChecker provided', () => {
+    expect(() => render(
+      <OneFetchyeProvider equalityChecker="boom">
+        <fake-element />
+      </OneFetchyeProvider>
+    )).toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws when fetcher provided', () => {
+    expect(() => render(
+      <OneFetchyeProvider fetcher="boom">
+        <fake-element />
+      </OneFetchyeProvider>
+    )).toThrowErrorMatchingSnapshot();
+  });
 });
