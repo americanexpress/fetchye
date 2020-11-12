@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`makeOneServerFetchye throws when cache given 1`] = `"\\"cache\\" is not a permitted argument for makeOneServerFetchye, please use the makeServerFetchye provided by fetchye instead: https://github.com/americanexpress/fetchye#makeserverfetchye"`;
