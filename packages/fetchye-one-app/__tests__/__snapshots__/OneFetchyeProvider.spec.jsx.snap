@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OneFetchyeProvider throws when cache provided 1`] = `"\\"cache\\" is not a permitted argument for OneFetchyeProvider, please use the FetchyeReduxProvider provided by fetchye-redux-provider instead: https://github.com/americanexpress/fetchye#fetchyereduxprovider"`;
+
+exports[`OneFetchyeProvider throws when equalityChecker provided 1`] = `"\\"equalityChecker\\" is not a permitted argument for OneFetchyeProvider, please use the FetchyeReduxProvider provided by fetchye-redux-provider instead: https://github.com/americanexpress/fetchye#fetchyereduxprovider"`;
+
+exports[`OneFetchyeProvider throws when fetcher provided 1`] = `"\\"fetcher\\" is not a permitted argument for OneFetchyeProvider, please use the FetchyeReduxProvider provided by fetchye-redux-provider instead: https://github.com/americanexpress/fetchye#fetchyereduxprovider"`;

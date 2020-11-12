@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express Travel Related Services Company, Inc
+ * Copyright 2020 American Express Travel Related Services Company, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,7 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
- 
-import React from "react";
-import { ValidateFakeApi } from "./ValidateFakeApi";
 
-export const Layout = ({ children }) => (
-  <ValidateFakeApi
-    sandboxUrl={"https://codesandbox.io/s/fake-books-api-bulyq"}
-    url={"https://bulyq.sse.codesandbox.io/"}
-  >
-    {children}
-  </ValidateFakeApi>
-);
+export { makeOneServerFetchye } from './makeOneServerFetchye';
+export OneCache, { oneCacheSelector } from './OneCache';
+export OneFetchyeProvider from './OneFetchyeProvider';

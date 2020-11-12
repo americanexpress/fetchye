@@ -14,14 +14,9 @@
  * permissions and limitations under the License.
  */
  
-import React from "react";
-import { ValidateFakeApi } from "./ValidateFakeApi";
+ const { BABEL_ENV } = process.env
+const cjs = BABEL_ENV === 'commonjs'
 
-export const Layout = ({ children }) => (
-  <ValidateFakeApi
-    sandboxUrl={"https://codesandbox.io/s/fake-books-api-bulyq"}
-    url={"https://bulyq.sse.codesandbox.io/"}
-  >
-    {children}
-  </ValidateFakeApi>
-);
+module.exports = {
+  presets: [['amex', { 'preset-env': { modules: cjs && 'commonjs' }, modern: true }]],
+}
