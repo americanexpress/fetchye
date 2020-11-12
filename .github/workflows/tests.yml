@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-      - alpha
+      - beta
 
 jobs:
   tests:
@@ -16,33 +16,23 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: |
-        git remote set-branches --add origin main alpha
+        git remote set-branches --add origin main beta
         git fetch
     - name: Setup Node
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node }}
     - name: Install Dependencies
-      run: npm ci
+      run: yarn
       env:
         NODE_ENV: development
     - name: Unit Tests
-      run: npm run test:unit
+      run: yarn test:unit
       env:
         NODE_ENV: production
-        GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
     - name: Git History Test
-      run: npm run test:git-history
-      env:
-        NODE_ENV: production
-        GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
+      run: yarn test:git-history
     - name: Lockfile Lint Test
-      run: npm run test:lockfile
-      env:
-        NODE_ENV: production
-        GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
+      run: yarn test:lockfile
     - name: Lint
-      run: npm run lint
-      env:
-        NODE_ENV: production
-        GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
+      run: yarn lint

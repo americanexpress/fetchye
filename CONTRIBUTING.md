@@ -32,30 +32,30 @@ This project adheres to the American Express [Code of Conduct](./CODE_OF_CONDUCT
 3. Install the dependencies by running
 
     ```bash
-    $ npm install
+    $ yarn
     ```
 
 4. You can now run any of these scripts from the root folder.
 
 #### Running and cleaning the build files
 
-- **`npm run build`**
+- **`yarn build`**
 
 Runs `babel` to compile `src` files to transpiled JavaScript into `lib` using
 [`babel-preset-amex`](https://github.com/americanexpress/babel-preset-amex).
 
 #### Running tests
 
-- **`npm run lint`**
+- **`yarn lint`**
 
 Verifies that your code matches the American Express code style defined in
 [`eslint-config-amex`](https://github.com/americanexpress/eslint-config-amex).
 
-- **`npm test`**
+- **`yarn test`**
 
 Runs unit tests **and** verifies the format of all commit messages on the current branch.
 
-- **`npm posttest`**
+- **`yarn posttest`**
 
 Runs linting on the current branch, checks that the commits follow [conventional commits](https://www.conventionalcommits.org/) and verifies that the `package-lock.json` file includes public NPM registry URLs.
 

@@ -1,0 +1,14 @@
+{
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "packages": [
+    "packages/*"
+  ],
+  "command": {
+    "version": {
+      "conventionalCommits": true,
+      "allowBranch": "chore/release-*"
+    }
+  },
+  "version": "1.0.0-beta.6"
+}

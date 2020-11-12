@@ -1,0 +1,76 @@
+{
+  "name": "fetchye",
+  "version": "1.0.0-beta.6",
+  "description": "If you know how to use Fetch, you know how to use Fetchye [fetch-yae]. Simple React Hooks, Centralized Cache, Infinitely Extensible.",
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "files": [
+    "lib",
+    "es"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/americanexpress/fetchye.git",
+    "directory": "packages/fetchye"
+  },
+  "bugs": {
+    "url": "https://github.com/americanexpress/fetchye/issues"
+  },
+  "homepage": "https://github.com/americanexpress/fetchye#readme",
+  "scripts": {
+    "clean": "rimraf lib && rimraf es",
+    "prebuild": "yarn clean",
+    "build:cjs": "cross-env BABEL_ENV=commonjs babel --extensions .js,.jsx ./src --out-dir lib",
+    "build:esm": "babel --extensions .js,.jsx ./src --out-dir es",
+    "build": "yarn build:cjs && yarn build:esm"
+  },
+  "keywords": [
+    "async",
+    "react",
+    "redux",
+    "react-redux",
+    "hooks",
+    "ssr",
+    "fetch",
+    "data",
+    "query",
+    "promise"
+  ],
+  "author": "Michael A Tomcal <michael.a.tomcal@aexp.com>",
+  "contributors": [
+    "James Singleton <James.Singleton1@aexp.com> https://github.com/JamesSingleton)",
+    "Jimmy King  <Jimmy.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
+    "Jonathan Adshead <Jonathan.Adshead@aexp.com> (https://github.com/JAdshead)",
+    "Michael Tobia <Michael.M.Tobia@aexp.com> (https://github.com/Francois-Esquire)",
+    "Michael Tomcal <Michael.A.Tomcal@aexp.com> (https://github.com/mtomcal))",
+    "Nelly Kiboi <Nelly.J.Kiboi@aexp.com> (https://github.com/nellyk)",
+    "Nickolas Oliver <nickolas.oliver@aexp.com> (https://github.com/PixnBits)",
+    "Andrew Curtis <andrew.curtis@aexp.com> (https://github.com/drewcur)",
+    "Scott McIntyre <scott.mcintyre@aexp.com> (https://github.com/smackfu)",
+    "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)"
+  ],
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "fetchye-core": "^1.0.0-beta.6",
+    "object-hash": "^2.0.3",
+    "prop-types": "^15.7.2"
+  },
+  "peerDependencies": {
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "7.11.6",
+    "@testing-library/react": "^11.0.4",
+    "babel-preset-amex": "^3.4.1",
+    "cross-env": "^7.0.2",
+    "fetchye-test-utils": "^1.0.0-beta.6",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.5",
+    "rimraf": "^3.0.2"
+  }
+}

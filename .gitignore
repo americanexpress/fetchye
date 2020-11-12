@@ -7,6 +7,7 @@ node_modules
 
 # build
 lib
+es
 .webpack-stats*
 bundle.integrity.manifest.json
 .build-cache
@@ -30,3 +31,4 @@ __diff_output__
 *.bak
 *.cya
 .vscode
+*.tgz
