@@ -9,7 +9,7 @@
     "lint": "eslint --ignore-path .gitignore --ext js,jsx,md .",
     "test": "yarn test:unit",
     "test:unit": "jest",
-    "test:git-history": "commitlint --from origin/beta --to HEAD",
+    "test:git-history": "commitlint --from origin/main --to HEAD",
     "test:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts registry.yarnpkg.com --validate-https",
     "posttest": "yarn lint && yarn test:git-history && yarn test:lockfile",
     "postinstall": "yarn build",
