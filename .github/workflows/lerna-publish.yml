@@ -1,0 +1,31 @@
+name: Publish
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Confirm you are aware of the consequences'
+        required: true
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - name: Install yarn
+        run: |-
+          NODE_ENV=development yarn
+      - name: Test packages
+        run: yarn test
+      - name: Release packages
+        env:
+          NODE_ENV: production
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |-
+          echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+          yarn lerna:publish"
