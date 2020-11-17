@@ -28,4 +28,4 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |-
           echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
-          yarn lerna:publish"
+          yarn lerna:publish
