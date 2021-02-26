@@ -32,6 +32,13 @@ const defaultPayload = {
   json: async () => ({
     fakeData: true,
   }),
+  clone: () => ({
+    headers: new global.Headers({
+      'Content-Type': 'application/json',
+    }),
+    ok: true,
+    status: 200,
+  }),
 };
 
 describe('makeServerFetchye', () => {
