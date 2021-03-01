@@ -34,6 +34,13 @@ const defaultPayload = {
   json: async () => ({
     fakeData: true,
   }),
+  clone: () => ({
+    headers: new global.Headers({
+      'Content-Type': 'application/json',
+    }),
+    ok: true,
+    status: 200,
+  }),
 };
 
 const ReduxSetup = (props) => {
@@ -106,6 +113,44 @@ describe('useFetchye', () => {
               },
               "ok": true,
               "status": 200,
+            },
+            "error": undefined,
+            "isLoading": false,
+            "run": [Function],
+          }
+        `);
+      });
+      it('should return data success state when response is empty (204 no content)', async () => {
+        let fetchyeRes;
+        global.fetch = jest.fn(async () => ({
+          ...defaultPayload,
+          status: 204,
+          json: async () => { throw new SyntaxError('Unexpected end of JSON input'); },
+          clone: () => ({
+            ok: true,
+            status: 204,
+            headers: new global.Headers({}),
+            text: async () => '',
+          }),
+        }));
+        render(
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              fetchyeRes = useFetchye('http://example.com');
+              return null;
+            })}
+          </AFetchyeProvider>
+        );
+        await waitFor(() => fetchyeRes.isLoading === false);
+        expect(fetchyeRes).toMatchInlineSnapshot(`
+          Object {
+            "data": Object {
+              "body": "",
+              "headers": Object {
+                "content-type": "application/json",
+              },
+              "ok": true,
+              "status": 204,
             },
             "error": undefined,
             "isLoading": false,
@@ -295,7 +340,9 @@ describe('useFetchye', () => {
     ].forEach(([name, AFetchyeProvider]) => {
       describe(name, () => {
         it('ensures fetch is called once per key', async () => {
-          const fakeFetchClient = jest.fn();
+          const fakeFetchClient = jest.fn({
+            clone: () => {},
+          });
           global.fetch = fakeFetchClient;
           render(
             <AFetchyeProvider cache={cache}>

@@ -27,7 +27,8 @@ export const defaultFetcher = async (fetchClient, key, options) => {
   let error;
   try {
     res = await fetchClient(key, options);
-    const body = await res.json();
+    const responseClone = res.clone();
+    const body = await res.json().catch(() => responseClone.text());
     payload = {
       body,
       ok: res.ok,
