@@ -114,6 +114,15 @@ Provide the system information which is not limited to the below:
 
 Please review our [Security Policy](./SECURITY.md). Please follow the instructions outlined in the policy.
 
+## Releasing fetchye
+
+1. Run `npm run lerna:version` locally from your release branch. This would push your release changes(changelog and tags) to the branch on github.
+2. Create a pull request from your branch to the `main` branch with your changes.
+3. Once the changes are approved ensure you merge the changes and provide the commit message for the merge as
+   `chore(release) : 1.9.7`
+   ensure you follow this convention otherwise the deployment will not be executed.
+4. Once this is merged to main, a deployment would be initiated on the main branch and all updated packages will be released.
+
 ## Getting in contact
 
 - Join our [Slack channel](https://one-amex.slack.com) request an invite [here](https://join.slack.com/t/one-amex/shared_invite/enQtOTA0MzEzODExODEwLTlmYzI1Y2U2ZDEwNWJjOTAxYTlmZTYzMjUyNzQyZTdmMWIwZGJmZDM2MDZmYzVjMDk5OWU4OGIwNjJjZWRhMjY)
