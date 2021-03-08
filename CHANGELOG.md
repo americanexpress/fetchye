@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.1.0 (2021-03-08)
+
+
+### Bug Fixes
+
+* **jsonError:** update to handle NO CONTENT response ([030f886](https://github.com/americanexpress/fetchye/commit/030f8863de37fef253fcac477d8f30c55bd88cf7))
+* **lerna-publish:** syntax ([#32](https://github.com/americanexpress/fetchye/issues/32)) ([21bcc7d](https://github.com/americanexpress/fetchye/commit/21bcc7d840d39c8e7a6e2e2cb95d85fdc1c6b372))
+
+
+### Features
+
+* **all:** initial oss release ([7532d2b](https://github.com/americanexpress/fetchye/commit/7532d2b72cb8930c9b6ebff386ebb101f7879b70))
+* **fetchye:** prepare for initial release [skip ci] ([#28](https://github.com/americanexpress/fetchye/issues/28)) ([2b212df](https://github.com/americanexpress/fetchye/commit/2b212df8fab4405e2b7c51ad687a280cfe27ebbd))
+
+
+
+
+
 ## 1.0.1 (2020-11-17)
 
 
