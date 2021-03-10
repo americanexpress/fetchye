@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.2) (2021-03-08)
+
+
+### Bug Fixes
+
+* **jsonError:** update to handle NO CONTENT response ([030f886](https://github.com/americanexpress/fetchye/commit/030f8863de37fef253fcac477d8f30c55bd88cf7))
+
+
+
+
+
 ## 1.0.1 (2020-11-17)
 
 
