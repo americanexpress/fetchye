@@ -41,6 +41,8 @@ const useFetchye = (
   // create a render version manager using refs
   const numOfRenders = useRef(0);
   numOfRenders.current += 1;
+  // persist the error retry count through renders
+  const retryOnErrorCount = useRef(0);
 
   useEffect(() => {
     if (options.defer || !computedKey) {
@@ -54,6 +56,34 @@ const useFetchye = (
     if (!loading && !data && !error) {
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
+      });
+    }
+  });
+
+  useEffect(() => {
+    const loading = selectorState?.current?.loading;
+    const error = selectorState?.current?.error;
+
+    const isNotLoading = !loading;
+    const hasOnErrorCallback = typeof options?.errors?.onError === 'function';
+    const maxOnErrorRetry = options?.errors?.maxOnErrorRetry || 1;
+    const isWithinRetryRange = retryOnErrorCount.current < maxOnErrorRetry;
+
+    if (
+      error
+      && isNotLoading
+      && hasOnErrorCallback
+      && isWithinRetryRange
+    ) {
+      const onError = options?.errors?.onError;
+      const run = () => {
+        retryOnErrorCount.current += 1;
+        return runAsync({
+          dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
+        });
+      };
+      onError({
+        key, error, run, options, retryOnErrorCount: retryOnErrorCount.current, maxOnErrorRetry,
       });
     }
   });
