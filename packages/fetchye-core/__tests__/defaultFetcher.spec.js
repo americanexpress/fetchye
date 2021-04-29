@@ -30,6 +30,13 @@ describe('defaultFetcher', () => {
       headers: new global.Headers({
         'Content-Type': 'application/json',
       }),
+      clone: () => ({
+        ok: true,
+        status: 200,
+        headers: new global.Headers({
+          'Content-Type': 'application/json',
+        }),
+      }),
     }));
     const data = await defaultFetcher(fetchClient, 'http://example.com');
     expect(data).toMatchInlineSnapshot(`
@@ -52,6 +59,11 @@ describe('defaultFetcher', () => {
       status: 200,
       json: async () => true,
       headers: undefined,
+      clone: () => ({
+        ok: true,
+        status: 200,
+        headers: undefined,
+      }),
     }));
     const data = await defaultFetcher(fetchClient, 'http://example.com');
     expect(data).toMatchInlineSnapshot(`
@@ -76,6 +88,32 @@ describe('defaultFetcher', () => {
       Object {
         "error": [Error: error],
         "payload": undefined,
+      }
+    `);
+  });
+  it('should return payload and undefined error when status 204 (No content)', async () => {
+    const fetchClient = jest.fn(async () => ({
+      ok: true,
+      status: 204,
+      json: async () => { throw new SyntaxError('Unexpected end of JSON input'); },
+      headers: new global.Headers({}),
+      clone: () => ({
+        ok: true,
+        status: 204,
+        headers: new global.Headers({}),
+        text: async () => '',
+      }),
+    }));
+    const data = await defaultFetcher(fetchClient, 'http://example.com');
+    expect(data).toMatchInlineSnapshot(`
+      Object {
+        "error": undefined,
+        "payload": Object {
+          "body": "",
+          "headers": Object {},
+          "ok": true,
+          "status": 204,
+        },
       }
     `);
   });
