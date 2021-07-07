@@ -27,8 +27,13 @@ export const defaultFetcher = async (fetchClient, key, options) => {
   let error;
   try {
     res = await fetchClient(key, options);
-    const responseClone = res.clone();
-    const body = await res.json().catch(() => responseClone.text());
+    let body = await res.text();
+    try {
+      body = JSON.parse(body);
+      // eslint-disable-next-line no-empty
+    } catch (e) {
+      // body will still be the text from the response, so no action needed here
+    }
     payload = {
       body,
       ok: res.ok,
