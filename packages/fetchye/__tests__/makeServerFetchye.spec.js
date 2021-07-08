@@ -29,15 +29,8 @@ const defaultPayload = {
   }),
   ok: true,
   status: 200,
-  json: async () => ({
+  text: async () => JSON.stringify({
     fakeData: true,
-  }),
-  clone: () => ({
-    headers: new global.Headers({
-      'Content-Type': 'application/json',
-    }),
-    ok: true,
-    status: 200,
   }),
 };
 
