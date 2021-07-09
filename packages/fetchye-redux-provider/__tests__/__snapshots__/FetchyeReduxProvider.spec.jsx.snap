@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FetchyeReduxProvider should return a stable response from useFetchyeSelector that changes properly with a changed input 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [
+      Object {
+        "data": "val1",
+        "error": undefined,
+        "loading": false,
+      },
+    ],
+    Array [
+      Object {
+        "data": "val1",
+        "error": undefined,
+        "loading": false,
+      },
+    ],
+    Array [
+      Object {
+        "data": "val2",
+        "error": undefined,
+        "loading": false,
+      },
+    ],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+    Object {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;

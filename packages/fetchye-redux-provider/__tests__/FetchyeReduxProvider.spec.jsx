@@ -15,11 +15,12 @@
  */
 
 import React, { useContext } from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { FetchyeContext } from 'fetchye-core';
 import { SimpleCache } from 'fetchye';
+import PropTypes from 'prop-types';
 import FetchyeReduxProvider from '../src/FetchyeReduxProvider';
 
 const store = createStore((state) => state, { initialState: {} });
@@ -83,5 +84,51 @@ describe('FetchyeReduxProvider', () => {
       </Provider>
     );
     expect(fakeCacheSelector).toHaveBeenCalled();
+  });
+  it('should return a stable response from useFetchyeSelector that changes properly with a changed input', () => {
+    const fakeCacheSelector = jest.fn(() => ({
+      data: {
+        key1: 'val1',
+        key2: 'val2',
+      },
+      loading: {},
+      errors: {},
+    }));
+    const cache = SimpleCache({ cacheSelector: fakeCacheSelector });
+    const captureValue = jest.fn();
+
+    const Component = ({ id }) => {
+      const { useFetchyeSelector } = useContext(FetchyeContext);
+      const selectedRef = useFetchyeSelector(id);
+      captureValue(selectedRef.current);
+      return <fake-element />;
+    };
+
+    Component.propTypes = {
+      id: PropTypes.string.isRequired,
+    };
+
+    const { rerender } = render(
+      <Provider store={store}>
+        <FetchyeReduxProvider cache={cache}>
+          <Component id="key1" />
+        </FetchyeReduxProvider>
+      </Provider>
+    );
+    act(() => {
+      rerender(
+        <Provider store={store}>
+          <FetchyeReduxProvider cache={cache}>
+            <Component id="key2" />
+          </FetchyeReduxProvider>
+        </Provider>
+      );
+    });
+
+    // The value will have been captured 3 times.
+    // The first render causes val1 to be captured.
+    // The second render causes val1 to be captured again, but queues the effect
+    // The effect causes a third render that captures val2 as expected
+    expect(captureValue).toMatchSnapshot();
   });
 });
