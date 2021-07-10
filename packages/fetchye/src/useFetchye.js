@@ -43,6 +43,14 @@ const useFetchye = (
   numOfRenders.current += 1;
 
   useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+    // eslint-disable-next-line no-param-reassign
+    options.signal = signal;
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
     if (options.defer || !computedKey) {
       return;
     }
