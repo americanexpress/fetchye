@@ -11,10 +11,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * **defaultFetcher:** Avoid known hang in node-fetch ([d33399c](https://github.com/americanexpress/fetchye/commit/d33399c71c6809a868c8f6b928ed349d995d8f6a))
 * **jsonError:** update to handle NO CONTENT response ([030f886](https://github.com/americanexpress/fetchye/commit/030f8863de37fef253fcac477d8f30c55bd88cf7))
 * **lerna-publish:** syntax ([#32](https://github.com/americanexpress/fetchye/issues/32)) ([21bcc7d](https://github.com/americanexpress/fetchye/commit/21bcc7d840d39c8e7a6e2e2cb95d85fdc1c6b372))
-
-
-### Features
-
 * **FetchyeReduxProvider:** correct stale data bug ([574ccd3](https://github.com/americanexpress/fetchye/commit/574ccd30120b3f914bf713397bbc0fd1c4598836))
 
 

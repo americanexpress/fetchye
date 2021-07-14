@@ -6,7 +6,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ## [1.0.3](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.3) (2021-07-14)
 
 
-### Features
+### Bug Fixes
 
 * **FetchyeReduxProvider:** correct stale data bug ([574ccd3](https://github.com/americanexpress/fetchye/commit/574ccd30120b3f914bf713397bbc0fd1c4598836))
 
