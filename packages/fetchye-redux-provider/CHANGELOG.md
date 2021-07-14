@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.3](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.3) (2021-07-14)
+
+
+### Features
+
+* **FetchyeReduxProvider:** correct stale data bug ([574ccd3](https://github.com/americanexpress/fetchye/commit/574ccd30120b3f914bf713397bbc0fd1c4598836))
+
+
+
+
+
 ## [1.0.2](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.2) (2021-03-08)
 
 **Note:** Version bump only for package fetchye-redux-provider

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.3](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.3) (2021-07-14)
+
+
+### Bug Fixes
+
+* **defaultFetcher:** Avoid known hang in node-fetch ([d33399c](https://github.com/americanexpress/fetchye/commit/d33399c71c6809a868c8f6b928ed349d995d8f6a))
+* **jsonError:** update to handle NO CONTENT response ([030f886](https://github.com/americanexpress/fetchye/commit/030f8863de37fef253fcac477d8f30c55bd88cf7))
+
+
+
+
+
 ## [1.0.2](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.2) (2021-03-08)
 
 
