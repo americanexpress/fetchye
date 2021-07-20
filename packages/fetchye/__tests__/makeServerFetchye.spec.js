@@ -113,7 +113,7 @@ describe('makeServerFetchye', () => {
       }
     `);
   });
-  it('should return error in error state', async () => {
+  it('should return null in the error state', async () => {
     const fetchClient = jest.fn(async () => {
       throw new Error('fake error');
     });
@@ -133,7 +133,7 @@ describe('makeServerFetchye', () => {
     expect(fetchyeRes).toMatchInlineSnapshot(`
       Object {
         "data": null,
-        "error": "Error: fake error",
+        "error": null,
       }
     `);
   });

@@ -15,7 +15,7 @@
  */
 
 // eslint-disable-next-line import/no-unresolved
-import { defaultFetcher } from 'fetchye-core';
+import { ssrFetcher } from 'fetchye-core';
 import SimpleCache from './SimpleCache';
 import { runAsync } from './runAsync';
 import { computeKey } from './computeKey';
@@ -29,7 +29,7 @@ const makeServerFetchye = ({
 }) => async (
   key,
   { mapOptionsToKey = (options) => options, ...options } = { },
-  fetcher = defaultFetcher
+  fetcher = ssrFetcher
 ) => {
   const { cacheSelector } = cache;
   const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));

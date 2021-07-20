@@ -19,4 +19,5 @@ export * from './actions';
 export { defaultEqualityChecker } from './defaultEqualityChecker';
 export { FetchyeContext } from './FetchyeContext';
 export { defaultFetcher } from './defaultFetcher';
+export { ssrFetcher } from './ssrFetcher';
 export { default as useSubscription } from './useSubscription';
