@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express Travel Related Services Company, Inc.
+ * Copyright 2021 American Express Travel Related Services Company, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,13 @@ jest.mock('../src/defaultFetcher', () => ({
 
 describe('ssrFetcher', () => {
   it('forward all params to the default fetcher, and return the payload from the default fetcher with error: null', async () => {
-    const response = await ssrFetcher('paramMock1', 'paramMock2', 'paramMock3');
+    const parameters = ['paramMock1', 'paramMock2', 'paramMock3'];
+    const response = await ssrFetcher(...parameters);
     expect(response).toEqual({
       payload: 'payloadMock',
       error: null,
     });
 
-    expect(defaultFetcher).toMatchSnapshot();
+    expect(defaultFetcher.mock.calls[0]).toEqual(parameters);
   });
 });
