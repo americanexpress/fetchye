@@ -43,4 +43,19 @@ describe('computeKey', () => {
   it('should return false if key func returns false', () => {
     expect(computeKey(() => false, {})).toEqual(false);
   });
+  it('should return the same hash value irrespective of header name casings', () => {
+    const firstOptions = {
+      headers: {
+        Authorization: 'fake.jw.t',
+        'Content-Type': 'application/json',
+      },
+    };
+    const secondOptions = {
+      headers: {
+        AUTHoriZation: 'fake.jw.t',
+        'content-type': 'application/json',
+      },
+    };
+    expect(computeKey('uri', firstOptions).hash).toBe(computeKey('uri', secondOptions).hash);
+  });
 });
