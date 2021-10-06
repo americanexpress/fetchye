@@ -26,16 +26,9 @@ describe('defaultFetcher', () => {
     const fetchClient = jest.fn(async () => ({
       ok: true,
       status: 200,
-      json: async () => true,
+      text: async () => JSON.stringify({ jsonBodyMock: 'jsonBodyMock' }),
       headers: new global.Headers({
         'Content-Type': 'application/json',
-      }),
-      clone: () => ({
-        ok: true,
-        status: 200,
-        headers: new global.Headers({
-          'Content-Type': 'application/json',
-        }),
       }),
     }));
     const data = await defaultFetcher(fetchClient, 'http://example.com');
@@ -43,10 +36,32 @@ describe('defaultFetcher', () => {
       Object {
         "error": undefined,
         "payload": Object {
-          "body": true,
+          "body": Object {
+            "jsonBodyMock": "jsonBodyMock",
+          },
           "headers": Object {
             "content-type": "application/json",
           },
+          "ok": true,
+          "status": 200,
+        },
+      }
+    `);
+  });
+  it('should return payload with the raw text body and undefined error when the body cannot be parsed', async () => {
+    const fetchClient = jest.fn(async () => ({
+      ok: true,
+      status: 200,
+      text: async () => 'unparsableTextBodyMock',
+      headers: new global.Headers({}),
+    }));
+    const data = await defaultFetcher(fetchClient, 'http://example.com');
+    expect(data).toMatchInlineSnapshot(`
+      Object {
+        "error": undefined,
+        "payload": Object {
+          "body": "unparsableTextBodyMock",
+          "headers": Object {},
           "ok": true,
           "status": 200,
         },
@@ -57,20 +72,17 @@ describe('defaultFetcher', () => {
     const fetchClient = jest.fn(async () => ({
       ok: true,
       status: 200,
-      json: async () => true,
+      text: async () => JSON.stringify({ jsonBodyMock: 'jsonBodyMock' }),
       headers: undefined,
-      clone: () => ({
-        ok: true,
-        status: 200,
-        headers: undefined,
-      }),
     }));
     const data = await defaultFetcher(fetchClient, 'http://example.com');
     expect(data).toMatchInlineSnapshot(`
       Object {
         "error": undefined,
         "payload": Object {
-          "body": true,
+          "body": Object {
+            "jsonBodyMock": "jsonBodyMock",
+          },
           "headers": Object {},
           "ok": true,
           "status": 200,
@@ -95,14 +107,8 @@ describe('defaultFetcher', () => {
     const fetchClient = jest.fn(async () => ({
       ok: true,
       status: 204,
-      json: async () => { throw new SyntaxError('Unexpected end of JSON input'); },
+      text: async () => '',
       headers: new global.Headers({}),
-      clone: () => ({
-        ok: true,
-        status: 204,
-        headers: new global.Headers({}),
-        text: async () => '',
-      }),
     }));
     const data = await defaultFetcher(fetchClient, 'http://example.com');
     expect(data).toMatchInlineSnapshot(`

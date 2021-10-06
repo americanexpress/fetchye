@@ -31,15 +31,8 @@ const defaultPayload = {
   }),
   ok: true,
   status: 200,
-  json: async () => ({
+  text: async () => JSON.stringify({
     fakeData: true,
-  }),
-  clone: () => ({
-    headers: new global.Headers({
-      'Content-Type': 'application/json',
-    }),
-    ok: true,
-    status: 200,
   }),
 };
 
@@ -125,13 +118,7 @@ describe('useFetchye', () => {
         global.fetch = jest.fn(async () => ({
           ...defaultPayload,
           status: 204,
-          json: async () => { throw new SyntaxError('Unexpected end of JSON input'); },
-          clone: () => ({
-            ok: true,
-            status: 204,
-            headers: new global.Headers({}),
-            text: async () => '',
-          }),
+          text: async () => '',
         }));
         render(
           <AFetchyeProvider cache={cache}>
@@ -165,14 +152,14 @@ describe('useFetchye', () => {
           if (url === 'http://example.com/one') {
             return {
               ...defaultPayload,
-              json: async () => ({
+              text: async () => JSON.stringify({
                 id: 'abc123',
               }),
             };
           }
           return {
             ...defaultPayload,
-            json: async () => ({
+            text: async () => JSON.stringify({
               resourceUrl: url,
             }),
           };
@@ -271,7 +258,7 @@ describe('useFetchye', () => {
             payload: {
               ok: res.ok,
               status: res.status,
-              body: await res.json(),
+              body: JSON.parse(await res.text()),
             },
             error: undefined,
           };
@@ -340,9 +327,7 @@ describe('useFetchye', () => {
     ].forEach(([name, AFetchyeProvider]) => {
       describe(name, () => {
         it('ensures fetch is called once per key', async () => {
-          const fakeFetchClient = jest.fn({
-            clone: () => {},
-          });
+          const fakeFetchClient = jest.fn();
           global.fetch = fakeFetchClient;
           render(
             <AFetchyeProvider cache={cache}>

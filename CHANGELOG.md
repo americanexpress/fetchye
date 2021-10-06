@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.4](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.4) (2021-08-10)
+
+
+### Bug Fixes
+
+* **defaultFetcher:** Avoid known hang in node-fetch ([d33399c](https://github.com/americanexpress/fetchye/commit/d33399c71c6809a868c8f6b928ed349d995d8f6a))
+* **deps:** fetchye-* depencency versions ([#51](https://github.com/americanexpress/fetchye/issues/51)) ([607358b](https://github.com/americanexpress/fetchye/commit/607358b6906571ab415883b4a878935d50a7bd44))
+* **FetchyeProvider:** correct stale data bug ([#47](https://github.com/americanexpress/fetchye/issues/47)) ([2ff8c5a](https://github.com/americanexpress/fetchye/commit/2ff8c5a46c0266852d010cdf800adfe84f6d8d42))
+* **jsonError:** update to handle NO CONTENT response ([030f886](https://github.com/americanexpress/fetchye/commit/030f8863de37fef253fcac477d8f30c55bd88cf7))
+* **lerna-publish:** syntax ([#32](https://github.com/americanexpress/fetchye/issues/32)) ([21bcc7d](https://github.com/americanexpress/fetchye/commit/21bcc7d840d39c8e7a6e2e2cb95d85fdc1c6b372))
+* **makeServerFetchye:** mask errors from server side fetching ([#49](https://github.com/americanexpress/fetchye/issues/49)) ([3503836](https://github.com/americanexpress/fetchye/commit/3503836ea914ff4877af1682c7c672e834286264))
+
+
+### Features
+
+* **FetchyeReduxProvider:** correct stale data bug ([574ccd3](https://github.com/americanexpress/fetchye/commit/574ccd30120b3f914bf713397bbc0fd1c4598836))
+
+
+
+
+
+## [1.0.3](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.3) (2021-07-14)
+
+
+### Bug Fixes
+
+* **defaultFetcher:** Avoid known hang in node-fetch ([d33399c](https://github.com/americanexpress/fetchye/commit/d33399c71c6809a868c8f6b928ed349d995d8f6a))
+* **jsonError:** update to handle NO CONTENT response ([030f886](https://github.com/americanexpress/fetchye/commit/030f8863de37fef253fcac477d8f30c55bd88cf7))
+* **lerna-publish:** syntax ([#32](https://github.com/americanexpress/fetchye/issues/32)) ([21bcc7d](https://github.com/americanexpress/fetchye/commit/21bcc7d840d39c8e7a6e2e2cb95d85fdc1c6b372))
+* **FetchyeReduxProvider:** correct stale data bug ([574ccd3](https://github.com/americanexpress/fetchye/commit/574ccd30120b3f914bf713397bbc0fd1c4598836))
+
+
+
+
+
 ## [1.0.2](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.2) (2021-03-08)
 
 

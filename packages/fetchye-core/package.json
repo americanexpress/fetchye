@@ -1,6 +1,6 @@
 {
   "name": "fetchye-core",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Core components of the Fetchye library",
   "license": "Apache-2.0",
   "main": "lib/index.js",
