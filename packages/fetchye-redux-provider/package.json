@@ -1,6 +1,6 @@
 {
   "name": "fetchye-redux-provider",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Redux provider for fetchye.",
   "license": "Apache-2.0",
   "main": "lib/index.js",
@@ -43,7 +43,7 @@
     "@testing-library/react": "^11.0.4",
     "babel-preset-amex": "^3.4.1",
     "cross-env": "^7.0.2",
-    "fetchye": "^1.0.4",
+    "fetchye": "^1.1.0",
     "rimraf": "^3.0.2"
   },
   "peerDependencies": {
