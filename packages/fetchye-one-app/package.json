@@ -1,6 +1,6 @@
 {
   "name": "fetchye-one-app",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Collection of helpers to aid fetchye integration with One App",
   "license": "Apache-2.0",
   "main": "lib/index.js",
@@ -40,9 +40,9 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "fetchye-immutable-cache": "^1.0.4",
-    "fetchye-redux-provider": "^1.0.4",
-    "fetchye-test-utils": "^1.0.4",
+    "fetchye-immutable-cache": "^1.1.0",
+    "fetchye-redux-provider": "^1.1.0",
+    "fetchye-test-utils": "^1.1.0",
     "invariant": "^2.2.4",
     "prop-types": "^15.7.2"
   },
@@ -57,7 +57,7 @@
     "@testing-library/react": "^11.0.4",
     "babel-preset-amex": "^3.4.1",
     "cross-env": "^7.0.2",
-    "fetchye-core": "^1.0.4",
+    "fetchye-core": "^1.1.0",
     "immutable": "^4.0.0-rc.12",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",

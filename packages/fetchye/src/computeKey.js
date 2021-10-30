@@ -15,21 +15,28 @@
  */
 
 import computeHash from 'object-hash';
+import mapHeaderNamesToLowerCase from './mapHeaderNamesToLowerCase';
 
 export const computeKey = (key, options) => {
+  const { headers, ...restOfOptions } = options;
+  const nextOptions = { ...restOfOptions };
+  if (headers) {
+    nextOptions.headers = mapHeaderNamesToLowerCase(headers);
+  }
+
   if (typeof key === 'function') {
     let nextKey;
     try {
-      nextKey = key(options);
+      nextKey = key(nextOptions);
     } catch (error) {
       return false;
     }
     if (!nextKey) {
       return false;
     }
-    return { key: nextKey, hash: computeHash([nextKey, options], { respectType: false }) };
+    return { key: nextKey, hash: computeHash([nextKey, nextOptions], { respectType: false }) };
   }
-  return { key, hash: computeHash([key, options], { respectType: false }) };
+  return { key, hash: computeHash([key, nextOptions], { respectType: false }) };
 };
 
 export default computeKey;
