@@ -15,11 +15,12 @@
  */
 
 import React, { useContext, useEffect } from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import {
   FetchyeContext, loadingAction, setAction, deleteAction, errorAction, clearErrorsAction,
 // eslint-disable-next-line import/no-unresolved
 } from 'fetchye-core';
+import PropTypes from 'prop-types';
 import FetchyeProvider from '../src/FetchyeProvider';
 
 global.fetch = () => {};
@@ -129,5 +130,46 @@ describe('FetchyeProvider', () => {
         },
       }
     `);
+  });
+  it('should return a stable response from useFetchyeSelector that changes properly with a changed input', () => {
+    const initialData = {
+      data: {
+        key1: 'val1',
+        key2: 'val2',
+      },
+      loading: {},
+      errors: {},
+    };
+    const captureValue = jest.fn();
+
+    const Component = ({ id }) => {
+      const { useFetchyeSelector } = useContext(FetchyeContext);
+      const selectedRef = useFetchyeSelector(id);
+      captureValue(selectedRef.current);
+      return <fake-element />;
+    };
+
+    Component.propTypes = {
+      id: PropTypes.string.isRequired,
+    };
+
+    const { rerender } = render(
+      <FetchyeProvider initialData={initialData}>
+        <Component id="key1" />
+      </FetchyeProvider>
+    );
+    act(() => {
+      rerender(
+        <FetchyeProvider initialData={initialData}>
+          <Component id="key2" />
+        </FetchyeProvider>
+      );
+    });
+
+    // The value will have been captured 3 times.
+    // The first render causes val1 to be captured.
+    // The second render causes val1 to be captured again, but queues the effect
+    // The effect causes a third render that captures val2 as expected
+    expect(captureValue).toMatchSnapshot();
   });
 });

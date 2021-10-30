@@ -34,8 +34,6 @@ const makeUseFetchyeSelector = ({
   const selectorValue = useRef(initialValue);
 
   useEffect(() => {
-    selectorValue.current = getCacheByKey(fetchyeState.current, key);
-
     function checkForUpdates() {
       const nextValue = getCacheByKey(fetchyeState.current, key);
       lastSelectorValue.current = selectorValue.current;

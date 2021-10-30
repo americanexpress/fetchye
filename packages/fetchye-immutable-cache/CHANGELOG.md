@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.1.0) (2021-10-07)
+
+
+### Bug Fixes
+
+* **deps:** fetchye-* depencency versions ([#51](https://github.com/americanexpress/fetchye/issues/51)) ([607358b](https://github.com/americanexpress/fetchye/commit/607358b6906571ab415883b4a878935d50a7bd44))
+
+
+
+
+
+## [1.0.4](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.4) (2021-08-10)
+
+
+### Bug Fixes
+
+* **deps:** fetchye-* depencency versions ([#51](https://github.com/americanexpress/fetchye/issues/51)) ([607358b](https://github.com/americanexpress/fetchye/commit/607358b6906571ab415883b4a878935d50a7bd44))
+
+
+
+
+
+## [1.0.3](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.3) (2021-07-14)
+
+**Note:** Version bump only for package fetchye-immutable-cache
+
+
+
+
+
 ## [1.0.2](https://github.com/americanexpress/fetchye/compare/v1.0.0...v1.0.2) (2021-03-08)
 
 **Note:** Version bump only for package fetchye-immutable-cache

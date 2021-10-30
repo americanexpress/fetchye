@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express Travel Related Services Company, Inc.
+ * Copyright 2021 American Express Travel Related Services Company, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
  * permissions and limitations under the License.
  */
 
-export * from './constants';
-export * from './actions';
-export { defaultEqualityChecker } from './defaultEqualityChecker';
-export { FetchyeContext } from './FetchyeContext';
-export { defaultFetcher } from './defaultFetcher';
-export { ssrFetcher } from './ssrFetcher';
-export { default as useSubscription } from './useSubscription';
+const mapHeaderNamesToLowerCase = (headers) => Object.entries(headers)
+  .reduce((lowerCaseHeaders, [headerName, value]) => ({
+    ...lowerCaseHeaders,
+    [headerName.toLowerCase()]: value,
+  }), {});
+
+export default mapHeaderNamesToLowerCase;

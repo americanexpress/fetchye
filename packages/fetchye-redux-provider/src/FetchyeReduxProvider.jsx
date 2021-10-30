@@ -36,8 +36,6 @@ const makeUseFetchyeSelector = ({
   const selectorValue = useRef(initialValue);
 
   useEffect(() => {
-    selectorValue.current = selector(store.getState());
-
     function checkForUpdates() {
       const nextValue = selector(store.getState());
       lastSelectorValue.current = selectorValue.current;
