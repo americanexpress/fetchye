@@ -40,7 +40,7 @@
   "author": "Michael A Tomcal <michael.a.tomcal@aexp.com>",
   "contributors": [
     "James Singleton <James.Singleton1@aexp.com> https://github.com/JamesSingleton)",
-    "Jimmy King  <Jimmy.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
+    "Jamie King  <Jamie.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
     "Jonathan Adshead <Jonathan.Adshead@aexp.com> (https://github.com/JAdshead)",
     "Michael Tobia <Michael.M.Tobia@aexp.com> (https://github.com/Francois-Esquire)",
     "Michael Tomcal <Michael.A.Tomcal@aexp.com> (https://github.com/mtomcal))",
@@ -57,8 +57,8 @@
     "prop-types": "^15.7.2"
   },
   "peerDependencies": {
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0"
+    "react": ">=16.14.0",
+    "react-dom": ">=16.14.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",

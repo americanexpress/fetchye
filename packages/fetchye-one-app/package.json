@@ -32,7 +32,7 @@
   "author": "Jonny Adshead <Jonathan.Adshead@aexp.com>",
   "contributors": [
     "James Singleton <James.Singleton1@aexp.com> https://github.com/JamesSingleton)",
-    "Jimmy King  <Jimmy.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
+    "Jamie King  <Jamie.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
     "Jonny Adshead <Jonathan.Adshead@aexp.com> (https://github.com/JAdshead)",
     "Michael Tobia <Michael.M.Tobia@aexp.com> (https://github.com/Francois-Esquire)",
     "Nelly Kiboi <Nelly.J.Kiboi@aexp.com> (https://github.com/nellyk)",
@@ -48,8 +48,8 @@
   },
   "peerDependencies": {
     "fetchye": "^1.0.3",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0"
+    "react": ">=16.14.0",
+    "react-dom": ">=16.14.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
