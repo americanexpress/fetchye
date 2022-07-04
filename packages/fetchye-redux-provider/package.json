@@ -28,7 +28,7 @@
   },
   "contributors": [
     "James Singleton <James.Singleton1@aexp.com> https://github.com/JamesSingleton)",
-    "Jimmy King  <Jimmy.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
+    "Jamie King  <Jamie.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
     "Jonathan Adshead <Jonathan.Adshead@aexp.com> (https://github.com/JAdshead)",
     "Michael Tobia <Michael.M.Tobia@aexp.com> (https://github.com/Francois-Esquire)",
     "Nelly Kiboi <Nelly.J.Kiboi@aexp.com> (https://github.com/nellyk)",
@@ -44,13 +44,15 @@
     "babel-preset-amex": "^3.4.1",
     "cross-env": "^7.0.2",
     "fetchye": "^1.1.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "rimraf": "^3.0.2"
   },
   "peerDependencies": {
     "fetchye": "^1.0.3",
     "fetchye-core": "^1.0.3",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
+    "react": ">=16.14.0",
+    "react-dom": ">=16.14.0",
     "react-redux": "^7.2.1",
     "redux": "^4.0.5"
   }
