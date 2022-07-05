@@ -48,7 +48,8 @@
     "Nickolas Oliver <nickolas.oliver@aexp.com> (https://github.com/PixnBits)",
     "Andrew Curtis <andrew.curtis@aexp.com> (https://github.com/drewcur)",
     "Scott McIntyre <scott.mcintyre@aexp.com> (https://github.com/smackfu)",
-    "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)"
+    "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)",
+    "Matthew Mallimo <matthew.c.mallimo@aexp.com> (https://github.com/Matthew-Mallimo)"
   ],
   "dependencies": {
     "@babel/runtime": "^7.11.2",
