@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
+// eslint-disable-next-line import/no-extraneous-dependencies -- importing redux just as a test fixture, it doesn't need to be a dep
 import { createStore } from 'redux';
 import {
   loadingAction,
@@ -23,7 +23,7 @@ import {
   errorAction,
   clearErrorsAction,
   ACTION_NAMESPACE,
-  // eslint-disable-next-line import/no-unresolved
+
 } from 'fetchye-core';
 
 const actions = {
@@ -35,7 +35,7 @@ const actions = {
 };
 
 const fakeError = new Error('Fake Error');
-// eslint-disable-next-line jest/no-export
+// eslint-disable-next-line jest/no-export -- exporting test helpers
 export const createScenario = (dispatch, actionKeys, hash) => {
   const fakeData = {
     status: 200,
@@ -56,7 +56,7 @@ export const createScenario = (dispatch, actionKeys, hash) => {
   });
 };
 
-// eslint-disable-next-line jest/no-export
+// eslint-disable-next-line jest/no-export -- exporting test helpers
 export function testCacheInterface(CacheFunc) {
   const cache = CacheFunc();
   let store;

@@ -18,7 +18,7 @@ import React, { useContext, useEffect } from 'react';
 import { act, render } from '@testing-library/react';
 import {
   FetchyeContext, loadingAction, setAction, deleteAction, errorAction, clearErrorsAction,
-// eslint-disable-next-line import/no-unresolved
+
 } from 'fetchye-core';
 import PropTypes from 'prop-types';
 import FetchyeProvider from '../src/FetchyeProvider';

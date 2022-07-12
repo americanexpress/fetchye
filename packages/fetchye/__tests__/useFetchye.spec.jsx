@@ -18,7 +18,7 @@ import React, { useRef } from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
+// eslint-disable-next-line import/no-extraneous-dependencies -- we are importing the provider just during tests, it doesn't need to be a dep
 import { FetchyeReduxProvider } from 'fetchye-redux-provider';
 import FetchyeProvider from '../src/FetchyeProvider';
 import useFetchye from '../src/useFetchye';
@@ -54,7 +54,7 @@ describe('useFetchye', () => {
     ['FetchyeProvider', FetchyeProvider],
     ['Headless', noop],
   ].forEach(([name, AFetchyeProvider]) => {
-    describe(name, () => {
+    describe(`${name}`, () => {
       beforeEach(() => {
         jest.resetAllMocks();
       });
@@ -284,24 +284,22 @@ describe('useFetchye', () => {
         let fetchyeRes;
         global.fetch = jest.fn(async () => {});
         render(
-          <>
-            <AFetchyeProvider cache={cache}>
-              {React.createElement(() => {
-                fetchyeRes = useFetchye('http://example.com', {
-                  initialData: {
-                    data: {
-                      body: {
-                        initialData: true,
-                      },
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              fetchyeRes = useFetchye('http://example.com', {
+                initialData: {
+                  data: {
+                    body: {
+                      initialData: true,
                     },
-                    loading: false,
-                    error: null,
                   },
-                });
-                return null;
-              })}
-            </AFetchyeProvider>
-          </>
+                  loading: false,
+                  error: null,
+                },
+              });
+              return null;
+            })}
+          </AFetchyeProvider>
         );
         expect(global.fetch).not.toHaveBeenCalled();
         expect(fetchyeRes).toMatchInlineSnapshot(`
@@ -325,7 +323,7 @@ describe('useFetchye', () => {
       ['FetchyeReduxProvider', ReduxSetup],
       ['FetchyeProvider', FetchyeProvider],
     ].forEach(([name, AFetchyeProvider]) => {
-      describe(name, () => {
+      describe(`${name}`, () => {
         it('ensures fetch is called once per key', async () => {
           const fakeFetchClient = jest.fn();
           global.fetch = fakeFetchClient;

@@ -18,7 +18,7 @@ import {
   loadingAction,
   setAction,
   errorAction,
-  // eslint-disable-next-line import/no-unresolved
+
 } from 'fetchye-core';
 
 export const runAsync = async ({

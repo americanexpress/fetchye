@@ -22,9 +22,10 @@ import {
   ERROR,
   CLEAR_ERROR,
   ACTION_NAMESPACE,
-// eslint-disable-next-line import/no-unresolved
+
 } from 'fetchye-core';
 
+// eslint-disable-next-line default-param-last -- the first default param value takes care of explicitly calling this function with `undefined` the second param can't be defaulted as it must be provided
 export function fetchyeReducer(state = iMap({
   errors: iMap(),
   loading: iSet(),

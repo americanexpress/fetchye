@@ -17,6 +17,7 @@
 import { Map as iMap } from 'immutable';
 import reducer from './reducer';
 
+// eslint-disable-next-line default-param-last -- the first default param value takes care of explicitly calling this function with `undefined` the second param can't be defaulted as it must be provided
 const getCacheByKey = (cache = iMap(), key) => {
   const data = cache.getIn(['data', key]);
   const loading = cache.hasIn(['loading', key]);

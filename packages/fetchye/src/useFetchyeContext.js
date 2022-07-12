@@ -15,7 +15,6 @@
  */
 
 import { useContext, useReducer } from 'react';
-// eslint-disable-next-line import/no-unresolved
 import { defaultFetcher as libraryFetcher, FetchyeContext } from 'fetchye-core';
 import SimpleCache from './SimpleCache';
 

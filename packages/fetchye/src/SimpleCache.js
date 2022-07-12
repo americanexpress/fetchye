@@ -21,9 +21,10 @@ import {
   ERROR,
   CLEAR_ERROR,
   ACTION_NAMESPACE,
-// eslint-disable-next-line import/no-unresolved
+
 } from 'fetchye-core';
 
+// eslint-disable-next-line default-param-last -- the first default param value takes care of explicitly calling this function with `undefined` the second param can't be defaulted as it must be provided
 function reducer(state = {
   errors: {},
   loading: {},
@@ -91,7 +92,7 @@ function reducer(state = {
   }
 }
 
-const getCacheByKey = (cache = {}, key) => {
+const getCacheByKey = (cache = {}, key = undefined) => {
   const data = cache.data?.[key];
   const loading = !!cache.loading?.[key];
   const error = cache.errors?.[key];
