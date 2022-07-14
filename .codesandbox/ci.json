@@ -5,5 +5,6 @@
     "/examples/create-react-app/fetchye-provider-install",
     "/examples/create-react-app/fetchye-redux-provider-install",
     "/examples/next-js/fetchye-ssr"
-  ]
+  ],
+  "node": "12"
 }
