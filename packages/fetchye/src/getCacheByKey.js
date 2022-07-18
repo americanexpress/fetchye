@@ -14,6 +14,7 @@
  * permissions and limitations under the License.
  */
 
+// eslint-disable-next-line default-param-last -- the first default param value takes care of explicitly calling this function with `undefined` the second param can't be defaulted as it must be provided
 export const getCacheByKey = (cache = {}, computedKey) => {
   const unpackedCache = cache.toJS ? cache.toJS() : cache;
   const data = unpackedCache.data?.[computedKey.hash];

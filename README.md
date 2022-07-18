@@ -11,11 +11,9 @@ import { useFetchye } from 'fetchye';
 const MyComponent = () => {
   const { isLoading, data } = useFetchye('http://example.com/api/profile');
   return (
-    <>
-      {!isLoading && (
-        <p>{data.body.name}</p>
-      )}
-    </>
+    !isLoading && (
+      <p>{data.body.name}</p>
+    )
   );
 };
 ```
@@ -67,11 +65,9 @@ import { useFetchye } from 'fetchye';
 const MyComponent = () => {
   const { isLoading, data } = useFetchye('http://example.com/api/profile');
   return (
-    <>
-      {!isLoading && (
-        <p>{data?.body.name}</p>
-      )}
-    </>
+    !isLoading && (
+      <p>{data?.body.name}</p>
+    )
   );
 };
 ```
@@ -103,12 +99,10 @@ Add the `<FetchyeProvider />` component:
 import { FetchyeProvider } from 'fetchye';
 
 const ParentComponent = ({ children }) => (
-  <>
-    <FetchyeProvider>
-      {/* Use your Router to supply children components containing useFetchye */}
-      {children}
-    </FetchyeProvider>
-  </>
+  <FetchyeProvider>
+    {/* Use your Router to supply children components containing useFetchye */}
+    {children}
+  </FetchyeProvider>
 );
 ```
 
@@ -121,11 +115,9 @@ import { useFetchye } from 'fetchye';
 const MyComponent = () => {
   const { isLoading, data } = useFetchye('http://example.com/api/profile');
   return (
-    <>
-      {!isLoading && (
-        <p>{data?.body.name}</p>
-      )}
-    </>
+    !isLoading && (
+      <p>{data?.body.name}</p>
+    )
   );
 };
 ```
@@ -168,14 +160,12 @@ const fetchyeCache = SimpleCache({
 const store = createStore(fetchyeCache.reducer);
 
 const ParentComponent = ({ children }) => (
-  <>
-    <Provider store={store}>
-      <FetchyeReduxProvider cache={fetchyeCache}>
-        {/* Use your Router to supply children components containing useFetchye */}
-        {children}
-      </FetchyeReduxProvider>
-    </Provider>
-  </>
+  <Provider store={store}>
+    <FetchyeReduxProvider cache={fetchyeCache}>
+      {/* Use your Router to supply children components containing useFetchye */}
+      {children}
+    </FetchyeReduxProvider>
+  </Provider>
 );
 ```
 
@@ -188,11 +178,9 @@ import { useFetchye } from 'fetchye';
 const MyComponent = () => {
   const { isLoading, data } = useFetchye('http://example.com/api/profile');
   return (
-    <>
-      {!isLoading && (
-        <p>{data.body.name}</p>
-      )}
-    </>
+    !isLoading && (
+      <p>{data.body.name}</p>
+    )
   );
 };
 ```
@@ -264,11 +252,9 @@ import { useFetchye } from 'fetchye';
 const MyComponent = () => {
   const { isLoading, data } = useFetchye('http://example.com/api/profile');
   return (
-    <>
-      {!isLoading && (
-        <p>{data?.body.name}</p>
-      )}
-    </>
+    !isLoading && (
+      <p>{data?.body.name}</p>
+    )
   );
 };
 ```
@@ -346,9 +332,7 @@ const NewBookForm = () => {
 
   return (
     <form onSubmit={onSubmit}>
-      <>
-        {/* ...form elements using onChange */}
-      </>
+      {/* ...form elements using onChange */}
       {/* Hide Submit button when sending POST request */}
       {!isLoading && <button type="submit">Submit</button>}
     </form>
@@ -450,7 +434,7 @@ const graphqlFetcher = async (fetchClient, key, options) => {
     // Assign GraphQL errors to error
     error = errors;
   } catch (requestError) {
-    // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console -- error useful to developer in specific error case
     console.error(requestError);
     error = requestError;
   }
@@ -506,9 +490,7 @@ const BookList = () => {
   }
 
   return (
-    <>
-      {/* Render data */}
-    </>
+    {/* Render data */}
   );
 };
 
@@ -550,9 +532,7 @@ export default function IndexPage({ initialBookList }) {
   }
 
   return (
-    <>
-      {/* Render data */}
-    </>
+    {/* Render data */}
   );
 }
 
@@ -571,6 +551,7 @@ export async function getServerSideProps() {
       },
     };
   } catch (error) {
+    // eslint-disable-next-line no-console -- error useful to developer in specific error case
     console.error(error.message);
     return {};
   }
@@ -641,11 +622,9 @@ import { FetchyeProvider } from 'fetchye';
 import { CustomCache } from './CustomCache';
 
 const ParentComponent = ({ children }) => (
-  <>
-    <FetchyeProvider cache={CustomCache()}>
-      {children}
-    </FetchyeProvider>
-  </>
+  <FetchyeProvider cache={CustomCache()}>
+    {children}
+  </FetchyeProvider>
 );
 ```
 

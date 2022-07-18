@@ -14,7 +14,6 @@
  * permissions and limitations under the License.
  */
 
-// eslint-disable-next-line import/no-unresolved
 import { ssrFetcher } from 'fetchye-core';
 import SimpleCache from './SimpleCache';
 import { runAsync } from './runAsync';

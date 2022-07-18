@@ -30,7 +30,7 @@ const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders ===
 const useFetchye = (
   key,
   { mapOptionsToKey = (options) => options, ...options } = { },
-  fetcher
+  fetcher = undefined
 ) => {
   const {
     defaultFetcher, useFetchyeSelector, dispatch, fetchClient,

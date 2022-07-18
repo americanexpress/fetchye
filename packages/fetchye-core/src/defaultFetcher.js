@@ -30,7 +30,6 @@ export const defaultFetcher = async (fetchClient, key, options) => {
     let body = await res.text();
     try {
       body = JSON.parse(body);
-      // eslint-disable-next-line no-empty
     } catch (e) {
       // body will still be the text from the response, so no action needed here
     }
@@ -41,7 +40,7 @@ export const defaultFetcher = async (fetchClient, key, options) => {
       status: res.status,
     };
   } catch (requestError) {
-    // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console -- error useful to developer in specific error case
     console.error(requestError);
     error = requestError;
   }

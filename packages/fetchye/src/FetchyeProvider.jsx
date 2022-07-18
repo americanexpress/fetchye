@@ -20,7 +20,7 @@ import React, {
 import PropTypes from 'prop-types';
 import {
   defaultEqualityChecker, useSubscription, defaultFetcher, FetchyeContext,
-// eslint-disable-next-line import/no-unresolved
+
 } from 'fetchye-core';
 import SimpleCache from './SimpleCache';
 import useRefReducer from './useRefReducer';

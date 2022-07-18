@@ -21,7 +21,7 @@ import {
   deleteAction,
   errorAction,
   clearErrorsAction,
-  // eslint-disable-next-line import/no-unresolved
+
 } from 'fetchye-core';
 import reducer from '../src/reducer';
 
