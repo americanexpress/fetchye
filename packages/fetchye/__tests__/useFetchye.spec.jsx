@@ -247,6 +247,34 @@ describe('useFetchye', () => {
           ]
         `);
       });
+
+      it('should return data when run method is called with body', async () => {
+        let fetchyeRes;
+        global.fetch = jest.fn(async () => ({
+          ...defaultPayload,
+        }));
+        render(
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              fetchyeRes = useFetchye('http://example.com/one', { defer: true });
+              return null;
+            })}
+          </AFetchyeProvider>
+        );
+        await fetchyeRes.run({ body: '' });
+        expect(global.fetch.mock.calls).toMatchInlineSnapshot(`
+    Array [
+      Array [
+        "http://example.com/one",
+        Object {
+          "body": "",
+          "defer": true,
+        },
+      ],
+    ]
+  `);
+      });
+
       it('should use fetcher in hook over provider fetcher', async () => {
         const customFetchClient = jest.fn(async () => ({
           ...defaultPayload,

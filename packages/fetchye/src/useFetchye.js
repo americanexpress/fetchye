@@ -75,9 +75,13 @@ const useFetchye = (
       options.initialData?.data,
       numOfRenders.current
     ),
-    run() {
+    run(body) {
       return runAsync({
-        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
+        dispatch,
+        computedKey,
+        fetcher: selectedFetcher,
+        fetchClient,
+        options: body ? { ...options, ...body } : options,
       });
     },
   };
