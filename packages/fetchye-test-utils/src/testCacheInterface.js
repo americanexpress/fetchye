@@ -88,6 +88,16 @@ export function testCacheInterface(CacheFunc) {
     createScenario(dispatch, ['loadingAction', 'errorAction', 'clearErrorsAction'], 'abc1234');
     expect(getState()).toMatchSnapshot();
   });
+  it('should reflect load to success to error state', () => {
+    const { dispatch, getState } = store;
+    createScenario(dispatch, ['loadingAction', 'setAction', 'errorAction'], 'abc1234');
+    expect(getState()).toMatchSnapshot();
+  });
+  it('should reflect load to error to success state', () => {
+    const { dispatch, getState } = store;
+    createScenario(dispatch, ['loadingAction', 'errorAction', 'setAction'], 'abc1234');
+    expect(getState()).toMatchSnapshot();
+  });
   it('reflects multiple hashes stored', () => {
     const { dispatch, getState } = store;
     createScenario(dispatch, ['loadingAction', 'setAction'], 'abc1234');

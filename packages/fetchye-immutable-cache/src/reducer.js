@@ -43,6 +43,7 @@ export function fetchyeReducer(state = iMap({
       return state.withMutations(
         (nextState) => nextState
           .setIn(['errors', action.hash], action.error)
+          .deleteIn(['data', action.hash])
           .deleteIn(['loading', action.hash])
       );
     case IS_LOADING:
@@ -50,8 +51,9 @@ export function fetchyeReducer(state = iMap({
     case SET_DATA:
       return state.withMutations(
         (nextState) => nextState
-          .deleteIn(['loading', action.hash])
           .setIn(['data', action.hash], action.value)
+          .deleteIn(['loading', action.hash])
+          .deleteIn(['errors', action.hash])
       );
     default:
       return state;
