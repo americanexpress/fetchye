@@ -105,3 +105,29 @@ Immutable.Map {
   "data": Immutable.Map {},
 }
 `;
+
+exports[`ImmutableCache should reflect load to error to success state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {},
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {
+    "abc1234": Object {
+      "body": Object {
+        "fakeData": true,
+      },
+      "ok": true,
+      "status": 200,
+    },
+  },
+}
+`;
+
+exports[`ImmutableCache should reflect load to success to error state 1`] = `
+Immutable.Map {
+  "errors": Immutable.Map {
+    "abc1234": [Error: Fake Error],
+  },
+  "loading": Immutable.Set [],
+  "data": Immutable.Map {},
+}
+`;
