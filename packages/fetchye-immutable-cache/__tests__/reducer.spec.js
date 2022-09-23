@@ -21,7 +21,6 @@ import {
   deleteAction,
   errorAction,
   clearErrorsAction,
-
 } from 'fetchye-core';
 import reducer from '../src/reducer';
 
@@ -124,6 +123,38 @@ describe('Immutable Reducer', () => {
         "errors": Immutable.Map {},
         "loading": Immutable.Set [],
         "data": Immutable.Map {},
+      }
+    `);
+  });
+  it('should reflect load to success to error state', () => {
+    const { dispatch, getState } = store;
+    createScenario(dispatch, ['loadingAction', 'setAction', 'errorAction'], 'abc1234');
+    expect(getState()).toMatchInlineSnapshot(`
+      Immutable.Map {
+        "errors": Immutable.Map {
+          "abc1234": [Error: Fake Error],
+        },
+        "loading": Immutable.Set [],
+        "data": Immutable.Map {},
+      }
+    `);
+  });
+  it('should reflect load to error to success state', () => {
+    const { dispatch, getState } = store;
+    createScenario(dispatch, ['loadingAction', 'errorAction', 'setAction'], 'abc1234');
+    expect(getState()).toMatchInlineSnapshot(`
+      Immutable.Map {
+        "errors": Immutable.Map {},
+        "loading": Immutable.Set [],
+        "data": Immutable.Map {
+          "abc1234": Object {
+            "body": Object {
+              "fakeData": true,
+            },
+            "ok": true,
+            "status": 200,
+          },
+        },
       }
     `);
   });

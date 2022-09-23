@@ -53,9 +53,13 @@ function reducer(state = {
       };
     }
     case ERROR: {
-      const { [action.hash]: deletedEntry, ...nextLoading } = state.loading;
+      const { [action.hash]: deletedLoadingEntry, ...nextLoading } = state.loading;
+      const { [action.hash]: deletedDataEntry, ...nextData } = state.data;
       return {
         ...state,
+        data: {
+          ...nextData,
+        },
         errors: {
           ...state.errors,
           [action.hash]: action.error,
@@ -75,12 +79,16 @@ function reducer(state = {
       };
     }
     case SET_DATA: {
-      const { [action.hash]: deletedEntry, ...nextLoading } = state.loading;
+      const { [action.hash]: deletedLoadingEntry, ...nextLoading } = state.loading;
+      const { [action.hash]: deletedErrorEntry, ...nextErrors } = state.errors;
       return {
         ...state,
         data: {
           ...state.data,
           [action.hash]: action.value,
+        },
+        errors: {
+          ...nextErrors,
         },
         loading: {
           ...nextLoading,
