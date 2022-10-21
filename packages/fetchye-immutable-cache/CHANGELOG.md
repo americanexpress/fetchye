@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.2](https://github.com/americanexpress/fetchye/compare/v1.1.0...v1.1.2) (2022-10-21)
+
+
+### Bug Fixes
+
+* **cache:** remove previous data or error on new run ([#66](https://github.com/americanexpress/fetchye/issues/66)) ([f921ef3](https://github.com/americanexpress/fetchye/commit/f921ef301c7ac28172772acccae0f6274cf76225))
+
+
+
+
+
 ## [1.1.1](https://github.com/americanexpress/fetchye/compare/v1.1.0...v1.1.1) (2022-07-05)
 
 **Note:** Version bump only for package fetchye-immutable-cache
