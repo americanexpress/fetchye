@@ -342,6 +342,56 @@ const NewBookForm = () => {
 
 ### Sequential API Execution
 
+Passing the 'isLoading' value from one useFetchye call to the 'defer' field of the next will prevent the second call from being made until the first has loaded.
+
+To ensure the second api call is properly formed, you should also check that the data you expect from the first call exists:
+
+```jsx
+import React from 'react';
+import { useFetchye } from 'fetchye';
+
+const MyFavoriteBook = () => {
+  const { isLoading: loadingProfile, data: profile } = useFetchye('http://example.com/api/profile');
+
+  const profileHasBookId = !loadingProfile && profile?.body?.favoriteBookId;
+  const { isLoading: loadingBook, data: favoriteBook } = useFetchye('http://example.com/api/books', {
+    defer: !profileHasBookId,
+    method: 'POST',
+    body: JSON.stringify({
+      bookId: profile?.body?.favoriteBookId,
+    }),
+  });
+
+  if (loadingProfile) {
+    return (<p>Loading Profile...</p>);
+  }
+  if (profile.status !== 200) {
+    return (<p>Oops!</p>);
+  }
+  if (loadingBook) {
+    return (<p>Loading Favourite Book...</p>);
+  }
+  if (favoriteBook.status !== 200) {
+    return (<p>Oops!</p>);
+  }
+
+  return (
+    favoriteBook.status === 200 && (
+      <>
+        <h1>My Favorite Book</h1>
+        <h2>{favoriteBook.body.title}</h2>
+      </>
+    )
+  );
+};
+```
+
+Alternatively, you can pass a function as the first parameter to useFetchye, if this function throws an exception, or returns a falsy value, the call will automatically be 'deferred' until the function does not throw.
+
+This only works if the sequential data is passed to the second call in the url.
+
+In this example, the function will throw `Cannot read properties of undefined` when trying to access 'favoriteBookId' in the non-existent body of the profile:
+
 ```jsx
 import React from 'react';
 import { useFetchye } from 'fetchye';
@@ -351,27 +401,25 @@ const MyFavoriteBook = () => {
   const { isLoading: loadingBook, data: favoriteBook } = useFetchye(() => `http://example.com/api/books/${profile.body.favoriteBookId}`);
 
   if (loadingProfile) {
-    return (<p>Loading...</p>);
+    return (<p>Loading Profile...</p>);
   }
   if (profile.status !== 200) {
     return (<p>Oops!</p>);
   }
   if (loadingBook) {
-    return (<p>Loading...</p>);
+    return (<p>Loading Favourite Book...</p>);
+  }
+  if (favoriteBook.status !== 200) {
+    return (<p>Oops!</p>);
   }
 
   return (
-    <>
-      {favoriteBook.status === 200 && (
-        <>
-          <h1>My Favorite Book</h1>
-          <h2>{favoriteBook.body.title}</h2>
-        </>
-      )}
-      {favoriteBook.status !== 200 && (
-        <p>Oops!</p>
-      )}
-    </>
+    favoriteBook.status === 200 && (
+      <>
+        <h1>My Favorite Book</h1>
+        <h2>{favoriteBook.body.title}</h2>
+      </>
+    )
   );
 };
 ```
