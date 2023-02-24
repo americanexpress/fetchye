@@ -386,7 +386,7 @@ const MyFavoriteBook = () => {
 };
 ```
 
-Alternatively, you can pass a function as the first parameter to useFetchye, if this function throws an exception the call will automatically be 'deferred' until the function does not throw.
+Alternatively, you can pass a function as the first parameter to useFetchye, if this function throws an exception, or returns a falsy value, the call will automatically be 'deferred' until the function does not throw.
 
 This only works if the sequential data is passed to the second call in the url.
 
