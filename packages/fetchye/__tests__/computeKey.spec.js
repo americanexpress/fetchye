@@ -95,7 +95,7 @@ describe('computeKey', () => {
     expect(computeKey(() => 'abcd', { mapKeyToCacheKey: () => false })).toEqual(false);
   });
 
-  it('should return throw an error if mapKeyToCacheKey is defined and not a function', () => {
+  it('should throw an error if mapKeyToCacheKey is defined and not a function', () => {
     expect(() => computeKey(() => 'abcd',
       { mapKeyToCacheKey: 'string' }
     )).toThrow('mapKeyToCacheKey must be a function');
