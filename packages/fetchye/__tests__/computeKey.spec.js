@@ -88,7 +88,7 @@ describe('computeKey', () => {
     expect(computeHash).toHaveBeenCalledWith(['efgh', { optionKeyMock: 'optionKeyValue' }], { respectType: false });
   });
 
-  it('should return a the same key if the option mapKeyToCacheKey returns the same string as the key', () => {
+  it('should return the same key if the option mapKeyToCacheKey returns the same string as the key', () => {
     expect(computeKey(() => 'abcd', {
       mapKeyToCacheKey: () => 'abcd',
     })).toMatchInlineSnapshot(`
