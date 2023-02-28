@@ -18,7 +18,7 @@ import computeHash from 'object-hash';
 import { computeKey } from '../src/computeKey';
 
 jest.mock('object-hash', () => {
-  const originalComputeHash = jest.requireActual('object-hash'); // Step 2.
+  const originalComputeHash = jest.requireActual('object-hash');
   return jest.fn(originalComputeHash);
 });
 
