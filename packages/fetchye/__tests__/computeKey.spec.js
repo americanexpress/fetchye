@@ -14,9 +14,18 @@
  * permissions and limitations under the License.
  */
 
+import computeHash from 'object-hash';
 import { computeKey } from '../src/computeKey';
 
+jest.mock('object-hash', () => {
+  const originalComputeHash = jest.requireActual('object-hash'); // Step 2.
+  return jest.fn(originalComputeHash);
+});
+
 describe('computeKey', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   it('should return an object', () => {
     expect(computeKey('abcd', {})).toMatchInlineSnapshot(`
       Object {
@@ -70,6 +79,15 @@ describe('computeKey', () => {
     `);
   });
 
+  it('should pass generated cacheKey to the underlying hash function along with the options, and return the un-mapped key to the caller', () => {
+    const computedKey = computeKey(() => 'abcd', {
+      mapKeyToCacheKey: () => 'efgh',
+      optionKeyMock: 'optionKeyValue',
+    });
+    expect(computedKey.key).toBe('abcd');
+    expect(computeHash).toHaveBeenCalledWith(['efgh', { optionKeyMock: 'optionKeyValue' }], { respectType: false });
+  });
+
   it('should return a the same key if the option mapKeyToCacheKey returns the same string as the key', () => {
     expect(computeKey(() => 'abcd', {
       mapKeyToCacheKey: () => 'abcd',
@@ -95,7 +113,7 @@ describe('computeKey', () => {
     expect(computeKey(() => 'abcd', { mapKeyToCacheKey: () => false })).toEqual(false);
   });
 
-  it('should throw an error if mapKeyToCacheKey is defined and not a function', () => {
+  it('should1 throw an error if mapKeyToCacheKey is defined and not a function', () => {
     expect(() => computeKey(() => 'abcd',
       { mapKeyToCacheKey: 'string' }
     )).toThrow('mapKeyToCacheKey must be a function');
