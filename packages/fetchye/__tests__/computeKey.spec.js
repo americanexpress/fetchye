@@ -58,4 +58,46 @@ describe('computeKey', () => {
     };
     expect(computeKey('uri', firstOptions).hash).toBe(computeKey('uri', secondOptions).hash);
   });
+
+  it('should return a different, stable hash, if the option mapKeyToCacheKey is passed', () => {
+    expect(computeKey(() => 'abcd', {
+      mapKeyToCacheKey: () => 'efgh',
+    })).toMatchInlineSnapshot(`
+      Object {
+        "hash": "a0e09d568bb5b47c046b0fac7a61ca10196151cc",
+        "key": "abcd",
+      }
+    `);
+  });
+
+  it('should return a the same key if the option mapKeyToCacheKey returns the same string as the key', () => {
+    expect(computeKey(() => 'abcd', {
+      mapKeyToCacheKey: () => 'abcd',
+    })).toMatchInlineSnapshot(`
+      Object {
+        "hash": "037ace2918f4083eda9c4be34cccb93de5051b5a",
+        "key": "abcd",
+      }
+    `);
+  });
+
+  it('should return false if mapKeyToCacheKey throws error', () => {
+    expect(
+      computeKey(() => 'abcd', {
+        mapKeyToCacheKey: () => {
+          throw new Error('error');
+        },
+      })
+    ).toEqual(false);
+  });
+
+  it('should return false if mapKeyToCacheKey returns false', () => {
+    expect(computeKey(() => 'abcd', { mapKeyToCacheKey: () => false })).toEqual(false);
+  });
+
+  it('should return throw an error if mapKeyToCacheKey is defined and not a function', () => {
+    expect(() => computeKey(() => 'abcd',
+      { mapKeyToCacheKey: 'string' }
+    )).toThrow('mapKeyToCacheKey must be a function');
+  });
 });

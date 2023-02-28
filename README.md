@@ -518,6 +518,37 @@ const BookList = ({ genre }) => {
 };
 ```
 
+### Controlling the Cache Key
+
+By passing mapKeyToCacheKey as an option you can customize the cacheKey without affecting the key. This allows you to control the cache key directly to enable advanced behaviour in your cache.
+
+Note: This option can lead to unexpected behaviour in many cases. Customizing the cache key in this way could lead to accidental collisions that lead to fetchye providing the 'wrong' cache for some of your call, or unnecessary cache-miss' causing significant performance degradation.
+
+In this example the client can dynamically switch between http and https depending on the needs of the user, but should keep the same cache key.
+
+Therefore, mapKeyToCacheKey is defined to transform the string to always be the same.
+
+```jsx
+import React from 'react';
+import { useFetchye } from 'fetchye';
+
+const BookList = ({ ssl }) => {
+  const { isLoading, data } = useFetchye(`${ssl ? 'https' : 'http'}://example.com/api/books/`,
+    {
+      mapKeyToCacheKey: (key) => key.replace('https://', 'http://'),
+    }
+  );
+
+  if (isLoading) {
+    return (<p>Loading...</p>);
+  }
+
+  return (
+    {/* Render data */}
+  );
+};
+```
+
 ### SSR
 
 #### One App SSR
@@ -717,12 +748,13 @@ const { isLoading, data, error, run } = useFetchye(key, { defer: Boolean, mapOpt
 
 **Options**
 
-| name | type | required | description |
-|---|---|---|---|
-| `mapOptionsToKey` | `(options: Options) => transformedOptions` | `false` | A function that maps options to the key that will become part of the cache key |
-| `defer` | `Boolean` | `false` | Prevents execution of `useFetchye` on each render in favor of using the returned `run` function. *Defaults to `false`* |
-| `initialData` | `Object` | `false` | Seeds the initial data on first render of `useFetchye` to accomodate server side rendering *Defaults to `undefined`* |
-| `...restOptions` | `ES6FetchOptions` | `true` | Contains any ES6 Compatible `fetch` option. (See [Fetch Options](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options)) |
+| name               | type                                                  | required | description                                                                                                                                                         |
+|--------------------|-------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `mapOptionsToKey`  | `(options: Options) => transformedOptions`            | `false`  | A function that maps options to the key that will become part of the cache key                                                                                      |
+| `mapKeyToCacheKey` | `(key: String, options: Options) => cacheKey: String` | `false`  | A function that maps the key for use as the cacheKey allowing direct control of the cache key                                                                       |
+| `defer`            | `Boolean`                                             | `false`  | Prevents execution of `useFetchye` on each render in favor of using the returned `run` function. *Defaults to `false`*                                              |
+| `initialData`      | `Object`                                              | `false`  | Seeds the initial data on first render of `useFetchye` to accomodate server side rendering *Defaults to `undefined`*                                                |
+| `...restOptions`   | `ES6FetchOptions`                                     | `true`   | Contains any ES6 Compatible `fetch` option. (See [Fetch Options](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options)) |
 
 **Returns**
 
