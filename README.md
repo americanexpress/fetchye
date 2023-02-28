@@ -520,13 +520,13 @@ const BookList = ({ genre }) => {
 
 ### Controlling the Cache Key
 
-By passing mapKeyToCacheKey as an option you can customize the cacheKey without affecting the key. This allows you to control the cache key directly to enable advanced behaviour in your cache.
+By passing mapKeyToCacheKey as an option you can customize the cacheKey without affecting the key. This allows you to control the cacheKey directly to enable advanced behaviour in your cache.
 
-Note: This option can lead to unexpected behaviour in many cases. Customizing the cache key in this way could lead to accidental collisions that lead to fetchye providing the 'wrong' cache for some of your call, or unnecessary cache-miss' causing significant performance degradation.
+Note: This option can lead to unexpected behaviour in many cases. Customizing the cacheKey in this way could lead to accidental collisions that lead to fetchye providing the 'wrong' cache for some of your calls, or unnecessary cache-misses causing significant performance degradation.
 
 In this example the client can dynamically switch between http and https depending on the needs of the user, but should keep the same cache key.
 
-Therefore, mapKeyToCacheKey is defined to transform the string to always be the same.
+Therefore, mapKeyToCacheKey is defined to transform the url to always have the same protocol in the cacheKey.
 
 ```jsx
 import React from 'react';
