@@ -90,7 +90,7 @@ describe('computeKey', () => {
 
   it('should return the same key if the option mapKeyToCacheKey returns the same string as the key', () => {
     expect(computeKey(() => 'abcd', {
-      mapKeyToCacheKey: () => 'abcd',
+      mapKeyToCacheKey: key => key,
     })).toMatchInlineSnapshot(`
       Object {
         "hash": "037ace2918f4083eda9c4be34cccb93de5051b5a",
