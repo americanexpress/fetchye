@@ -81,11 +81,11 @@ describe('computeKey', () => {
 
   it('should pass generated cacheKey to the underlying hash function along with the options, and return the un-mapped key to the caller', () => {
     const computedKey = computeKey(() => 'abcd', {
-      mapKeyToCacheKey: () => 'efgh',
+      mapKeyToCacheKey: (key, options => `${key.toUpperCase()}-${options.optionKeyMock}`,
       optionKeyMock: 'optionKeyValue',
     });
     expect(computedKey.key).toBe('abcd');
-    expect(computeHash).toHaveBeenCalledWith(['efgh', { optionKeyMock: 'optionKeyValue' }], { respectType: false });
+    expect(computeHash).toHaveBeenCalledWith(['ABCD-optionKeyValue', { optionKeyMock: 'optionKeyValue' }], { respectType: false });
   });
 
   it('should return the same key if the option mapKeyToCacheKey returns the same string as the key', () => {
