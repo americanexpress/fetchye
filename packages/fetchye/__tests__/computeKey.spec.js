@@ -69,34 +69,33 @@ describe('computeKey', () => {
   });
 
   it('should return a different, stable hash, if the option mapKeyToCacheKey is passed', () => {
-    expect(computeKey(() => 'abcd', {
-      mapKeyToCacheKey: () => 'efgh',
-    })).toMatchInlineSnapshot(`
-      Object {
-        "hash": "a0e09d568bb5b47c046b0fac7a61ca10196151cc",
-        "key": "abcd",
-      }
-    `);
+    const key = 'abcd';
+    const mappedKey = 'efgh';
+    const { hash: mappedHash1 } = computeKey(key, { mapKeyToCacheKey: () => mappedKey });
+    const { hash: mappedHash2 } = computeKey(key, { mapKeyToCacheKey: () => mappedKey });
+
+    const { hash: unmappedHash } = computeKey(key, {});
+
+    expect(mappedHash1).toBe(mappedHash2);
+    expect(mappedHash1).not.toBe(unmappedHash);
+  });
+
+  it('should return the same key if the option mapKeyToCacheKey returns the same string as the key', () => {
+    const key = 'abcd';
+    const { hash: mappedHash } = computeKey(key, { mapKeyToCacheKey: (_key) => _key });
+
+    const { hash: unmappedHash } = computeKey(key, {});
+
+    expect(mappedHash).toBe(unmappedHash);
   });
 
   it('should pass generated cacheKey to the underlying hash function along with the options, and return the un-mapped key to the caller', () => {
     const computedKey = computeKey(() => 'abcd', {
-      mapKeyToCacheKey: (key, options => `${key.toUpperCase()}-${options.optionKeyMock}`,
+      mapKeyToCacheKey: (key, options) => `${key.toUpperCase()}-${options.optionKeyMock}`,
       optionKeyMock: 'optionKeyValue',
     });
     expect(computedKey.key).toBe('abcd');
     expect(computeHash).toHaveBeenCalledWith(['ABCD-optionKeyValue', { optionKeyMock: 'optionKeyValue' }], { respectType: false });
-  });
-
-  it('should return the same key if the option mapKeyToCacheKey returns the same string as the key', () => {
-    expect(computeKey(() => 'abcd', {
-      mapKeyToCacheKey: key => key,
-    })).toMatchInlineSnapshot(`
-      Object {
-        "hash": "037ace2918f4083eda9c4be34cccb93de5051b5a",
-        "key": "abcd",
-      }
-    `);
   });
 
   it('should return false if mapKeyToCacheKey throws error', () => {
@@ -113,7 +112,7 @@ describe('computeKey', () => {
     expect(computeKey(() => 'abcd', { mapKeyToCacheKey: () => false })).toEqual(false);
   });
 
-  it('should1 throw an error if mapKeyToCacheKey is defined and not a function', () => {
+  it('should throw an error if mapKeyToCacheKey is defined and not a function', () => {
     expect(() => computeKey(() => 'abcd',
       { mapKeyToCacheKey: 'string' }
     )).toThrow('mapKeyToCacheKey must be a function');
