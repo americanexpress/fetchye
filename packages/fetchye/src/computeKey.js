@@ -18,14 +18,14 @@ import computeHash from 'object-hash';
 import mapHeaderNamesToLowerCase from './mapHeaderNamesToLowerCase';
 
 export const computeKey = (key, options) => {
-  const { headers, ...restOfOptions } = options;
+  const { headers, mapKeyToCacheKey, ...restOfOptions } = options;
   const nextOptions = { ...restOfOptions };
   if (headers) {
     nextOptions.headers = mapHeaderNamesToLowerCase(headers);
   }
 
+  let nextKey = key;
   if (typeof key === 'function') {
-    let nextKey;
     try {
       nextKey = key(nextOptions);
     } catch (error) {
@@ -34,9 +34,23 @@ export const computeKey = (key, options) => {
     if (!nextKey) {
       return false;
     }
-    return { key: nextKey, hash: computeHash([nextKey, nextOptions], { respectType: false }) };
   }
-  return { key, hash: computeHash([key, nextOptions], { respectType: false }) };
+
+  let cacheKey = nextKey;
+  if (mapKeyToCacheKey !== undefined && typeof mapKeyToCacheKey === 'function') {
+    try {
+      cacheKey = mapKeyToCacheKey(nextKey, nextOptions);
+    } catch (error) {
+      return false;
+    }
+    if (!cacheKey) {
+      return false;
+    }
+  } else if (mapKeyToCacheKey !== undefined) {
+    throw new TypeError('mapKeyToCacheKey must be a function');
+  }
+
+  return { key: nextKey, hash: computeHash([cacheKey, nextOptions], { respectType: false }) };
 };
 
 export default computeKey;
