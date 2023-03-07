@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/americanexpress/fetchye/compare/v1.1.0...v1.2.0) (2023-03-07)
+
+
+### Bug Fixes
+
+* **cache:** remove previous data or error on new run ([#66](https://github.com/americanexpress/fetchye/issues/66)) ([f921ef3](https://github.com/americanexpress/fetchye/commit/f921ef301c7ac28172772acccae0f6274cf76225))
+* **peerDeps:** creating fix commit for versioning reasons ([#60](https://github.com/americanexpress/fetchye/issues/60)) ([f63a28e](https://github.com/americanexpress/fetchye/commit/f63a28e09b0796870c5d8b8388ebbdc4bd8639f9))
+
+
+### Features
+
+* **compute-key:** add support for mapKeyToCacheKey ([#71](https://github.com/americanexpress/fetchye/issues/71)) ([1f29629](https://github.com/americanexpress/fetchye/commit/1f29629a8d4e053546f08c089739f205ee7bbc05))
+
+
+
+
+
 ## [1.1.2](https://github.com/americanexpress/fetchye/compare/v1.1.0...v1.1.2) (2022-10-21)
 
 
