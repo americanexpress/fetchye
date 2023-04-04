@@ -31,7 +31,6 @@ const makeUseFetchyeSelector = ({
   const store = useStore();
   const selector = useCallback((state) => getCacheByKey(cacheSelector(state), key), [key]);
   const initialValue = selector(store.getState());
-
   const lastSelectorValue = useRef(initialValue);
   const selectorValue = useRef(initialValue);
 
@@ -47,7 +46,7 @@ const makeUseFetchyeSelector = ({
     }
     checkForUpdates();
     return subscribe(checkForUpdates);
-  }, [selector, store]);
+  }, [selector, store, initialValue]);
 
   return selectorValue;
 };
