@@ -131,4 +131,54 @@ describe('FetchyeReduxProvider', () => {
     // The effect causes a third render that captures val2 as expected
     expect(captureValue).toMatchSnapshot();
   });
+  it('should have loading state change when data is populated', () => {
+    const fakeCacheSelector = jest.fn()
+      .mockReturnValueOnce({
+        data: {},
+        loading: {
+          key1: 'val1',
+        },
+        errors: {},
+      })
+      .mockReturnValueOnce({
+        data: {
+          key1: 'val1',
+        },
+        loading: {},
+        errors: {},
+      });
+    const cache = SimpleCache({ cacheSelector: fakeCacheSelector });
+    const captureValue = jest.fn();
+
+    const Component = ({ id }) => {
+      const { useFetchyeSelector } = useContext(FetchyeContext);
+      const selectedRef = useFetchyeSelector(id);
+      captureValue(selectedRef.current);
+      return <fake-element />;
+    };
+
+    Component.propTypes = {
+      id: PropTypes.string.isRequired,
+    };
+
+    const { rerender } = render(
+      <Provider store={store}>
+        <FetchyeReduxProvider cache={cache}>
+          <Component id="key1" />
+        </FetchyeReduxProvider>
+      </Provider>
+    );
+
+    act(() => {
+      rerender(
+        <Provider store={store}>
+          <FetchyeReduxProvider cache={cache}>
+            <Component id="key1" />
+          </FetchyeReduxProvider>
+        </Provider>
+      );
+    });
+
+    expect(captureValue).toMatchSnapshot();
+  });
 });
