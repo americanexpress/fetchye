@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/americanexpress/fetchye/compare/v1.2.0...v1.2.1) (2023-04-06)
+
+
+### Bug Fixes
+
+* **reduxProvider:** dependency array had bad entry ([#73](https://github.com/americanexpress/fetchye/issues/73)) ([69ae888](https://github.com/americanexpress/fetchye/commit/69ae8882a4da2b63b24cb0783a87fd42d43d44cd))
+
+
+
+
+
 # [1.2.0](https://github.com/americanexpress/fetchye/compare/v1.1.0...v1.2.0) (2023-03-07)
 
 
