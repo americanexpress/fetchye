@@ -4085,9 +4085,9 @@ cosmiconfig@^7.0.0:
     yaml "^1.10.0"
 
 create-shared-react-context@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/create-shared-react-context/-/create-shared-react-context-1.0.3.tgz#c3dc7e4377c0a2ef3102a59b2bad5f421aeea449"
-  integrity sha512-RSon18++ui29QIpatKDPe4itXCBOque6FBbbRQ4YMLHlvoEI+NRFYoh9Qsii3158Gw1xRitaCz6YwRKAUZrvtg==
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/create-shared-react-context/-/create-shared-react-context-1.0.5.tgz#41391478166e6614f37180eda9dbbf4ce83844fe"
+  integrity sha512-Qra9u3tNb2DQHJyMqAux10wWJKbV7TauF0WtbQHHMqtAWqsx+FdL2Mn5fwSRcvz0qf5wWutfO5xOvOqDjTEoKw==
 
 cross-env@^7.0.2:
   version "7.0.2"
