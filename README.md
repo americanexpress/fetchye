@@ -271,7 +271,7 @@ import React from 'react';
 import { useFetchye } from 'fetchye';
 
 const BookList = ({ genre }) => {
-  const { isLoading, data } = useFetchye(`http://example.com/api/books/?genre=${genre}`, {
+  const { isLoading, error, data } = useFetchye(`http://example.com/api/books/?genre=${genre}`, {
     headers: {
       'X-Some-Tracer-Id': 1234,
     },
@@ -281,21 +281,18 @@ const BookList = ({ genre }) => {
     return (<p>Loading...</p>);
   }
 
+  if (error || data.status !== 200) {
+    return (<p>Oops!</p>);
+  }
+
   return (
     <>
-      {data.status === 200 && (
-        <>
-          <h1>Books by {genre}</h1>
-          <ul>
-            {data.body.map((book) => (
-              <li key={book.id}>{book.title} by {book.author}</li>
-            ))}
-          </ul>
-        </>
-      )}
-      {data.status !== 200 && (
-        <p>Oops!</p>
-      )}
+      <h1>Books by {genre}</h1>
+      <ul>
+        {data.body.map((book) => (
+          <li key={book.id}>{book.title} by {book.author}</li>
+        ))}
+      </ul>
     </>
   );
 };
@@ -327,7 +324,7 @@ const NewBookForm = () => {
   const onSubmit = async (event) => {
     event.preventDefault();
     const { data, error } = await run();
-    // Check to make sure data.status === 200 for success
+    // Check to make sure no error and data.status === 200 for success
   };
 
   return (
@@ -351,10 +348,18 @@ import React from 'react';
 import { useFetchye } from 'fetchye';
 
 const MyFavoriteBook = () => {
-  const { isLoading: loadingProfile, data: profile } = useFetchye('http://example.com/api/profile');
+  const {
+    isLoading: loadingProfile,
+    error: profileError,
+    data: profile,
+  } = useFetchye('http://example.com/api/profile');
 
   const profileHasBookId = !loadingProfile && profile?.body?.favoriteBookId;
-  const { isLoading: loadingBook, data: favoriteBook } = useFetchye('http://example.com/api/books', {
+  const {
+    isLoading: loadingBook,
+    error: bookError,
+    data: favoriteBook,
+  } = useFetchye('http://example.com/api/books', {
     defer: !profileHasBookId,
     method: 'POST',
     body: JSON.stringify({
@@ -365,13 +370,13 @@ const MyFavoriteBook = () => {
   if (loadingProfile) {
     return (<p>Loading Profile...</p>);
   }
-  if (profile.status !== 200) {
+  if (profileError || profile.status !== 200) {
     return (<p>Oops!</p>);
   }
   if (loadingBook) {
     return (<p>Loading Favourite Book...</p>);
   }
-  if (favoriteBook.status !== 200) {
+  if (bookError || favoriteBook.status !== 200) {
     return (<p>Oops!</p>);
   }
 
@@ -397,19 +402,27 @@ import React from 'react';
 import { useFetchye } from 'fetchye';
 
 const MyFavoriteBook = () => {
-  const { isLoading: loadingProfile, data: profile } = useFetchye('http://example.com/api/profile');
-  const { isLoading: loadingBook, data: favoriteBook } = useFetchye(() => `http://example.com/api/books/${profile.body.favoriteBookId}`);
+  const {
+    isLoading: loadingProfile,
+    error: profileError,
+    data: profile,
+  } = useFetchye('http://example.com/api/profile');
+  const {
+    isLoading: loadingBook,
+    error: bookError,
+    data: favoriteBook,
+  } = useFetchye(() => `http://example.com/api/books/${profile.body.favoriteBookId}`);
 
   if (loadingProfile) {
     return (<p>Loading Profile...</p>);
   }
-  if (profile.status !== 200) {
+  if (profileError || profile.status !== 200) {
     return (<p>Oops!</p>);
   }
   if (loadingBook) {
     return (<p>Loading Favourite Book...</p>);
   }
-  if (favoriteBook.status !== 200) {
+  if (bookError || favoriteBook.status !== 200) {
     return (<p>Oops!</p>);
   }
 
