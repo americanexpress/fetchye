@@ -17,8 +17,10 @@
 import { defaultMapOptionsToKey } from '../src/defaultMapOptionsToKey';
 
 describe('defaultMapOptionsToKey', () => {
-  it('should return an object without passed defer or mapOptionsToKey', () => {
-    expect(defaultMapOptionsToKey({ defer: true, mapOptionsToKey: () => {}, method: 'POST' }))
+  it('should return an object without passed signal, defer, or mapOptionsToKey', () => {
+    expect(defaultMapOptionsToKey({
+      signal: {}, defer: true, mapOptionsToKey: () => { }, method: 'POST',
+    }))
       .toMatchInlineSnapshot(`
       Object {
         "method": "POST",
