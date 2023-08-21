@@ -337,6 +337,31 @@ const NewBookForm = () => {
 };
 ```
 
+### Abort Signal
+
+When you neeed to abort the execution of a `useFetchye` call, you may 
+pass a signal as an option in such way.
+
+```jsx
+import React, { useEffect } from 'react';
+import { useFetchye } from 'fetchye';
+
+const AbortComponent = () => {
+  const controller = new AbortController();
+  useFetchye('http://example.com/api/books', { signal: controller.signal });
+
+  useEffect(() => () => controller.abort(), []);
+
+  return (
+    <div>
+      <h1>abortable component</h1>
+    </div>
+  );
+};
+```
+Instead of setting up a `useEffect` within the component it's possible to pass a hook to signal using packages such as 
+[use-unmount-signal](https://www.npmjs.com/package/use-unmount-signal/v/1.0.0).
+
 ### Sequential API Execution
 
 Passing the 'isLoading' value from one useFetchye call to the 'defer' field of the next will prevent the second call from being made until the first has loaded.
@@ -748,7 +773,7 @@ A React Hook used for dispatching asynchronous API requests.
 **Shape**
 
 ```
-const { isLoading, data, error, run } = useFetchye(key, { defer: Boolean, mapOptionsToKey: options => options, ...fetchOptions }, fetcher);
+const { isLoading, data, error, run } = useFetchye(key, { signal: {}, defer: Boolean, mapOptionsToKey: options => options, ...fetchOptions }, fetcher);
 ```
 
 **Arguments**
@@ -765,6 +790,7 @@ const { isLoading, data, error, run } = useFetchye(key, { defer: Boolean, mapOpt
 |--------------------|-------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `mapOptionsToKey`  | `(options: Options) => transformedOptions`            | `false`  | A function that maps options to the key that will become part of the cache key                                                                                      |
 | `mapKeyToCacheKey` | `(key: String, options: Options) => cacheKey: String` | `false`  | A function that maps the key for use as the cacheKey allowing direct control of the cacheKey                                                                        |
+| `signal`           | `Object`                                              | `false`  | Prevents execution of `useFetchye` when desired cancelling DOM request (See [Abort Controller](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)).  |
 | `defer`            | `Boolean`                                             | `false`  | Prevents execution of `useFetchye` on each render in favor of using the returned `run` function. *Defaults to `false`*                                              |
 | `initialData`      | `Object`                                              | `false`  | Seeds the initial data on first render of `useFetchye` to accomodate server side rendering *Defaults to `undefined`*                                                |
 | `...restOptions`   | `ES6FetchOptions`                                     | `true`   | Contains any ES6 Compatible `fetch` option. (See [Fetch Options](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options)) |
