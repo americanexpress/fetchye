@@ -16,6 +16,7 @@
 
 export const defaultMapOptionsToKey = (options) => {
   const {
+    signal,
     defer,
     mapOptionsToKey,
     initialData,

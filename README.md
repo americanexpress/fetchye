@@ -337,6 +337,31 @@ const NewBookForm = () => {
 };
 ```
 
+### Abort Inflight Requests
+
+When you neeed to abort the execution of requests inflight, passing a signal from the [Abort Controller](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) API to `useFetchye` as an option will enable this.
+
+Considering `useFetchye` is a wrapper around fetch, passing a signal is the same and provides the same functionality as demonstrated below.
+```jsx
+import React, { useEffect } from 'react';
+import { useFetchye } from 'fetchye';
+
+const AbortComponent = () => {
+  const controller = new AbortController();
+  useFetchye('http://example.com/api/books', { signal: controller.signal });
+
+  useEffect(() => () => controller.abort(), []);
+
+  return (
+    <div>
+      <h1>abortable component</h1>
+    </div>
+  );
+};
+```
+Instead of setting up a `useEffect` within the component it's possible to pass a hook to signal using packages such as 
+[use-unmount-signal](https://www.npmjs.com/package/use-unmount-signal/v/1.0.0).
+
 ### Sequential API Execution
 
 Passing the 'isLoading' value from one useFetchye call to the 'defer' field of the next will prevent the second call from being made until the first has loaded.
