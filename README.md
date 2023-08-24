@@ -337,11 +337,11 @@ const NewBookForm = () => {
 };
 ```
 
-### Abort Signal
+### Abort Inflight Requests
 
-When you neeed to abort the execution of a `useFetchye` call, you may 
-pass a signal as an option in such way.
+When you neeed to abort the execution of requests inflight, passing a signal from the [Abort Controller](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) API to `useFetchye` as an option will enable this.
 
+Considering `useFetchye` is a wrapper around fetch, passing a signal is the same and provides the same functionality.
 ```jsx
 import React, { useEffect } from 'react';
 import { useFetchye } from 'fetchye';
@@ -773,7 +773,7 @@ A React Hook used for dispatching asynchronous API requests.
 **Shape**
 
 ```
-const { isLoading, data, error, run } = useFetchye(key, { signal: {}, defer: Boolean, mapOptionsToKey: options => options, ...fetchOptions }, fetcher);
+const { isLoading, data, error, run } = useFetchye(key, { defer: Boolean, mapOptionsToKey: options => options, ...fetchOptions }, fetcher);
 ```
 
 **Arguments**
@@ -790,7 +790,6 @@ const { isLoading, data, error, run } = useFetchye(key, { signal: {}, defer: Boo
 |--------------------|-------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `mapOptionsToKey`  | `(options: Options) => transformedOptions`            | `false`  | A function that maps options to the key that will become part of the cache key                                                                                      |
 | `mapKeyToCacheKey` | `(key: String, options: Options) => cacheKey: String` | `false`  | A function that maps the key for use as the cacheKey allowing direct control of the cacheKey                                                                        |
-| `signal`           | `Object`                                              | `false`  | Prevents execution of `useFetchye` when desired cancelling DOM request (See [Abort Controller](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)).  |
 | `defer`            | `Boolean`                                             | `false`  | Prevents execution of `useFetchye` on each render in favor of using the returned `run` function. *Defaults to `false`*                                              |
 | `initialData`      | `Object`                                              | `false`  | Seeds the initial data on first render of `useFetchye` to accomodate server side rendering *Defaults to `undefined`*                                                |
 | `...restOptions`   | `ES6FetchOptions`                                     | `true`   | Contains any ES6 Compatible `fetch` option. (See [Fetch Options](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options)) |
