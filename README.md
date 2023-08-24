@@ -341,7 +341,7 @@ const NewBookForm = () => {
 
 When you neeed to abort the execution of requests inflight, passing a signal from the [Abort Controller](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) API to `useFetchye` as an option will enable this.
 
-Considering `useFetchye` is a wrapper around fetch, passing a signal is the same and provides the same functionality.
+Considering `useFetchye` is a wrapper around fetch, passing a signal is the same and provides the same functionality as demonstrated below.
 ```jsx
 import React, { useEffect } from 'react';
 import { useFetchye } from 'fetchye';
