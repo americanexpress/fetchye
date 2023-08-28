@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/americanexpress/fetchye/compare/v1.2.0...v1.3.0) (2023-08-28)
+
+
+### Bug Fixes
+
+* **reduxProvider:** dependency array had bad entry ([#73](https://github.com/americanexpress/fetchye/issues/73)) ([69ae888](https://github.com/americanexpress/fetchye/commit/69ae8882a4da2b63b24cb0783a87fd42d43d44cd))
+
+
+### Features
+
+* **signal:** remove passed signal from defautlMapOptionsToKey ([#83](https://github.com/americanexpress/fetchye/issues/83)) ([8bb4b36](https://github.com/americanexpress/fetchye/commit/8bb4b36647d6004277153362526434fc25f230bd))
+
+
+
+
+
 ## [1.2.1](https://github.com/americanexpress/fetchye/compare/v1.2.0...v1.2.1) (2023-04-06)
 
 
