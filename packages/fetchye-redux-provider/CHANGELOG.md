@@ -5,11 +5,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [1.3.0](https://github.com/americanexpress/fetchye/compare/v1.2.0...v1.3.0) (2023-08-28)
 
-
-### Bug Fixes
-
-* **reduxProvider:** dependency array had bad entry ([#73](https://github.com/americanexpress/fetchye/issues/73)) ([69ae888](https://github.com/americanexpress/fetchye/commit/69ae8882a4da2b63b24cb0783a87fd42d43d44cd))
-
+**Note:** Version bump only for package fetchye-redux-provider
 
 
 
