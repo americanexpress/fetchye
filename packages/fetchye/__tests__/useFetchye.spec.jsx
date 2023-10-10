@@ -122,9 +122,9 @@ describe('useFetchye', () => {
           <AFetchyeProvider cache={cache}>
             {React.createElement(() => {
               fetchyeRes = useFetchye('http://example.com', {
-                headers: {
+                headers: () => ({
                   dynamicHeader: 'dynamic value',
-                },
+                }),
               });
               return null;
             })}
