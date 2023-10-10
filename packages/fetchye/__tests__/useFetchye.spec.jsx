@@ -113,6 +113,37 @@ describe('useFetchye', () => {
           }
         `);
       });
+      it('should call fetch with the right headers when passed dynamic headers', async () => {
+        let fetchyeRes;
+        global.fetch = jest.fn(async () => ({
+          ...defaultPayload,
+        }));
+        render(
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              fetchyeRes = useFetchye('http://example.com', {
+                headers: {
+                  dynamicHeader: 'dynamic value',
+                },
+              });
+              return null;
+            })}
+          </AFetchyeProvider>
+        );
+        await waitFor(() => fetchyeRes.isLoading === false);
+        expect(global.fetch.mock.calls).toMatchInlineSnapshot(`
+          Array [
+            Array [
+              "http://example.com",
+              Object {
+                "headers": Object {
+                  "dynamicHeader": "dynamic value",
+                },
+              },
+            ],
+          ]
+        `);
+      });
       it('should return data success state when response is empty (204 no content)', async () => {
         let fetchyeRes;
         global.fetch = jest.fn(async () => ({
@@ -242,6 +273,34 @@ describe('useFetchye', () => {
               "http://example.com/one",
               Object {
                 "defer": true,
+              },
+            ],
+          ]
+        `);
+      });
+      it('should return data when run method is called with dynamic headers', async () => {
+        let fetchyeRes;
+        global.fetch = jest.fn(async () => ({
+          ...defaultPayload,
+        }));
+        render(
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              fetchyeRes = useFetchye('http://example.com/one', { defer: true, headers: () => ({ dynamicHeader: 'dynamic value' }) });
+              return null;
+            })}
+          </AFetchyeProvider>
+        );
+        await fetchyeRes.run();
+        expect(global.fetch.mock.calls).toMatchInlineSnapshot(`
+          Array [
+            Array [
+              "http://example.com/one",
+              Object {
+                "defer": true,
+                "headers": Object {
+                  "dynamicHeader": "dynamic value",
+                },
               },
             ],
           ]

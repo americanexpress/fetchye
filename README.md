@@ -359,7 +359,7 @@ const AbortComponent = () => {
   );
 };
 ```
-Instead of setting up a `useEffect` within the component it's possible to pass a hook to signal using packages such as 
+Instead of setting up a `useEffect` within the component it's possible to pass a hook to signal using packages such as
 [use-unmount-signal](https://www.npmjs.com/package/use-unmount-signal/v/1.0.0).
 
 ### Sequential API Execution
@@ -587,6 +587,51 @@ const BookList = ({ ssl }) => {
 };
 ```
 
+### Passing dynamic headers
+
+When you call the `run` function returned from useFetchye, it will use the values last rendered into the hook.
+
+This means any correlationId, timestamp, or any other unique dynamic header you might want sent to the server will use its previous value.
+
+To overcome this, you can specify a function instead of a `headers` object in the options.
+
+This function will be called, to re-make the headers just before an API call is made, even when you call `run`.
+
+Note: You still need to remove dynamic keys from the options using `mapOptionsToKey` otherwise these dynamic headers will bust your cache!
+
+```jsx
+import React from 'react';
+import { useFetchye } from 'fetchye';
+import uuid from 'uuid';
+
+const BookList = () => {
+  const { isLoading, data } = useFetchye('http://example.com/api/books/', {
+    // remove the 'correlationId' header from the headers, as its the only dynamic header
+    mapOptionsToKey: ({ headers: { correlationId, ...headers }, ...options }) => ({
+      ...options,
+      headers,
+    }),
+    headers: () => ({
+      // static headers are still fine, and can be specified here like normal
+      staticHeader: 'staticValue',
+      // This header will be generated fresh for every call out of the system
+      correlationId: uuid(),
+    }),
+  });
+
+  if (isLoading) {
+    return (<p>Loading...</p>);
+  }
+
+  return (
+    {/* Render data */}
+  );
+};
+
+export default BookList;
+```
+
+
 ### SSR
 
 #### One App SSR
@@ -792,6 +837,7 @@ const { isLoading, data, error, run } = useFetchye(key, { defer: Boolean, mapOpt
 | `mapKeyToCacheKey` | `(key: String, options: Options) => cacheKey: String` | `false`  | A function that maps the key for use as the cacheKey allowing direct control of the cacheKey                                                                        |
 | `defer`            | `Boolean`                                             | `false`  | Prevents execution of `useFetchye` on each render in favor of using the returned `run` function. *Defaults to `false`*                                              |
 | `initialData`      | `Object`                                              | `false`  | Seeds the initial data on first render of `useFetchye` to accomodate server side rendering *Defaults to `undefined`*                                                |
+| `headers`          | `Object` or `() => Object`                            | `false`  | `Object`: as per the ES6 Compatible `fetch` option. `() => Object`: A function to construct a ES6 Compatible `headers` object prior to any api call                 |
 | `...restOptions`   | `ES6FetchOptions`                                     | `true`   | Contains any ES6 Compatible `fetch` option. (See [Fetch Options](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options)) |
 
 **Returns**

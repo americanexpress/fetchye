@@ -22,6 +22,7 @@ import {
 } from './queryHelpers';
 import { useFetchyeContext } from './useFetchyeContext';
 import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
+import { handleDynamicHeaders } from './handleDynamicHeaders';
 
 const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders === 1
   ? value || initialValue
@@ -35,8 +36,9 @@ const useFetchye = (
   const {
     defaultFetcher, useFetchyeSelector, dispatch, fetchClient,
   } = useFetchyeContext();
+  const dynamicOptions = handleDynamicHeaders(options);
   const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
-  const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(options)));
+  const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(dynamicOptions)));
   const selectorState = useFetchyeSelector(computedKey.hash);
   // create a render version manager using refs
   const numOfRenders = useRef(0);
@@ -53,7 +55,7 @@ const useFetchye = (
     const { loading, data, error } = selectorState.current;
     if (!loading && !data && !error) {
       runAsync({
-        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
+        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options: dynamicOptions,
       });
     }
   });
@@ -76,8 +78,16 @@ const useFetchye = (
       numOfRenders.current
     ),
     run() {
+      const runOptions = handleDynamicHeaders(options);
+      const runComputedKey = typeof options.headers === 'function'
+        ? computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(runOptions)))
+        : computedKey;
       return runAsync({
-        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
+        dispatch,
+        computedKey: runComputedKey,
+        fetcher: selectedFetcher,
+        fetchClient,
+        options: runOptions,
       });
     },
   };
