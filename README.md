@@ -597,7 +597,7 @@ To overcome this, you can specify a function instead of a `headers` object in th
 
 This function will be called, to re-make the headers just before an API call is made, even when you call `run`.
 
-Note: You still need to remove dynamic keys from the options using `mapOptionsToKey` otherwise these dynamic headers will bust your cache!
+Note: If you don't want the dynamic headers to result in a cache miss, you must remove the keys of the dynamic headers from the options using `mapOptionsToKey` (see example below).
 
 ```jsx
 import React from 'react';
