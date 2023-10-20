@@ -31,4 +31,5 @@ __diff_output__
 *.bak
 *.cya
 .vscode
+.idea
 *.tgz
