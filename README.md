@@ -807,7 +807,7 @@ const ParentComponent = ({ children }) => (
   * [`DELETE_DATA`](#delete_data)
   * [`ERROR`](#error)
   * [`CLEAR_ERROR`](#clear_error)
-* [`mapOptionToKey Helpers`](#mapoptiontokey_helpers)
+* [`mapOptionToKey Helpers`](#mapoptiontokey-helpers)
   * [`ignoreHeadersByKey`](#ignoreheadersbykey)
 
 ### `useFetchye`
@@ -1235,7 +1235,7 @@ There is currently one helper.
 
 | name   | type            | required | description                                                                                      |
 |--------|-----------------|----------|--------------------------------------------------------------------------------------------------|
-| `keys` | `Array<String>` | `true`   | creates a mapOptionsToKey function that removed headers whos keys that match the specified keys  |
+| `keys` | `Array<String>` | `true`   | creates a mapOptionsToKey function that removes headers whose keys match the specified keys  |
 
 **Returns**
 
