@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express Travel Related Services Company, Inc.
+ * Copyright 2023 American Express Travel Related Services Company, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,19 @@
  * permissions and limitations under the License.
  */
 
-import * as fetchye from '../src';
+const filterObjectByKeys = (object, keys) => Object.keys(object)
+  .filter((key) => !keys.includes(key))
+  .reduce((acc, key) => {
+    // mutating accumulator to prevent many, many object allocations
+    acc[key] = object[key];
+    return acc;
+  }, {});
 
-describe('index', () => {
-  it('should return public methods', () => {
-    expect(Object.keys(fetchye).sort()).toMatchInlineSnapshot(`
-      Array [
-        "FetchyeProvider",
-        "SimpleCache",
-        "ignoreHeadersByKey",
-        "makeServerFetchye",
-        "useFetchye",
-      ]
-    `);
-  });
-});
+export const ignoreHeadersByKey = (keys) => ({ headers, ...options }) => (
+  headers
+    ? {
+      ...options,
+      headers: filterObjectByKeys(headers, keys),
+    }
+    : { ...options }
+);
