@@ -18,10 +18,12 @@ import useFetchye from './useFetchye';
 import makeServerFetchye from './makeServerFetchye';
 import FetchyeProvider from './FetchyeProvider';
 import SimpleCache from './SimpleCache';
+import { ignoreHeadersByKey } from './mapOptionsToKeyHelpers';
 
 export {
   useFetchye,
   makeServerFetchye,
   FetchyeProvider,
   SimpleCache,
+  ignoreHeadersByKey,
 };
