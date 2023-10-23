@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/americanexpress/fetchye/compare/v1.3.0...v1.4.0) (2023-10-23)
+
+
+### Features
+
+* **fetchye:** support headers as a function ([#86](https://github.com/americanexpress/fetchye/issues/86)) ([cd4c175](https://github.com/americanexpress/fetchye/commit/cd4c175d87c1391d155a70834ef98798251f9134))
+* **mapOptionToKey:** provide first helper ([9202e22](https://github.com/americanexpress/fetchye/commit/9202e226a48c4bab87024cc0175907fad03c4fbb))
+
+
+
+
+
 # [1.3.0](https://github.com/americanexpress/fetchye/compare/v1.2.0...v1.3.0) (2023-08-28)
 
 
