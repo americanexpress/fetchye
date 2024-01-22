@@ -633,13 +633,13 @@ export default BookList;
 
 #### One App SSR
 
-Using `makeOneServerFetchye` from `fetchye-one-app` ensures that the cache will
+Using `oneFetchye` from `fetchye-one-app` ensures that the cache will
 always be configured correctly.
 
 ```jsx
 import React from 'react';
 import { useFetchye } from 'fetchye';
-import { makeOneServerFetchye } from 'fetchye-one-app';
+import { oneFetchye } from 'fetchye-one-app';
 
 const BookList = () => {
   const { isLoading, data } = useFetchye('http://example.com/api/books/');
@@ -654,19 +654,14 @@ const BookList = () => {
 };
 
 BookList.holocron = {
-  loadModuleData: async ({ store: { dispatch, getState }, fetchClient }) => {
+  loadModuleData: async ({ store: { dispatch } }) => {
     if (global.BROWSER) {
       return;
     }
-    const fetchye = makeOneServerFetchye({
-      // Redux store
-      store: { dispatch, getState },
-      fetchClient,
-    });
 
-    // async/await fetchye has same arguments as useFetchye
+    // oneFetchye has same arguments as useFetchye
     // dispatches events into the server side Redux store
-    await fetchye('http://example.com/api/books/');
+    await dispatch(oneFetchye('http://example.com/api/books/'));
   },
 };
 
