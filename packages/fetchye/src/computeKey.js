@@ -16,9 +16,19 @@
 
 import computeHash from 'object-hash';
 import mapHeaderNamesToLowerCase from './mapHeaderNamesToLowerCase';
+import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
+import { handleDynamicHeaders } from './handleDynamicHeaders';
 
-export const computeKey = (key, options) => {
-  const { headers, mapKeyToCacheKey, ...restOfOptions } = options;
+export const computeKey = (key, {
+  mapOptionsToKey = (options) => options,
+  ...options
+} = {}) => {
+  const {
+    headers,
+    mapKeyToCacheKey,
+    ...restOfOptions
+  } = defaultMapOptionsToKey(mapOptionsToKey(handleDynamicHeaders(options)));
+
   const nextOptions = { ...restOfOptions };
   if (headers) {
     nextOptions.headers = mapHeaderNamesToLowerCase(headers);
