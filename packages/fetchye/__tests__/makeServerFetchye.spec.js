@@ -18,9 +18,6 @@ import { createStore } from 'redux';
 import makeServerFetchye from '../src/makeServerFetchye';
 import SimpleCache from '../src/SimpleCache';
 
-const cache = SimpleCache();
-const store = createStore(cache.reducer, cache.reducer(undefined, { type: '' }));
-
 global.console.error = jest.fn();
 
 const defaultPayload = {
@@ -34,87 +31,65 @@ const defaultPayload = {
   }),
 };
 
+const expectedMakeServerFetchyeResponseSnapshot = `
+  Object {
+    "data": Object {
+      "body": Object {
+        "fakeData": true,
+      },
+      "headers": Object {
+        "content-type": "application/json",
+      },
+      "ok": true,
+      "status": 200,
+    },
+    "error": null,
+    "run": [Function],
+  }
+`;
+
 describe('makeServerFetchye', () => {
+  let cache;
+  let store;
+  let fetchClient;
+
   beforeEach(() => {
+    cache = SimpleCache();
+    store = createStore(cache.reducer, cache.reducer(undefined, { type: '' }));
+    fetchClient = jest.fn(async () => ({
+      ...defaultPayload,
+    }));
+  });
+
+  afterEach(() => {
     jest.resetAllMocks();
   });
   it('should return data in success state', async () => {
-    const fetchClient = jest.fn(async () => ({
-      ...defaultPayload,
-    }));
     const fetchyeRes = await makeServerFetchye({
       store,
       cache,
       fetchClient,
     })('http://example.com');
 
-    expect(fetchyeRes).toMatchInlineSnapshot(`
-      Object {
-        "data": Object {
-          "body": Object {
-            "fakeData": true,
-          },
-          "headers": Object {
-            "content-type": "application/json",
-          },
-          "ok": true,
-          "status": 200,
-        },
-        "error": null,
-      }
-    `);
+    expect(fetchyeRes).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
   });
   it('should return data in success state when using default cache', async () => {
-    const fetchClient = jest.fn(async () => ({
-      ...defaultPayload,
-    }));
     const fetchyeRes = await makeServerFetchye({
       store,
       fetchClient,
     })('http://example.com');
 
-    expect(fetchyeRes).toMatchInlineSnapshot(`
-      Object {
-        "data": Object {
-          "body": Object {
-            "fakeData": true,
-          },
-          "headers": Object {
-            "content-type": "application/json",
-          },
-          "ok": true,
-          "status": 200,
-        },
-        "error": null,
-      }
-    `);
+    expect(fetchyeRes).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
   });
   it('should return data in success state if no cache and no store provided', async () => {
-    const fetchClient = jest.fn(async () => ({
-      ...defaultPayload,
-    }));
     const fetchyeRes = await makeServerFetchye({
       fetchClient,
     })('http://example.com');
 
-    expect(fetchyeRes).toMatchInlineSnapshot(`
-      Object {
-        "data": Object {
-          "body": Object {
-            "fakeData": true,
-          },
-          "headers": Object {
-            "content-type": "application/json",
-          },
-          "ok": true,
-          "status": 200,
-        },
-        "error": null,
-      }
-    `);
+    expect(fetchyeRes).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
   });
   it('should return null in the error state', async () => {
-    const fetchClient = jest.fn(async () => {
+    fetchClient = jest.fn(async () => {
       throw new Error('fake error');
     });
     const fetchyeRes = await makeServerFetchye({
@@ -134,13 +109,11 @@ describe('makeServerFetchye', () => {
       Object {
         "data": null,
         "error": null,
+        "run": [Function],
       }
     `);
   });
   it('should return previously loaded data', async () => {
-    const fetchClient = jest.fn(async () => ({
-      ...defaultPayload,
-    }));
     const fetchye = makeServerFetchye({
       store,
       cache,
@@ -150,20 +123,17 @@ describe('makeServerFetchye', () => {
     const fetchyeResTwo = await fetchye('http://example.com/two');
 
     expect(fetchClient).toHaveBeenCalledTimes(1);
-    expect(fetchyeResTwo).toMatchInlineSnapshot(`
-      Object {
-        "data": Object {
-          "body": Object {
-            "fakeData": true,
-          },
-          "headers": Object {
-            "content-type": "application/json",
-          },
-          "ok": true,
-          "status": 200,
-        },
-        "error": null,
-      }
-    `);
+    expect(fetchyeResTwo).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
+  });
+  it('should reload the data is the run function returned is called', async () => {
+    const fetchye = makeServerFetchye({
+      store,
+      cache,
+      fetchClient,
+    });
+    const fetchyeResTwo = await fetchye('http://example.com/two');
+    await fetchyeResTwo.run();
+    expect(fetchClient).toHaveBeenCalledTimes(2);
+    expect(fetchyeResTwo).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
   });
 });

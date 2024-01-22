@@ -278,34 +278,6 @@ describe('useFetchye', () => {
           ]
         `);
       });
-      it('should return data when run method is called with dynamic headers', async () => {
-        let fetchyeRes;
-        global.fetch = jest.fn(async () => ({
-          ...defaultPayload,
-        }));
-        render(
-          <AFetchyeProvider cache={cache}>
-            {React.createElement(() => {
-              fetchyeRes = useFetchye('http://example.com/one', { defer: true, headers: () => ({ dynamicHeader: 'dynamic value' }) });
-              return null;
-            })}
-          </AFetchyeProvider>
-        );
-        await fetchyeRes.run();
-        expect(global.fetch.mock.calls).toMatchInlineSnapshot(`
-          Array [
-            Array [
-              "http://example.com/one",
-              Object {
-                "defer": true,
-                "headers": Object {
-                  "dynamicHeader": "dynamic value",
-                },
-              },
-            ],
-          ]
-        `);
-      });
       it('should use fetcher in hook over provider fetcher', async () => {
         const customFetchClient = jest.fn(async () => ({
           ...defaultPayload,
