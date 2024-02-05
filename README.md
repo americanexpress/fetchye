@@ -207,7 +207,7 @@ const MyComponent = () => {
 npm i -S fetchye fetchye-one-app
 ```
 
-`fetchye-one-app` provides pre-configured `provider`, `cache`, `makeOneServerFetchye`
+`fetchye-one-app` provides pre-configured `provider`, `cache`, `oneFetchye`
 and `oneCacheSelector` to ensure that all modules use the same cache and reduce the chance for cache misses.
 These all have restricted APIs to reduce the chance for misconfiguration however if you require more control/customization
 use [`ImmutableCache`](#immutablecache), [`FetchyeReduxProvider`](#fetchyereduxprovider) and [`makeServerFetchye`](#makeserverfetchye). Please bear in mind that this can impact modules which are do not use the same configuration.
@@ -790,12 +790,16 @@ const ParentComponent = ({ children }) => (
 
 * [`useFetchye`](#usefetchye)
 * [`makeServerFetchye`](#makeserverfetchye)
+* [`makeOneServerFetchye`](#makeoneserverfetchye) (deprecated)
+* [`oneFetchye`](#oneFetchye)
 * [Providers](#providers)
   * [`FetchyeProvider`](#fetchyeprovider)
   * [`FetchyeReduxProvider`](#fetchyereduxprovider)
+  * [`OneFetchyeProvider`](#oneFetchyeProvider)
 * [Caches](#caches)
   * [`SimpleCache`](#simplecache)
   * [`ImmutableCache`](#immutablecache)
+  * [`OneCache`](#onecache)
 * [Actions](#actions)
   * [`IS_LOADING`](#is_loading)
   * [`SET_DATA`](#set_data)
@@ -880,6 +884,8 @@ const { data, error } = await fetchye(key, options, fetcher);
 
 ### `makeOneServerFetchye`
 
+DEPRECATED: You should use `dispatch(oneFetchye(key, options, fetcher))` (see docs below) in place of `makeOneServerFetchye`
+
 A factory function used to generate an async/await fetchye function used for making One App server-side API calls.
 
 **Shape**
@@ -890,13 +896,13 @@ const fetchye = makeOneServerFetchye({ store, fetchClient });
 const { data, error } = await fetchye(key, options, fetcher);
 ```
 
-**`makeServerFetchye` Arguments**
+**`makeOneServerFetchye` Arguments**
 
 | name | type | required | description |
 |---|---|---|---|
 | `cache` | `Cache` | `false` | *Defaults to OneCache* Fetchye `Cache` object. |
 | `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
-| `store` | `Store` | `true` | A [Redux Store](https://redux.js.org/api/store)
+| `store` | `Store` | `true` | A [Redux Store](https://redux.js.org/api/store) |
 
 **`fetchye` Arguments**
 
@@ -911,6 +917,34 @@ const { data, error } = await fetchye(key, options, fetcher);
 | name | type | description |
 |---|---|---|
 | `data` | `Object` | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response* |
+| `error?` | `Object` | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
+
+
+### oneFetchye
+
+Call fetchye in an imperative context, such as in One App's loadModuleData, in a Redux Thunk, or in an useEffect.
+
+**Shape**
+
+```
+const { data, error } = await dispatch(onefetchye(key, options, fetcher));
+```
+
+**`onefetchye` Arguments**
+
+| name      | type                                                                                                 | required   | description                                                                                                                                       |
+|-----------|------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `key`     | `String` or `() => String`                                                                           | `true`     | A string or function returning a string that factors into cache key creation. *Defaults to URL compatible string*.                                |
+| `options` | `ES6FetchOptions`                                                                                    | `false`    | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                               |
+| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`    | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+
+**`onefetchye` Returns**
+
+A promise resolving to an object with the below keys:
+
+| name     | type     | description                                                                                                                                                                     |
+|----------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `data`   | `Object` | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response*                                                          |
 | `error?` | `Object` | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
 
 
