@@ -33,7 +33,7 @@ const makeServerFetchye = ({
   const computedKey = computeKey(key, options);
   const run = () => runAsync({
     dispatch,
-    computedKey,
+    computedKey: computeKey(key, options),
     fetcher,
     fetchClient,
     options,

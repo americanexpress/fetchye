@@ -77,7 +77,7 @@ const useFetchye = (
     run() {
       return runAsync({
         dispatch,
-        computedKey,
+        computedKey: computeKey(key, options),
         fetcher: selectedFetcher,
         fetchClient,
         options,

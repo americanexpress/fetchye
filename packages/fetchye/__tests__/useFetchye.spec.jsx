@@ -115,6 +115,7 @@ describe('useFetchye', () => {
       });
       it('should call fetch with the right headers when passed dynamic headers', async () => {
         let fetchyeRes;
+        let dynamicValueCount = 0;
         global.fetch = jest.fn(async () => ({
           ...defaultPayload,
         }));
@@ -123,7 +124,11 @@ describe('useFetchye', () => {
             {React.createElement(() => {
               fetchyeRes = useFetchye('http://example.com', {
                 headers: () => ({
-                  dynamicHeader: 'dynamic value',
+                  dynamicHeader: `dynamic value ${dynamicValueCount}`,
+                }),
+                mapOptionsToKey: (options) => ({
+                  ...options,
+                  dynamicHeader: null,
                 }),
               });
               return null;
@@ -131,18 +136,21 @@ describe('useFetchye', () => {
           </AFetchyeProvider>
         );
         await waitFor(() => fetchyeRes.isLoading === false);
-        expect(global.fetch.mock.calls).toMatchInlineSnapshot(`
-          Array [
-            Array [
-              "http://example.com",
-              Object {
-                "headers": Object {
-                  "dynamicHeader": "dynamic value",
-                },
-              },
-            ],
-          ]
-        `);
+        dynamicValueCount += 1;
+        await fetchyeRes.run();
+        expect(global.fetch).toHaveBeenCalledTimes(2);
+        expect(global.fetch).toHaveBeenNthCalledWith(1, 'http://example.com', {
+          headers: {
+            dynamicHeader: 'dynamic value 0',
+          },
+          mapOptionsToKey: expect.any(Function),
+        });
+        expect(global.fetch).toHaveBeenNthCalledWith(2, 'http://example.com', {
+          headers: {
+            dynamicHeader: 'dynamic value 1',
+          },
+          mapOptionsToKey: expect.any(Function),
+        });
       });
       it('should return data success state when response is empty (204 no content)', async () => {
         let fetchyeRes;
