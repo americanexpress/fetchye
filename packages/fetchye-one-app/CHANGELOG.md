@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/americanexpress/fetchye/compare/v1.4.0...v1.5.0) (2024-02-06)
+
+
+### Features
+
+* **oneFetchye:** Introduce new imperative api ([f6ec47e](https://github.com/americanexpress/fetchye/commit/f6ec47ea860ef4a8ff63a3e07d7405b6b7760b2c))
+
+
+
+
+
 # [1.4.0](https://github.com/americanexpress/fetchye/compare/v1.3.0...v1.4.0) (2023-10-23)
 
 **Note:** Version bump only for package fetchye-one-app
