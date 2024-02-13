@@ -478,7 +478,7 @@ const BookList = ({ genre }) => {
   const {
     isLoading,
     data: booksData,
-    run
+    run,
   } = useFetchye(`http://example.com/api/books/?genre=${genre}`);
 
   if (isLoading) {
