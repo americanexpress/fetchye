@@ -36,6 +36,7 @@ const MyComponent = () => {
 ## ⬇️ Install & Setup
 
 **Contents**
+
 * [Quick Install](#quick-install)
 * [FetchyeProvider Install](#fetchyeprovider-install)
 * [FetchyeReduxProvider Install](#fetchyereduxprovider-install)
@@ -43,12 +44,14 @@ const MyComponent = () => {
 
 ### Quick Install
 
->💡 Makes use of Headless per-Hook Cache Mode
+> 💡 Makes use of Headless per-Hook Cache Mode
 
 **Pros**
+
 - Painless and Quick
 
 **Cons**
+
 - No shared caching
 - No de-duplication of API calls
 
@@ -76,14 +79,16 @@ const MyComponent = () => {
 
 ### `FetchyeProvider` Install
 
->💡 When you want a central cache but no extra dependencies
+> 💡 When you want a central cache but no extra dependencies
 
 **Pros**
+
 - Easy
 - Shared Cache
 - De-duplication of API calls
 
 **Cons**
+
 - No Redux Dev Tools for debugging and cache inspection
 - Limited centralized server-side data hydration support
 
@@ -126,9 +131,10 @@ const MyComponent = () => {
 
 ### `FetchyeReduxProvider` Install
 
->💡 When you want a central cache integrated with a Redux based project
+> 💡 When you want a central cache integrated with a Redux based project
 
 **Pros**
+
 - Easy if you know Redux
 - Shared Cache
 - De-duplication of API calls
@@ -136,6 +142,7 @@ const MyComponent = () => {
 - Excellent centralized server-side data hydration support
 
 **Cons**
+
 - More steps and dependencies
 
 Add `fetchye` and its needed optional dependencies:
@@ -189,9 +196,10 @@ const MyComponent = () => {
 
 ### One App Install
 
->💡 For when you use the [One App](https://github.com/americanexpress/one-app) Micro-Frontend Framework
+> 💡 For when you use the [One App](https://github.com/americanexpress/one-app) Micro-Frontend Framework
 
 **Pros**
+
 - Shared Cache
 - De-duplication of API calls
 - Redux Dev Tools for debugging and cache inspection
@@ -201,19 +209,16 @@ const MyComponent = () => {
 - Minimal configuration
 
 **Cons**
+
 - More steps and dependencies
 
 ```
 npm i -S fetchye fetchye-one-app
 ```
 
-`fetchye-one-app` provides pre-configured `provider`, `cache`, `oneFetchye`
-and `oneCacheSelector` to ensure that all modules use the same cache and reduce the chance for cache misses.
-These all have restricted APIs to reduce the chance for misconfiguration however if you require more control/customization
-use [`ImmutableCache`](#immutablecache), [`FetchyeReduxProvider`](#fetchyereduxprovider) and [`makeServerFetchye`](#makeserverfetchye). Please bear in mind that this can impact modules which are do not use the same configuration.
+`fetchye-one-app` provides pre-configured `provider`, `cache`, `oneFetchye` and `oneCacheSelector` to ensure that all modules use the same cache and reduce the chance for cache misses. These all have restricted APIs to reduce the chance for misconfiguration however if you require more control/customization use [`ImmutableCache`](#immutablecache), [`FetchyeReduxProvider`](#fetchyereduxprovider) and [`makeServerFetchye`](#makeserverfetchye). Please bear in mind that this can impact modules which are do not use the same configuration.
 
-Add the `<OneFetchyeProvider />` component from `fetchye-one-app` to your Root Holocron Module,
-and add the reducer from `OneCache` scoped under `fetchye`:
+Add the `<OneFetchyeProvider />` component from `fetchye-one-app` to your Root Holocron Module, and add the reducer from `OneCache` scoped under `fetchye`:
 
 ```jsx
 // ...
@@ -222,7 +227,7 @@ import { OneFetchyeProvider, OneCache } from 'fetchye-one-app';
 
 const MyModuleRoot = ({ children }) => (
   <>
-    { /* OneFetchyeProvider is configured to use OneCache */ }
+    { /* OneFetchyeProvider is configured to use OneCache */}
     <OneFetchyeProvider>
       {/* Use your Router to supply children components containing useFetchye */}
       {children}
@@ -259,8 +264,7 @@ const MyComponent = () => {
 };
 ```
 
-This minimal configuration works as the provider, cache and makeOneServerFetchye, mentioned later,
-all follow expected conventions.
+This minimal configuration works as the provider, cache and makeOneServerFetchye, mentioned later, all follow expected conventions.
 
 ## 🤹‍ Usage
 
@@ -342,6 +346,7 @@ const NewBookForm = () => {
 When you neeed to abort the execution of requests inflight, passing a signal from the [Abort Controller](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) API to `useFetchye` as an option will enable this.
 
 Considering `useFetchye` is a wrapper around fetch, passing a signal is the same and provides the same functionality as demonstrated below.
+
 ```jsx
 import React, { useEffect } from 'react';
 import { useFetchye } from 'fetchye';
@@ -359,6 +364,7 @@ const AbortComponent = () => {
   );
 };
 ```
+
 Instead of setting up a `useEffect` within the component it's possible to pass a hook to signal using packages such as
 [use-unmount-signal](https://www.npmjs.com/package/use-unmount-signal/v/1.0.0).
 
@@ -469,7 +475,11 @@ import React from 'react';
 import { useFetchye } from 'fetchye';
 
 const BookList = ({ genre }) => {
-  const { isLoading, data: booksData, run } = useFetchye(`http://example.com/api/books/?genre=${genre}`);
+  const {
+    isLoading,
+    data: booksData,
+    run,
+  } = useFetchye(`http://example.com/api/books/?genre=${genre}`);
 
   if (isLoading) {
     return (<p>Loading...</p>);
@@ -486,8 +496,7 @@ const BookList = ({ genre }) => {
 
 ### Custom Fetcher
 
-Custom fetchers allow for creating reusable data fetching logic for specific
-APIs or custom needs. They allow for a centrally provided
+Custom fetchers allow for creating reusable data fetching logic for specific APIs or custom needs. They allow for a centrally provided
 `fetchClient` which wraps that client on a per `useFetchye` request basis.
 
 ```jsx
@@ -582,7 +591,7 @@ const BookList = ({ ssl }) => {
   }
 
   return (
-    {/* Render data */}
+    {/* Render data */ }
   );
 };
 ```
@@ -621,20 +630,18 @@ const BookList = () => {
   }
 
   return (
-    {/* Render data */}
+    {/* Render data */ }
   );
 };
 
 export default BookList;
 ```
 
-
 ### SSR
 
 #### One App SSR
 
-Using `oneFetchye` from `fetchye-one-app` ensures that the cache will
-always be configured correctly.
+Using `oneFetchye` from `fetchye-one-app` ensures that the cache will always be configured correctly.
 
 ```jsx
 import React from 'react';
@@ -649,7 +656,7 @@ const BookList = () => {
   }
 
   return (
-    {/* Render data */}
+    {/* Render data */ }
   );
 };
 
@@ -686,7 +693,7 @@ export default function IndexPage({ initialBookList }) {
   }
 
   return (
-    {/* Render data */}
+    {/* Render data */ }
   );
 }
 
@@ -716,7 +723,8 @@ export async function getServerSideProps() {
 
 ## Write your own Cache
 
-> 💬 **Note**: This is for advanced users with special cases. Advanced users should understand Redux design pattern concepts about [Reducers](https://redux.js.org/basics/reducers) and [Actions](https://redux.js.org/basics/actions) before continuing.
+> 💬 **Note
+**: This is for advanced users with special cases. Advanced users should understand Redux design pattern concepts about [Reducers](https://redux.js.org/basics/reducers) and [Actions](https://redux.js.org/basics/actions) before continuing.
 
 Sometimes, the basic opinions of the cache may not be enough for a project's use case. We can create a very basic new Cache configuration like so:
 
@@ -821,11 +829,11 @@ const { isLoading, data, error, run } = useFetchye(key, { defer: Boolean, mapOpt
 
 **Arguments**
 
-| name | type | required | description |
-|---|---|---|---|
-| `key` | `String` or `() => String` | `true` | A string or function returning a string that factors into cache key creation. *Defaults to URL compatible string*. |
-| `options` | `Object<Options>` | `false` | Options to pass through to ES6 Fetch. See **Options** table for the exceptions to this rule. The `options` object factors into cache key creation. |
-| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false` | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+| name      | type                                                                                                 | required | description                                                                                                                                        |
+|-----------|------------------------------------------------------------------------------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `key`     | `String` or `() => String`                                                                           | `true`   | A string or function returning a string that factors into cache key creation. *Defaults to URL compatible string*.                                 |
+| `options` | `Object<Options>`                                                                                    | `false`  | Options to pass through to ES6 Fetch. See **Options** table for the exceptions to this rule. The `options` object factors into cache key creation. |
+| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object.  |
 
 **Options**
 
@@ -840,12 +848,12 @@ const { isLoading, data, error, run } = useFetchye(key, { defer: Boolean, mapOpt
 
 **Returns**
 
-| name | type | description |
-|---|---|---|
-| `isLoading` | `Boolean` | A boolean to indicate whether in loading state or not. |
-| `data` | `Object` | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response* |
-| `error?` | `Object` | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
-| `run` | `async () => {}` | A function for bypassing the cache and firing an API call. This will cause `isLoading === true` and update the cache based on the result. |
+| name        | type             | description                                                                                                                                                                     |
+|-------------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `isLoading` | `Boolean`        | A boolean to indicate whether in loading state or not.                                                                                                                          |
+| `data`      | `Object`         | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response*                                                          |
+| `error?`    | `Object`         | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
+| `run`       | `async () => {}` | A function for bypassing the cache and firing an API call. This will cause `isLoading === true` and update the cache based on the result.                                       |
 
 ### `makeServerFetchye`
 
@@ -861,26 +869,26 @@ const { data, error } = await fetchye(key, options, fetcher);
 
 **`makeServerFetchye` Arguments**
 
-| name | type | required | description |
-|---|---|---|---|
-| `cache` | `Cache` | `true` | Fetchye `Cache` object. |
-| `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| name          | type       | required | description                                                                                    |
+|---------------|------------|----------|------------------------------------------------------------------------------------------------|
+| `cache`       | `Cache`    | `true`   | Fetchye `Cache` object.                                                                        |
+| `fetchClient` | `ES6Fetch` | `true`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
 
 **`fetchye` Arguments**
 
-| name | type | required | description |
-|---|---|---|---|
-| `key` | `String` or `() => String` | `true` | A string or function returning a string that factors into cache key creation. *Defaults to URL compatible string*. |
-| `options` | `ES6FetchOptions` | `false` | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). |
-| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false` | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+| name      | type                                                                                                 | required | description                                                                                                                                       |
+|-----------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `key`     | `String` or `() => String`                                                                           | `true`   | A string or function returning a string that factors into cache key creation. *Defaults to URL compatible string*.                                |
+| `options` | `ES6FetchOptions`                                                                                    | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                               |
+| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
 
 **`fetchye` Returns**
 
-| name | type | description |
-|---|---|---|
-| `data` | `Object` | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response* |
-| `error?` | `Object` | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
-
+| name     | type             | description                                                                                                                                                                     |
+|----------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `data`   | `Object`         | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response*                                                          |
+| `error?` | `Object`         | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
+| `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can we awaited.                                                                                                      |
 
 ### `makeOneServerFetchye`
 
@@ -898,27 +906,27 @@ const { data, error } = await fetchye(key, options, fetcher);
 
 **`makeOneServerFetchye` Arguments**
 
-| name | type | required | description |
-|---|---|---|---|
-| `cache` | `Cache` | `false` | *Defaults to OneCache* Fetchye `Cache` object. |
-| `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
-| `store` | `Store` | `true` | A [Redux Store](https://redux.js.org/api/store) |
+| name          | type       | required | description                                                                                    |
+|---------------|------------|----------|------------------------------------------------------------------------------------------------|
+| `cache`       | `Cache`    | `false`  | *Defaults to OneCache* Fetchye `Cache` object.                                                 |
+| `fetchClient` | `ES6Fetch` | `true`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| `store`       | `Store`    | `true`   | A [Redux Store](https://redux.js.org/api/store)                                                |
 
 **`fetchye` Arguments**
 
-| name | type | required | description |
-|---|---|---|---|
-| `key` | `String` or `() => String` | `true` | A string or function returning a string that factors into cache key creation. *Defaults to URL compatible string*. |
-| `options` | `ES6FetchOptions` | `false` | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). |
-| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false` | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+| name      | type                                                                                                 | required | description                                                                                                                                       |
+|-----------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `key`     | `String` or `() => String`                                                                           | `true`   | A string or function returning a string that factors into cache key creation. *Defaults to URL compatible string*.                                |
+| `options` | `ES6FetchOptions`                                                                                    | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                               |
+| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
 
 **`fetchye` Returns**
 
-| name | type | description |
-|---|---|---|
-| `data` | `Object` | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response* |
-| `error?` | `Object` | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
-
+| name     | type             | description                                                                                                                                                                     |
+|----------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `data`   | `Object`         | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response*                                                          |
+| `error?` | `Object`         | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
+| `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can we awaited.                                                                                                      |
 
 ### oneFetchye
 
@@ -927,26 +935,26 @@ Call fetchye in an imperative context, such as in One App's loadModuleData, in a
 **Shape**
 
 ```
-const { data, error } = await dispatch(onefetchye(key, options, fetcher));
+const { data, error } = await dispatch(oneFetchye(key, options, fetcher));
 ```
 
-**`onefetchye` Arguments**
+**`oneFetchye` Arguments**
 
-| name      | type                                                                                                 | required   | description                                                                                                                                       |
-|-----------|------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| `key`     | `String` or `() => String`                                                                           | `true`     | A string or function returning a string that factors into cache key creation. *Defaults to URL compatible string*.                                |
-| `options` | `ES6FetchOptions`                                                                                    | `false`    | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                               |
-| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`    | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+| name      | type                                                                                                 | required | description                                                                                                                                       |
+|-----------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `key`     | `String` or `() => String`                                                                           | `true`   | A string or function returning a string that factors into cache key creation. *Defaults to URL compatible string*.                                |
+| `options` | `ES6FetchOptions`                                                                                    | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                               |
+| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
 
 **`onefetchye` Returns**
 
 A promise resolving to an object with the below keys:
 
-| name     | type     | description                                                                                                                                                                     |
-|----------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `data`   | `Object` | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response*                                                          |
-| `error?` | `Object` | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
-
+| name     | type             | description                                                                                                                                                                     |
+|----------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `data`   | `Object`         | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response*                                                          |
+| `error?` | `Object`         | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
+| `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can we awaited.                                                                                                      |
 
 ### Providers
 
@@ -966,11 +974,11 @@ A React Context Provider that holds the centralized cache for all the `useFetchy
 
 **Props**
 
-| name | type | required | description |
-|---|---|---|---|
-| `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
-| `cache` | `Cache` | `false` | Fetchye `Cache` object. *Defaults to `SimpleCache`* |
-| `initialData` | `Object` | `false` | Initial state to feed into Cache Configuration `reducer` |
+| name          | type       | required | description                                                                                    |
+|---------------|------------|----------|------------------------------------------------------------------------------------------------|
+| `fetchClient` | `ES6Fetch` | `true`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| `cache`       | `Cache`    | `false`  | Fetchye `Cache` object. *Defaults to `SimpleCache`*                                            |
+| `initialData` | `Object`   | `false`  | Initial state to feed into Cache Configuration `reducer`                                       |
 
 #### `FetchyeReduxProvider`
 
@@ -994,16 +1002,16 @@ import { FetchyeReduxProvider } from "fetchye-redux-provider";
 
 **Context**
 
-| name | type | required | description |
-|---|---|---|---|
-| `ReactReduxContext` | `ReactReduxContext` | `true` | A [Redux Context](https://react-redux.js.org/api/provider) from a `<Provider />`. |
+| name                | type                | required | description                                                                       |
+|---------------------|---------------------|----------|-----------------------------------------------------------------------------------|
+| `ReactReduxContext` | `ReactReduxContext` | `true`   | A [Redux Context](https://react-redux.js.org/api/provider) from a `<Provider />`. |
 
 **Props**
 
-| name | type | required | description |
-|---|---|---|---|
-| `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
-| `cache` | `Cache` | `false` | Fetchye `Cache` object. *Defaults to `SimpleCache`* |
+| name          | type       | required | description                                                                                    |
+|---------------|------------|----------|------------------------------------------------------------------------------------------------|
+| `fetchClient` | `ES6Fetch` | `true`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| `cache`       | `Cache`    | `false`  | Fetchye `Cache` object. *Defaults to `SimpleCache`*                                            |
 
 #### `OneFetchyeProvider`
 
@@ -1027,17 +1035,16 @@ import { OneFetchyeProvider } from 'fetchye-one-app';
 
 **Context**
 
-| name | type | required | description |
-|---|---|---|---|
-| `ReactReduxContext` | `ReactReduxContext` | `true` | A [Redux Context](https://react-redux.js.org/api/provider) from a `<Provider />`. |
+| name                | type                | required | description                                                                       |
+|---------------------|---------------------|----------|-----------------------------------------------------------------------------------|
+| `ReactReduxContext` | `ReactReduxContext` | `true`   | A [Redux Context](https://react-redux.js.org/api/provider) from a `<Provider />`. |
 
 **Props**
 
-| name | type | required | description |
-|---|---|---|---|
-| `fetchClient` | `ES6Fetch` | `true` | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
-| `cache` | `Cache` | `false` | Fetchye `Cache` object. *Defaults to `OneCache`* |
-
+| name          | type       | required | description                                                                                    |
+|---------------|------------|----------|------------------------------------------------------------------------------------------------|
+| `fetchClient` | `ES6Fetch` | `true`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| `cache`       | `Cache`    | `false`  | Fetchye `Cache` object. *Defaults to `OneCache`*                                               |
 
 ### Caches
 
@@ -1059,17 +1066,17 @@ const cache = SimpleCache({
 
 **Arguments**
 
-| name | type | required | description |
-|---|---|---|---|
-| `cacheSelector` | `(state) => state` | `false` | *Required if using `FetchyeReduxProvider`* A function that returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+| name            | type               | required | description                                                                                                                                                                                            |
+|-----------------|--------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `cacheSelector` | `(state) => state` | `false`  | *Required if using `FetchyeReduxProvider`* A function that returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
 
 **Returns**
 
-| name | type | description |
-|---|---|---|
-| `reducer` | `(state, action) => state` | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)). |
-| `getCacheByKey` | `(cache, key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state. |
-| `cacheSelector?` | `(state) => state` | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+| name             | type                       | description                                                                                                                                                                                 |
+|------------------|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `reducer`        | `(state, action) => state` | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)).                                                                      |
+| `getCacheByKey`  | `(cache, key) => state`    | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state.                                                                                  |
+| `cacheSelector?` | `(state) => state`         | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
 
 #### `ImmutableCache`
 
@@ -1089,17 +1096,17 @@ const cache = ImmutableCache({
 
 **Arguments**
 
-| name | type | required | description |
-|---|---|---|--|
-| `cacheSelector` | `(state) => state` | `false` | *Required if using `FetchyeReduxProvider`* A function that returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+| name            | type               | required | description                                                                                                                                                                                            |
+|-----------------|--------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `cacheSelector` | `(state) => state` | `false`  | *Required if using `FetchyeReduxProvider`* A function that returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
 
 **Returns**
 
-| name | type | description |
-|---|---|---|
-| `reducer` | `(state, action) => state` | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)). |
-| `getCacheByKey` | `(cache = Immutable.Map(), key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state. |
-| `cacheSelector?` | `(state) => state` | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
+| name             | type                                      | description                                                                                                                                                                                 |
+|------------------|-------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `reducer`        | `(state, action) => state`                | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)).                                                                      |
+| `getCacheByKey`  | `(cache = Immutable.Map(), key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state.                                                                                  |
+| `cacheSelector?` | `(state) => state`                        | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
 
 #### `OneCache`
 
@@ -1117,12 +1124,11 @@ const cache = OneCache();
 
 **Returns**
 
-| name | type | description |
-|---|---|---|
-| `reducer` | `(state, action) => state` | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)). |
-| `getCacheByKey` | `(cache = Immutable.Map(), key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state. |
-| `cacheSelector?` | `(state) => state` | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
-
+| name             | type                                      | description                                                                                                                                                                                 |
+|------------------|-------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `reducer`        | `(state, action) => state`                | A function that reduces the next state of Fetchye Cache. (See [Redux Reducers](https://redux.js.org/basics/reducers)).                                                                      |
+| `getCacheByKey`  | `(cache = Immutable.Map(), key) => state` | A function that returns a minimum of `{ data, loading, error }` for a specific cache key from cache state.                                                                                  |
+| `cacheSelector?` | `(state) => state`                        | An optionally returned parameter. This function returns the location inside Redux State to the Fetchye Cache. (See [Redux Selectors](https://redux.js.org/recipes/computing-derived-data)). |
 
 ### Actions
 
@@ -1130,8 +1136,7 @@ These actions power the state transitions described in a Cache Configuration `re
 
 #### `IS_LOADING`
 
-An event signaling a state transition to the loading state
-by hash key.
+An event signaling a state transition to the loading state by hash key.
 
 **Shape**
 
@@ -1148,14 +1153,13 @@ import { IS_LOADING } from 'fetchye-core';
 
 **Child Properties**
 
-| name | type | description |
-|---|---|---|
+| name   | type     | description                                                                                              |
+|--------|----------|----------------------------------------------------------------------------------------------------------|
 | `hash` | `String` | The hash value generated by [`object-hash`](https://github.com/puleos/object-hash) package for the query |
 
 #### `SET_DATA`
 
-An event signaling a state transition inside a reducer to add or replace the data
-field and transition away from loading state by hash key.
+An event signaling a state transition inside a reducer to add or replace the data field and transition away from loading state by hash key.
 
 **Shape**
 
@@ -1173,10 +1177,10 @@ import { SET_DATA } from 'fetchye-core';
 
 **Child Properties**
 
-| name | type | description |
-|---|---|---|
-| `hash` | `String` | The hash value generated by [`object-hash`](https://github.com/puleos/object-hash) package for the query |
-| `value` | `Object` | Contains the `payload` data returned from the `fetcher` inside `useFetchye` |
+| name    | type     | description                                                                                              |
+|---------|----------|----------------------------------------------------------------------------------------------------------|
+| `hash`  | `String` | The hash value generated by [`object-hash`](https://github.com/puleos/object-hash) package for the query |
+| `value` | `Object` | Contains the `payload` data returned from the `fetcher` inside `useFetchye`                              |
 
 #### `DELETE_DATA`
 
@@ -1197,8 +1201,8 @@ import { DELETE_DATA } from 'fetchye-core';
 
 **Child Properties**
 
-| name | type | description |
-|---|---|---|
+| name   | type     | description                                                                                              |
+|--------|----------|----------------------------------------------------------------------------------------------------------|
 | `hash` | `String` | The hash value generated by [`object-hash`](https://github.com/puleos/object-hash) package for the query |
 
 #### `ERROR`
@@ -1221,10 +1225,10 @@ import { ERROR } from 'fetchye-core';
 
 **Child Properties**
 
-| name | type | description |
-|---|---|---|
-| `hash` | `String` | The hash value generated by [`object-hash`](https://github.com/puleos/object-hash) package for the query |
-| `error` | `Error | String | null` | Contains the `error` value returned from the `fetcher` inside `useFetchye` |
+| name    | type     | description                                                                                              |
+|---------|----------|----------------------------------------------------------------------------------------------------------|
+| `hash`  | `String` | The hash value generated by [`object-hash`](https://github.com/puleos/object-hash) package for the query |
+| `error` | `Error   | String                                                                                                   | null` | Contains the `error` value returned from the `fetcher` inside `useFetchye` |
 
 #### `CLEAR_ERROR`
 
@@ -1245,11 +1249,12 @@ import { CLEAR_ERROR } from 'fetchye-core';
 
 **Child Properties**
 
-| name | type | description |
-|---|---|---|
+| name   | type     | description                                                                                              |
+|--------|----------|----------------------------------------------------------------------------------------------------------|
 | `hash` | `String` | The hash value generated by [`object-hash`](https://github.com/puleos/object-hash) package for the query |
 
 ### mapOptionToKey Helpers
+
 These helpers provide a more compact and simple way of common transforms.
 
 There is currently one helper.
@@ -1262,9 +1267,9 @@ There is currently one helper.
 
 **Arguments**
 
-| name   | type            | required | description                                                                                      |
-|--------|-----------------|----------|--------------------------------------------------------------------------------------------------|
-| `keys` | `Array<String>` | `true`   | creates a mapOptionsToKey function that removes headers whose keys match the specified keys  |
+| name   | type            | required | description                                                                                 |
+|--------|-----------------|----------|---------------------------------------------------------------------------------------------|
+| `keys` | `Array<String>` | `true`   | creates a mapOptionsToKey function that removes headers whose keys match the specified keys |
 
 **Returns**
 
@@ -1291,38 +1296,20 @@ const BookList = ({ locale }) => {
 export default BookList;
 ```
 
-
-
-
-
 ## 📢 Mission
 
-The Fetchye project wishes to bring a more flexible central caching experience
-using the best ideas of the Redux design pattern and options for the developer
-to choose how their data is stored. Fetchye provides React Context driven
-caching options backed by your choice of pure React (via `useReducer`) or Redux.
-Unlike many data fetching solutions, Fetchye Context Providers do not rely on
-singleton statics and can be instantiated throughout an application multiple
-times for multiple caches if so desired.
+The Fetchye project wishes to bring a more flexible central caching experience using the best ideas of the Redux design pattern and options for the developer to choose how their data is stored. Fetchye provides React Context driven caching options backed by your choice of pure React (via `useReducer`) or Redux. Unlike many data fetching solutions, Fetchye Context Providers do not rely on singleton statics and can be instantiated throughout an application multiple times for multiple caches if so desired.
 
 ## 🏆 Contributing
 
-We welcome Your interest in the American Express Open Source Community on Github.
-Any Contributor to any Open Source Project managed by the American Express Open
-Source Community must accept and sign an Agreement indicating agreement to the
-terms below. Except for the rights granted in this Agreement to American Express
-and to recipients of software distributed by American Express, You reserve all
-right, title, and interest, if any, in and to Your Contributions. Please [fill
-out the Agreement](https://cla-assistant.io/americanexpress/fetchye).
+We welcome Your interest in the American Express Open Source Community on Github. Any Contributor to any Open Source Project managed by the American Express Open Source Community must accept and sign an Agreement indicating agreement to the terms below. Except for the rights granted in this Agreement to American Express and to recipients of software distributed by American Express, You reserve all right, title, and interest, if any, in and to Your Contributions. Please [fill out the Agreement](https://cla-assistant.io/americanexpress/fetchye).
 
 Please feel free to open pull requests and see [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how to get started contributing.
 
 ## 🗝️ License
 
-Any contributions made under this project will be governed by the [Apache License
-2.0](./LICENSE.txt).
+Any contributions made under this project will be governed by the [Apache License 2.0](./LICENSE.txt).
 
 ## 🗣️ Code of Conduct
 
-This project adheres to the [American Express Community Guidelines](./CODE_OF_CONDUCT.md).
-By participating, you are expected to honor these guidelines.
+This project adheres to the [American Express Community Guidelines](./CODE_OF_CONDUCT.md). By participating, you are expected to honor these guidelines.

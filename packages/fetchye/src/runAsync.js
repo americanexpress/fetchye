@@ -20,6 +20,7 @@ import {
   errorAction,
 
 } from 'fetchye-core';
+import { handleDynamicHeaders } from './handleDynamicHeaders';
 
 export const runAsync = async ({
   dispatch, computedKey, fetcher, fetchClient, options,
@@ -28,7 +29,7 @@ export const runAsync = async ({
   const {
     payload: data,
     error: requestError,
-  } = await fetcher(fetchClient, computedKey.key, options);
+  } = await fetcher(fetchClient, computedKey.key, handleDynamicHeaders(options));
   if (!requestError) {
     dispatch(setAction({ hash: computedKey.hash, value: data }));
   } else {

@@ -21,8 +21,6 @@ import {
   isLoading,
 } from './queryHelpers';
 import { useFetchyeContext } from './useFetchyeContext';
-import { defaultMapOptionsToKey } from './defaultMapOptionsToKey';
-import { handleDynamicHeaders } from './handleDynamicHeaders';
 
 const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders === 1
   ? value || initialValue
@@ -30,15 +28,14 @@ const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders ===
 
 const useFetchye = (
   key,
-  { mapOptionsToKey = (options) => options, ...options } = { },
+  options = {},
   fetcher = undefined
 ) => {
   const {
     defaultFetcher, useFetchyeSelector, dispatch, fetchClient,
   } = useFetchyeContext();
-  const dynamicOptions = handleDynamicHeaders(options);
   const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
-  const computedKey = computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(dynamicOptions)));
+  const computedKey = computeKey(key, options);
   const selectorState = useFetchyeSelector(computedKey.hash);
   // create a render version manager using refs
   const numOfRenders = useRef(0);
@@ -55,7 +52,7 @@ const useFetchye = (
     const { loading, data, error } = selectorState.current;
     if (!loading && !data && !error) {
       runAsync({
-        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options: dynamicOptions,
+        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
     }
   });
@@ -78,16 +75,12 @@ const useFetchye = (
       numOfRenders.current
     ),
     run() {
-      const runOptions = handleDynamicHeaders(options);
-      const runComputedKey = typeof options.headers === 'function'
-        ? computeKey(key, defaultMapOptionsToKey(mapOptionsToKey(runOptions)))
-        : computedKey;
       return runAsync({
         dispatch,
-        computedKey: runComputedKey,
+        computedKey: computeKey(key, options),
         fetcher: selectedFetcher,
         fetchClient,
-        options: runOptions,
+        options,
       });
     },
   };

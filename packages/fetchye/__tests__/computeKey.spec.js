@@ -42,6 +42,14 @@ describe('computeKey', () => {
       }
     `);
   });
+  it('should return an object if no options are passed', () => {
+    expect(computeKey(() => 'abcd')).toMatchInlineSnapshot(`
+      Object {
+        "hash": "037ace2918f4083eda9c4be34cccb93de5051b5a",
+        "key": "abcd",
+      }
+    `);
+  });
   it('should return false if key func throws error', () => {
     expect(
       computeKey(() => {
@@ -87,6 +95,21 @@ describe('computeKey', () => {
     const { hash: unmappedHash } = computeKey(key, {});
 
     expect(mappedHash).toBe(unmappedHash);
+  });
+
+  it('should call dynamic headers function and return a different hash when dynamic headers change', () => {
+    const key = 'abcd';
+    let headerCount = 0;
+    const options = {
+      headers: () => {
+        headerCount += 1;
+        return { dynamicHeader: headerCount };
+      },
+    };
+    const { hash: mappedHash1 } = computeKey(key, options);
+    const { hash: mappedHash2 } = computeKey(key, options);
+    expect(mappedHash1).not.toBe(mappedHash2);
+    expect(headerCount).toBe(2);
   });
 
   it('should pass generated cacheKey to the underlying hash function along with the options, and return the un-mapped key to the caller', () => {
