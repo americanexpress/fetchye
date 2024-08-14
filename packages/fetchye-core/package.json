@@ -29,7 +29,9 @@
     "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)"
   ],
   "dependencies": {
-    "create-shared-react-context": "^1.0.3"
+    "create-shared-react-context": "^1.0.3",
+    "deep-equal": "^2.2.3",
+    "json-to-graphql-query": "^2.2.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",

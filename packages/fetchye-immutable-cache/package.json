@@ -35,7 +35,8 @@
     "Ruben Casas <ruben.casas@aexp.com> (https://github.com/infoxicator)"
   ],
   "dependencies": {
-    "immutable": "^4.0.0-rc.12"
+    "immutable": "^4.0.0-rc.12",
+    "lodash.merge": "^4.6.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",

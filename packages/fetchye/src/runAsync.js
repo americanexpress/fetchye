@@ -18,20 +18,36 @@ import {
   loadingAction,
   setAction,
   errorAction,
-
+  setQuery,
+  updateDataAction,
 } from 'fetchye-core';
 import { handleDynamicHeaders } from './handleDynamicHeaders';
 
 export const runAsync = async ({
   dispatch, computedKey, fetcher, fetchClient, options,
 }) => {
+  const {
+    body: {
+      query,
+    } = {},
+    isGraphQL = false,
+  } = options;
   dispatch(loadingAction({ hash: computedKey.hash }));
+  if (isGraphQL) {
+    dispatch(setQuery({ hash: computedKey.hash, query }));
+  }
   const {
     payload: data,
     error: requestError,
-  } = await fetcher(fetchClient, computedKey.key, handleDynamicHeaders(options));
+  } = await fetcher(
+    fetchClient, computedKey.key, handleDynamicHeaders(options)
+  );
   if (!requestError) {
-    dispatch(setAction({ hash: computedKey.hash, value: data }));
+    if (isGraphQL) {
+      dispatch(updateDataAction({ hash: computedKey.hash, value: data }));
+    } else {
+      dispatch(setAction({ hash: computedKey.hash, value: data }));
+    }
   } else {
     dispatch(errorAction({ hash: computedKey.hash, error: requestError }));
   }

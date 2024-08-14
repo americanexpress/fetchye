@@ -44,6 +44,7 @@ describe('getCacheByKey', () => {
         "data": "Some Data",
         "error": "Some  Error",
         "loading": true,
+        "query": undefined,
       }
     `);
   });
@@ -53,6 +54,7 @@ describe('getCacheByKey', () => {
         "data": undefined,
         "error": undefined,
         "loading": false,
+        "query": undefined,
       }
     `);
   });
@@ -62,6 +64,7 @@ describe('getCacheByKey', () => {
         "data": "Some Data",
         "error": "Some  Error",
         "loading": true,
+        "query": undefined,
       }
     `);
   });
@@ -72,6 +75,7 @@ describe('getCacheByKey', () => {
         "data": "Some Data",
         "error": "Some  Error",
         "loading": false,
+        "query": undefined,
       }
     `);
   });

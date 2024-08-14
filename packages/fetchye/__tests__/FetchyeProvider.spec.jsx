@@ -17,8 +17,12 @@
 import React, { useContext, useEffect } from 'react';
 import { act, render } from '@testing-library/react';
 import {
-  FetchyeContext, loadingAction, setAction, deleteAction, errorAction, clearErrorsAction,
-
+  FetchyeContext,
+  loadingAction,
+  setAction,
+  deleteAction,
+  errorAction,
+  clearErrorsAction,
 } from 'fetchye-core';
 import PropTypes from 'prop-types';
 import FetchyeProvider from '../src/FetchyeProvider';
@@ -79,6 +83,7 @@ describe('FetchyeProvider', () => {
           "data": undefined,
           "error": undefined,
           "loading": true,
+          "query": undefined,
         },
       }
     `);
@@ -103,6 +108,7 @@ describe('FetchyeProvider', () => {
           "data": "fakeData",
           "error": undefined,
           "loading": false,
+          "query": undefined,
         },
       }
     `);
@@ -127,6 +133,7 @@ describe('FetchyeProvider', () => {
           "data": undefined,
           "error": "fake error",
           "loading": false,
+          "query": undefined,
         },
       }
     `);

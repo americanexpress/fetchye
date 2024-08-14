@@ -14,6 +14,9 @@
  * permissions and limitations under the License.
  */
 
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { trimQueryBody } from './trimQueryBody';
+
 // Object.fromEntries is not compatible with Node v10
 // provide our own lightweight solution
 export const headersToObject = (headers = []) => [...headers]
@@ -22,11 +25,47 @@ export const headersToObject = (headers = []) => [...headers]
     return acc;
   }, {});
 export const defaultFetcher = async (fetchClient, key, options) => {
+  let trimmedOptions;
   let res;
   let payload;
   let error;
+  const { existingQuery, isGraphQL } = options || {};
+
+  if (existingQuery && isGraphQL) {
+    const {
+      body,
+      ...restOfOptions
+    } = options;
+    const {
+      query,
+      ...restOfBody
+    } = body || {};
+    trimmedOptions = {
+      ...restOfOptions,
+      body: JSON.stringify({
+        query: jsonToGraphQLQuery(trimQueryBody(query, existingQuery), { pretty: true }),
+        ...restOfBody,
+      }),
+    };
+  } else if (isGraphQL) {
+    const {
+      body,
+      ...restOfOptions
+    } = options;
+    const {
+      query,
+      ...restOfBody
+    } = body || {};
+    trimmedOptions = {
+      ...restOfOptions,
+      body: JSON.stringify({
+        query: jsonToGraphQLQuery(query, { pretty: true }),
+        ...restOfBody,
+      }),
+    };
+  }
   try {
-    res = await fetchClient(key, options);
+    res = await fetchClient(key, trimmedOptions || options);
     let body = await res.text();
     try {
       body = JSON.parse(body);

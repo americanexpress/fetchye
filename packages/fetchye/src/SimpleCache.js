@@ -104,7 +104,10 @@ const getCacheByKey = (cache = {}, key = undefined) => {
   const data = cache.data?.[key];
   const loading = !!cache.loading?.[key];
   const error = cache.errors?.[key];
-  return { data, loading, error };
+  const query = cache.query?.[key];
+  return {
+    data, loading, error, query,
+  };
 };
 
 function SimpleCache({ cacheSelector = (state) => state } = {}) {

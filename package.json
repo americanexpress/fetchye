@@ -34,7 +34,8 @@
     "husky": "^4.2.5",
     "jest": "^26.5.2",
     "lerna": "^3.22.1",
-    "lockfile-lint": "^4.3.7"
+    "lockfile-lint": "^4.3.7",
+    "prettier": "^2.8.8"
   },
   "husky": {
     "hooks": {
