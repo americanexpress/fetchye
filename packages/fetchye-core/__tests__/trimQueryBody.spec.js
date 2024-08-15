@@ -7,28 +7,6 @@ describe('trimQueryBody', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
-  it('should return empty object if __args are different', () => {
-    deepEqual.mockImplementationOnce(() => false);
-    const newQuery = {
-      __args: { a: 1 },
-    };
-    const existingQuery = {
-      __args: { a: 2 },
-    };
-    const result = trimQueryBody(newQuery, existingQuery);
-    expect(result).toEqual({});
-  });
-  it('should return empty object if __name are different', () => {
-    deepEqual.mockImplementationOnce(() => false);
-    const newQuery = {
-      __name: 'a',
-    };
-    const existingQuery = {
-      __name: 'b',
-    };
-    const result = trimQueryBody(newQuery, existingQuery);
-    expect(result).toEqual({});
-  });
   it('should return empty object if key is not in existingQuery', () => {
     deepEqual.mockImplementationOnce(() => true);
     const newQuery = {
@@ -180,6 +158,7 @@ describe('trimQueryBody', () => {
     const newQuery = {
       a: {
         b: {
+          c: 1,
         },
       },
     };

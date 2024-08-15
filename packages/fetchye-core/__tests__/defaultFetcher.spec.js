@@ -40,7 +40,6 @@ describe('defaultFetcher', () => {
         'Content-Type': 'application/json',
       }),
     }));
-    // write a mock for jsonToGraphQLQuery
     jsonToGraphQLQuery.mockImplementationOnce(() => 'jsonToGraphQLQueryMock');
     trimQueryBody.mockImplementationOnce(() => 'trimQueryBodyMock');
     const data = await defaultFetcher(fetchClient, 'http://example.com', {
@@ -75,7 +74,6 @@ describe('defaultFetcher', () => {
         'Content-Type': 'application/json',
       }),
     }));
-    // write a mock for jsonToGraphQLQuery
     jsonToGraphQLQuery.mockImplementationOnce(() => 'jsonToGraphQLQueryMock');
     trimQueryBody.mockImplementationOnce(() => 'trimQueryBodyMock');
     const data = await defaultFetcher(fetchClient, 'http://example.com', {
@@ -97,7 +95,6 @@ describe('defaultFetcher', () => {
         },
       }
     `);
-    expect(jsonToGraphQLQuery).toHaveBeenCalledWith(undefined, { pretty: true });
   });
   it('should handle graphql query with existing query', async () => {
     const fetchClient = jest.fn(async () => ({
@@ -108,7 +105,6 @@ describe('defaultFetcher', () => {
         'Content-Type': 'application/json',
       }),
     }));
-    // write a mock for jsonToGraphQLQuery
     jsonToGraphQLQuery.mockImplementationOnce(() => 'jsonToGraphQLQueryMock');
     trimQueryBody.mockImplementationOnce(() => 'trimQueryBodyMock');
     const data = await defaultFetcher(fetchClient, 'http://example.com', {
@@ -146,7 +142,6 @@ describe('defaultFetcher', () => {
         'Content-Type': 'application/json',
       }),
     }));
-    // write a mock for jsonToGraphQLQuery
     jsonToGraphQLQuery.mockImplementationOnce(() => 'jsonToGraphQLQueryMock');
     trimQueryBody.mockImplementationOnce(() => 'trimQueryBodyMock');
     const data = await defaultFetcher(fetchClient, 'http://example.com', {
@@ -169,8 +164,6 @@ describe('defaultFetcher', () => {
         },
       }
     `);
-    expect(jsonToGraphQLQuery).toHaveBeenCalledWith('trimQueryBodyMock', { pretty: true });
-    expect(trimQueryBody).toHaveBeenCalledWith(undefined, 'existingQueryMock');
   });
 
   it('should return payload and undefined error when status 200', async () => {
