@@ -20,7 +20,10 @@ export const getCacheByKey = (cache = {}, computedKey) => {
   const data = unpackedCache.data?.[computedKey.hash];
   const loading = !!unpackedCache.loading && unpackedCache.loading.includes(computedKey.hash);
   const error = unpackedCache.errors?.[computedKey.hash];
-  return { data, loading, error };
+  const query = unpackedCache.query?.[computedKey.hash];
+  return {
+    data, loading, error, query,
+  };
 };
 
 export default getCacheByKey;

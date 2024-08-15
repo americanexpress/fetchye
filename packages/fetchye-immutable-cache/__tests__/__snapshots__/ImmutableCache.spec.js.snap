@@ -7,6 +7,7 @@ Immutable.Map {
   },
   "loading": Immutable.Set [],
   "data": Immutable.Map {},
+  "query": Immutable.Map {},
 }
 `;
 
@@ -25,6 +26,7 @@ Immutable.Map {
     "abc1234",
   ],
   "data": Immutable.Map {},
+  "query": Immutable.Map {},
 }
 `;
 
@@ -35,6 +37,7 @@ Immutable.Map {
   },
   "loading": Immutable.Set [],
   "data": Immutable.Map {},
+  "query": Immutable.Map {},
 }
 `;
 
@@ -43,6 +46,7 @@ Immutable.Map {
   "errors": Immutable.Map {},
   "loading": Immutable.Set [],
   "data": Immutable.Map {},
+  "query": Immutable.Map {},
 }
 `;
 
@@ -59,6 +63,7 @@ Immutable.Map {
       "status": 200,
     },
   },
+  "query": Immutable.Map {},
 }
 `;
 
@@ -67,6 +72,7 @@ Immutable.Map {
   "errors": Immutable.Map {},
   "loading": Immutable.Set [],
   "data": Immutable.Map {},
+  "query": Immutable.Map {},
 }
 `;
 
@@ -85,6 +91,7 @@ Immutable.Map {
       "status": 200,
     },
   },
+  "query": Immutable.Map {},
 }
 `;
 
@@ -95,6 +102,7 @@ Immutable.Map {
   },
   "loading": Immutable.Set [],
   "data": Immutable.Map {},
+  "query": Immutable.Map {},
 }
 `;
 
@@ -103,6 +111,7 @@ Immutable.Map {
   "errors": Immutable.Map {},
   "loading": Immutable.Set [],
   "data": Immutable.Map {},
+  "query": Immutable.Map {},
 }
 `;
 
@@ -119,6 +128,7 @@ Immutable.Map {
       "status": 200,
     },
   },
+  "query": Immutable.Map {},
 }
 `;
 
@@ -129,5 +139,6 @@ Immutable.Map {
   },
   "loading": Immutable.Set [],
   "data": Immutable.Map {},
+  "query": Immutable.Map {},
 }
 `;

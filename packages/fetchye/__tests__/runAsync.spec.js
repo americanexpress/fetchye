@@ -111,4 +111,76 @@ describe('runAsync', () => {
       }
     `);
   });
+  it('should handle isGraphQL', async () => {
+    const computedKey = {
+      hash: '1234',
+      key: 'http://example.com',
+    };
+    const dispatch = jest.fn();
+    const fetchClient = jest.fn();
+    const fetcher = async () => ({
+      payload: { body: { fake: true } },
+      error: undefined,
+    });
+
+    const options = {
+      isGraphQL: true,
+      body: {
+        query: {
+          __args: { id: '1' },
+          __name: 'test',
+        },
+      },
+    };
+    const data = await runAsync({
+      dispatch,
+      computedKey,
+      fetcher,
+      fetchClient,
+      options,
+    });
+    expect(dispatch.mock.calls).toMatchInlineSnapshot(`
+      Array [
+        Array [
+          Object {
+            "hash": "1234",
+            "type": "@fetchye/IS_LOADING",
+          },
+        ],
+        Array [
+          Object {
+            "hash": "1234",
+            "query": Object {
+              "__args": Object {
+                "id": "1",
+              },
+              "__name": "test",
+            },
+            "type": "@fetchye/SET_QUERY",
+          },
+        ],
+        Array [
+          Object {
+            "hash": "1234",
+            "type": "@fetchye/UPDATE_DATA",
+            "value": Object {
+              "body": Object {
+                "fake": true,
+              },
+            },
+          },
+        ],
+      ]
+    `);
+    expect(data).toMatchInlineSnapshot(`
+      Object {
+        "data": Object {
+          "body": Object {
+            "fake": true,
+          },
+        },
+        "error": undefined,
+      }
+    `);
+  });
 });

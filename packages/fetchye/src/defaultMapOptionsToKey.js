@@ -14,15 +14,23 @@
  * permissions and limitations under the License.
  */
 
+import { getGraphQLArgs } from './getGraphQLArgs';
+
 export const defaultMapOptionsToKey = (options) => {
   const {
     signal,
     defer,
     mapOptionsToKey,
     initialData,
+    isGraphQL,
+    body,
     ...restOfOptions
   } = options;
-  return restOfOptions;
+  const argsList = (isGraphQL && body?.query) && getGraphQLArgs(body.query);
+  return {
+    body: argsList || body,
+    ...restOfOptions,
+  };
 };
 
 export default defaultMapOptionsToKey;

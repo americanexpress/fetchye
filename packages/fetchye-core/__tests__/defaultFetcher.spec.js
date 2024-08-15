@@ -14,7 +14,16 @@
  * permissions and limitations under the License.
  */
 
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { trimQueryBody } from '../src/trimQueryBody';
 import { defaultFetcher } from '../src/defaultFetcher';
+
+jest.mock('json-to-graphql-query', () => ({
+  jsonToGraphQLQuery: jest.fn(),
+}));
+jest.mock('../src/trimQueryBody', () => ({
+  trimQueryBody: jest.fn(),
+}));
 
 global.console.error = jest.fn();
 
@@ -22,6 +31,141 @@ describe('defaultFetcher', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
+  it('should handle graphql query', async () => {
+    const fetchClient = jest.fn(async () => ({
+      ok: true,
+      status: 200,
+      text: async () => JSON.stringify({ jsonBodyMock: 'jsonBodyMock' }),
+      headers: new global.Headers({
+        'Content-Type': 'application/json',
+      }),
+    }));
+    jsonToGraphQLQuery.mockImplementationOnce(() => 'jsonToGraphQLQueryMock');
+    trimQueryBody.mockImplementationOnce(() => 'trimQueryBodyMock');
+    const data = await defaultFetcher(fetchClient, 'http://example.com', {
+      isGraphQL: true,
+      body: {
+        query: 'queryMock',
+      },
+    });
+    expect(data).toMatchInlineSnapshot(`
+      Object {
+        "error": undefined,
+        "payload": Object {
+          "body": Object {
+            "jsonBodyMock": "jsonBodyMock",
+          },
+          "headers": Object {
+            "content-type": "application/json",
+          },
+          "ok": true,
+          "status": 200,
+        },
+      }
+    `);
+    expect(jsonToGraphQLQuery).toHaveBeenCalledWith('queryMock', { pretty: true });
+  });
+  it('should handle graphql query with missing body', async () => {
+    const fetchClient = jest.fn(async () => ({
+      ok: true,
+      status: 200,
+      text: async () => JSON.stringify({ jsonBodyMock: 'jsonBodyMock' }),
+      headers: new global.Headers({
+        'Content-Type': 'application/json',
+      }),
+    }));
+    jsonToGraphQLQuery.mockImplementationOnce(() => 'jsonToGraphQLQueryMock');
+    trimQueryBody.mockImplementationOnce(() => 'trimQueryBodyMock');
+    const data = await defaultFetcher(fetchClient, 'http://example.com', {
+      isGraphQL: true,
+      body: null,
+    });
+    expect(data).toMatchInlineSnapshot(`
+      Object {
+        "error": undefined,
+        "payload": Object {
+          "body": Object {
+            "jsonBodyMock": "jsonBodyMock",
+          },
+          "headers": Object {
+            "content-type": "application/json",
+          },
+          "ok": true,
+          "status": 200,
+        },
+      }
+    `);
+  });
+  it('should handle graphql query with existing query', async () => {
+    const fetchClient = jest.fn(async () => ({
+      ok: true,
+      status: 200,
+      text: async () => JSON.stringify({ jsonBodyMock: 'jsonBodyMock' }),
+      headers: new global.Headers({
+        'Content-Type': 'application/json',
+      }),
+    }));
+    jsonToGraphQLQuery.mockImplementationOnce(() => 'jsonToGraphQLQueryMock');
+    trimQueryBody.mockImplementationOnce(() => 'trimQueryBodyMock');
+    const data = await defaultFetcher(fetchClient, 'http://example.com', {
+      isGraphQL: true,
+      existingQuery: 'existingQueryMock',
+      body: {
+        query: 'queryMock',
+      },
+    });
+    expect(data).toMatchInlineSnapshot(`
+      Object {
+        "error": undefined,
+        "payload": Object {
+          "body": Object {
+            "jsonBodyMock": "jsonBodyMock",
+          },
+          "headers": Object {
+            "content-type": "application/json",
+          },
+          "ok": true,
+          "status": 200,
+        },
+      }
+    `);
+    expect(jsonToGraphQLQuery).toHaveBeenCalledWith('trimQueryBodyMock', { pretty: true });
+    expect(trimQueryBody).toHaveBeenCalledWith('queryMock', 'existingQueryMock');
+  });
+
+  it('should handle graphql query with existing query and no body', async () => {
+    const fetchClient = jest.fn(async () => ({
+      ok: true,
+      status: 200,
+      text: async () => JSON.stringify({ jsonBodyMock: 'jsonBodyMock' }),
+      headers: new global.Headers({
+        'Content-Type': 'application/json',
+      }),
+    }));
+    jsonToGraphQLQuery.mockImplementationOnce(() => 'jsonToGraphQLQueryMock');
+    trimQueryBody.mockImplementationOnce(() => 'trimQueryBodyMock');
+    const data = await defaultFetcher(fetchClient, 'http://example.com', {
+      isGraphQL: true,
+      existingQuery: 'existingQueryMock',
+      body: null,
+    });
+    expect(data).toMatchInlineSnapshot(`
+      Object {
+        "error": undefined,
+        "payload": Object {
+          "body": Object {
+            "jsonBodyMock": "jsonBodyMock",
+          },
+          "headers": Object {
+            "content-type": "application/json",
+          },
+          "ok": true,
+          "status": 200,
+        },
+      }
+    `);
+  });
+
   it('should return payload and undefined error when status 200', async () => {
     const fetchClient = jest.fn(async () => ({
       ok: true,

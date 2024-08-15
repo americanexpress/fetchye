@@ -29,7 +29,7 @@ describe('computeKey', () => {
   it('should return an object', () => {
     expect(computeKey('abcd', {})).toMatchInlineSnapshot(`
       Object {
-        "hash": "037ace2918f4083eda9c4be34cccb93de5051b5a",
+        "hash": "cce033e32599cd4d2447b3d6c7a207ed52129471",
         "key": "abcd",
       }
     `);
@@ -37,7 +37,7 @@ describe('computeKey', () => {
   it('should return an object if passed key function', () => {
     expect(computeKey(() => 'abcd', {})).toMatchInlineSnapshot(`
       Object {
-        "hash": "037ace2918f4083eda9c4be34cccb93de5051b5a",
+        "hash": "cce033e32599cd4d2447b3d6c7a207ed52129471",
         "key": "abcd",
       }
     `);
@@ -45,7 +45,7 @@ describe('computeKey', () => {
   it('should return an object if no options are passed', () => {
     expect(computeKey(() => 'abcd')).toMatchInlineSnapshot(`
       Object {
-        "hash": "037ace2918f4083eda9c4be34cccb93de5051b5a",
+        "hash": "cce033e32599cd4d2447b3d6c7a207ed52129471",
         "key": "abcd",
       }
     `);
@@ -118,7 +118,10 @@ describe('computeKey', () => {
       optionKeyMock: 'optionKeyValue',
     });
     expect(computedKey.key).toBe('abcd');
-    expect(computeHash).toHaveBeenCalledWith(['ABCD-optionKeyValue', { optionKeyMock: 'optionKeyValue' }], { respectType: false });
+    expect(computeHash).toHaveBeenCalledWith(
+      ['ABCD-optionKeyValue', { optionKeyMock: 'optionKeyValue' }],
+      { respectType: false }
+    );
   });
 
   it('should return false if mapKeyToCacheKey throws error', () => {
@@ -136,8 +139,8 @@ describe('computeKey', () => {
   });
 
   it('should throw an error if mapKeyToCacheKey is defined and not a function', () => {
-    expect(() => computeKey(() => 'abcd',
-      { mapKeyToCacheKey: 'string' }
-    )).toThrow('mapKeyToCacheKey must be a function');
+    expect(() => computeKey(() => 'abcd', { mapKeyToCacheKey: 'string' })).toThrow(
+      'mapKeyToCacheKey must be a function'
+    );
   });
 });

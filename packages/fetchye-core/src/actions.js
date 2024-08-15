@@ -20,6 +20,8 @@ import {
   DELETE_DATA,
   ERROR,
   CLEAR_ERROR,
+  UPDATE_DATA,
+  SET_QUERY,
 } from './constants';
 
 export function loadingAction({
@@ -36,6 +38,16 @@ export function setAction({
 }) {
   return {
     type: SET_DATA,
+    hash,
+    value,
+  };
+}
+
+export function updateDataAction({
+  hash, value,
+}) {
+  return {
+    type: UPDATE_DATA,
     hash,
     value,
   };
@@ -66,5 +78,15 @@ export function clearErrorsAction({
   return {
     type: CLEAR_ERROR,
     hash,
+  };
+}
+
+export function setQuery({
+  hash, query,
+}) {
+  return {
+    type: SET_QUERY,
+    hash,
+    query,
   };
 }

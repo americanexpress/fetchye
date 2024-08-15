@@ -18,11 +18,30 @@ import { defaultMapOptionsToKey } from '../src/defaultMapOptionsToKey';
 
 describe('defaultMapOptionsToKey', () => {
   it('should return an object without passed signal, defer, or mapOptionsToKey', () => {
-    expect(defaultMapOptionsToKey({
-      signal: {}, defer: true, mapOptionsToKey: () => { }, method: 'POST',
-    }))
-      .toMatchInlineSnapshot(`
+    expect(
+      defaultMapOptionsToKey({
+        signal: {},
+        defer: true,
+        mapOptionsToKey: () => {},
+        method: 'POST',
+      })
+    ).toMatchInlineSnapshot(`
       Object {
+        "body": undefined,
+        "method": "POST",
+      }
+    `);
+  });
+  it('should return an object with body as argsList if isGraphQL and body.query', () => {
+    expect(
+      defaultMapOptionsToKey({
+        isGraphQL: true,
+        body: { query: 'query { test }' },
+        method: 'POST',
+      })
+    ).toMatchInlineSnapshot(`
+      Object {
+        "body": Array [],
         "method": "POST",
       }
     `);

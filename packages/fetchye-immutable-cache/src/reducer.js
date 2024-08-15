@@ -20,16 +20,19 @@ import {
   SET_DATA,
   DELETE_DATA,
   ERROR,
+  UPDATE_DATA,
+  SET_QUERY,
   CLEAR_ERROR,
   ACTION_NAMESPACE,
-
 } from 'fetchye-core';
+import { mergeGraphQLResponses } from './mergeGraphQLResponse';
 
 // eslint-disable-next-line default-param-last -- the first default param value takes care of explicitly calling this function with `undefined` the second param can't be defaulted as it must be provided
 export function fetchyeReducer(state = iMap({
   errors: iMap(),
   loading: iSet(),
   data: iMap(),
+  query: iMap(),
 }), action) {
   if (!action.type.startsWith(ACTION_NAMESPACE)) {
     return state;
@@ -55,6 +58,15 @@ export function fetchyeReducer(state = iMap({
           .deleteIn(['loading', action.hash])
           .deleteIn(['errors', action.hash])
       );
+    case UPDATE_DATA:
+      return state.withMutations(
+        (nextState) => nextState
+          .updateIn(['data', action.hash], (existingData) => mergeGraphQLResponses(existingData, action.value))
+          .deleteIn(['loading', action.hash])
+          .deleteIn(['errors', action.hash])
+      );
+    case SET_QUERY:
+      return state.setIn(['query', action.hash], action.query);
     default:
       return state;
   }

@@ -21,6 +21,7 @@ import {
   isLoading,
 } from './queryHelpers';
 import { useFetchyeContext } from './useFetchyeContext';
+import { handleGraphQLRequest } from './handleGraphQLRequest';
 
 const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders === 1
   ? value || initialValue
@@ -40,8 +41,29 @@ const useFetchye = (
   // create a render version manager using refs
   const numOfRenders = useRef(0);
   numOfRenders.current += 1;
+  const graphQLOptions = useRef(null);
+  const newQuery = useRef(false);
+  const graphQLArgs = options.isGraphQL
+    ? [JSON.stringify(options), JSON.stringify(selectorState.current.query)] : [];
 
   useEffect(() => {
+    const {
+      query: existingQuery,
+    } = selectorState.current;
+    // Used for GraphQL queries to determine if a new query is being made
+    ({ graphQLOptions: graphQLOptions.current, newQuery: newQuery.current } = handleGraphQLRequest({
+      existingQuery,
+      options,
+    }));
+  }, graphQLArgs);
+
+  useEffect(() => {
+    const {
+      loading,
+      data,
+      error,
+    } = selectorState.current;
+
     if (options.defer || !computedKey) {
       return;
     }
@@ -49,10 +71,13 @@ const useFetchye = (
     if (numOfRenders.current === 1 && options.initialData?.data) {
       return;
     }
-    const { loading, data, error } = selectorState.current;
-    if (!loading && !data && !error) {
+    if ((!loading && !data && !error) || newQuery.current) {
       runAsync({
-        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
+        dispatch,
+        computedKey,
+        fetcher: selectedFetcher,
+        fetchClient,
+        options: graphQLOptions.current || options,
       });
     }
   });

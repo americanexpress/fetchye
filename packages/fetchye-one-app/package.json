@@ -40,8 +40,8 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "fetchye-immutable-cache": "^1.5.0",
-    "fetchye-redux-provider": "^1.5.0",
+    "fetchye-immutable-cache": "file:../fetchye-immutable-cache/fetchye-immutable-cache-v1.5.0.tgz",
+    "fetchye-redux-provider": "file:../fetchye-redux-provider/fetchye-redux-provider-v1.5.0.tgz",
     "fetchye-test-utils": "^1.5.0",
     "invariant": "^2.2.4",
     "prop-types": "^15.7.2"

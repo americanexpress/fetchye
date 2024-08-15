@@ -14,6 +14,8 @@
  * permissions and limitations under the License.
  */
 
+import { trimOptions } from './trimOptions';
+
 // Object.fromEntries is not compatible with Node v10
 // provide our own lightweight solution
 export const headersToObject = (headers = []) => [...headers]
@@ -21,10 +23,11 @@ export const headersToObject = (headers = []) => [...headers]
     acc[key] = value;
     return acc;
   }, {});
-export const defaultFetcher = async (fetchClient, key, options) => {
+export const defaultFetcher = async (fetchClient, key, initialOptions) => {
   let res;
   let payload;
   let error;
+  const options = trimOptions(initialOptions);
   try {
     res = await fetchClient(key, options);
     let body = await res.text();

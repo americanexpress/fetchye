@@ -21,8 +21,15 @@ import {
   deleteAction,
   errorAction,
   clearErrorsAction,
+  setQuery,
+  updateDataAction,
 } from 'fetchye-core';
 import reducer from '../src/reducer';
+import { mergeGraphQLResponses } from '../src/mergeGraphQLResponse';
+
+jest.mock('../src/mergeGraphQLResponse', () => ({
+  mergeGraphQLResponses: jest.fn(),
+}));
 
 const fakeError = new Error('Fake Error');
 const fakeData = {
@@ -32,12 +39,15 @@ const fakeData = {
     fakeData: true,
   },
 };
+const fakeQuery = 'query { test }';
 
 const actions = {
   loadingAction,
   setAction,
   deleteAction,
   errorAction,
+  setQuery,
+  updateDataAction,
   clearErrorsAction,
 };
 
@@ -49,6 +59,7 @@ const createScenario = (dispatch, actionKeys, hash) => {
         hash,
         error: fakeError,
         value: fakeData,
+        query: fakeQuery,
       })
     );
   });
@@ -69,6 +80,7 @@ describe('Immutable Reducer', () => {
           "abc1234",
         ],
         "data": Immutable.Map {},
+        "query": Immutable.Map {},
       }
     `);
   });
@@ -88,6 +100,7 @@ describe('Immutable Reducer', () => {
             "status": 200,
           },
         },
+        "query": Immutable.Map {},
       }
     `);
   });
@@ -101,6 +114,7 @@ describe('Immutable Reducer', () => {
         },
         "loading": Immutable.Set [],
         "data": Immutable.Map {},
+        "query": Immutable.Map {},
       }
     `);
   });
@@ -112,6 +126,7 @@ describe('Immutable Reducer', () => {
         "errors": Immutable.Map {},
         "loading": Immutable.Set [],
         "data": Immutable.Map {},
+        "query": Immutable.Map {},
       }
     `);
   });
@@ -123,6 +138,7 @@ describe('Immutable Reducer', () => {
         "errors": Immutable.Map {},
         "loading": Immutable.Set [],
         "data": Immutable.Map {},
+        "query": Immutable.Map {},
       }
     `);
   });
@@ -136,6 +152,7 @@ describe('Immutable Reducer', () => {
         },
         "loading": Immutable.Set [],
         "data": Immutable.Map {},
+        "query": Immutable.Map {},
       }
     `);
   });
@@ -155,6 +172,7 @@ describe('Immutable Reducer', () => {
             "status": 200,
           },
         },
+        "query": Immutable.Map {},
       }
     `);
   });
@@ -177,6 +195,41 @@ describe('Immutable Reducer', () => {
             "status": 200,
           },
         },
+        "query": Immutable.Map {},
+      }
+    `);
+  });
+  it('should reflect query state', () => {
+    const { dispatch, getState } = store;
+    createScenario(dispatch, ['setQuery'], 'abc1234');
+    expect(getState()).toMatchInlineSnapshot(`
+      Immutable.Map {
+        "errors": Immutable.Map {},
+        "loading": Immutable.Set [],
+        "data": Immutable.Map {},
+        "query": Immutable.Map {
+          "abc1234": "query { test }",
+        },
+      }
+    `);
+  });
+  it('should reflect update data state', () => {
+    mergeGraphQLResponses.mockReturnValueOnce({ body: { updated: true } });
+    const { dispatch, getState } = store;
+    createScenario(dispatch, ['loadingAction', 'setAction'], 'abc1234');
+    createScenario(dispatch, ['updateDataAction'], 'abc1234');
+    expect(getState()).toMatchInlineSnapshot(`
+      Immutable.Map {
+        "errors": Immutable.Map {},
+        "loading": Immutable.Set [],
+        "data": Immutable.Map {
+          "abc1234": Object {
+            "body": Object {
+              "updated": true,
+            },
+          },
+        },
+        "query": Immutable.Map {},
       }
     `);
   });
@@ -188,6 +241,7 @@ describe('Immutable Reducer', () => {
         "errors": Immutable.Map {},
         "loading": Immutable.Set [],
         "data": Immutable.Map {},
+        "query": Immutable.Map {},
       }
     `);
   });

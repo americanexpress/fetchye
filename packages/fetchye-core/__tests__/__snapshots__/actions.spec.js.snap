@@ -42,3 +42,25 @@ Object {
   },
 }
 `;
+
+exports[`Actions setQuery should have correct shape 1`] = `
+Object {
+  "hash": "abc1234",
+  "query": undefined,
+  "type": "@fetchye/SET_QUERY",
+}
+`;
+
+exports[`Actions updateDataAction should have correct shape 1`] = `
+Object {
+  "hash": "abc1234",
+  "type": "@fetchye/UPDATE_DATA",
+  "value": Object {
+    "body": Object {
+      "fakeData": true,
+    },
+    "ok": true,
+    "status": 200,
+  },
+}
+`;

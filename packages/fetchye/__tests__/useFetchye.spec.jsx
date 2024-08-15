@@ -152,6 +152,44 @@ describe('useFetchye', () => {
           mapOptionsToKey: expect.any(Function),
         });
       });
+      it('should call fetch with graphQL headers when isGraphQL is true', async () => {
+        let fetchyeRes;
+        global.fetch = jest.fn(async () => ({
+          ...defaultPayload,
+        }));
+        render(
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              fetchyeRes = useFetchye('http://example.com', {
+                isGraphQL: true,
+                method: 'POST',
+                body: {
+                  query: {
+                    query: {
+                      __name: 'MyQuery',
+                      membership: {
+                        __args: {
+                          type: 'test',
+                          id: 'test',
+                        },
+                        test: true,
+                      },
+                    },
+                  },
+                },
+              });
+              return null;
+            })}
+          </AFetchyeProvider>
+        );
+        await waitFor(() => fetchyeRes.isLoading === false);
+        expect(global.fetch).toHaveBeenCalledTimes(1);
+        expect(global.fetch).toHaveBeenNthCalledWith(1, 'http://example.com', {
+          method: 'POST',
+          body: '{"query":"query MyQuery {\\n    membership (type: \\"test\\", id: \\"test\\") {\\n        test\\n    }\\n}"}',
+          isGraphQL: true,
+        });
+      });
       it('should return data success state when response is empty (204 no content)', async () => {
         let fetchyeRes;
         global.fetch = jest.fn(async () => ({
@@ -321,7 +359,7 @@ describe('useFetchye', () => {
       });
       it('should return initialState', async () => {
         let fetchyeRes;
-        global.fetch = jest.fn(async () => {});
+        global.fetch = jest.fn(async () => { });
         render(
           <AFetchyeProvider cache={cache}>
             {React.createElement(() => {
