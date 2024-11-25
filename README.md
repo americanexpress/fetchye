@@ -888,7 +888,7 @@ const { data, error } = await fetchye(key, options, fetcher);
 |----------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `data`   | `Object`         | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response*                                                          |
 | `error?` | `Object`         | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
-| `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can we awaited.                                                                                                      |
+| `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can be awaited.                                                                                                      |
 
 ### `makeOneServerFetchye`
 
@@ -926,7 +926,7 @@ const { data, error } = await fetchye(key, options, fetcher);
 |----------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `data`   | `Object`         | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response*                                                          |
 | `error?` | `Object`         | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
-| `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can we awaited.                                                                                                      |
+| `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can be awaited.                                                                                                      |
 
 ### oneFetchye
 
@@ -954,7 +954,7 @@ A promise resolving to an object with the below keys:
 |----------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `data`   | `Object`         | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response*                                                          |
 | `error?` | `Object`         | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
-| `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can we awaited.                                                                                                      |
+| `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can be awaited.                                                                                                      |
 
 ### Providers
 
