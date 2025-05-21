@@ -50,7 +50,11 @@ const useFetchye = (
       return;
     }
     const { loading, data, error } = selectorState.current;
-    if (!loading && !data && !error) {
+    // If first render and options.forceFetch is true we want to ignore the already cached value.
+    if (
+      (!loading && !data && !error)
+      || (numOfRenders.current === 1 && options.forceFetch === true)
+    ) {
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
