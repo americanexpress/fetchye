@@ -977,7 +977,7 @@ A React Context Provider that holds the centralized cache for all the `useFetchy
 
 | name          | type       | required | description                                                                                    |
 |---------------|------------|----------|------------------------------------------------------------------------------------------------|
-| `fetchClient` | `ES6Fetch` | `true`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| `fetchClient` | `ES6Fetch` | `false`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
 | `cache`       | `Cache`    | `false`  | Fetchye `Cache` object. *Defaults to `SimpleCache`*                                            |
 | `initialData` | `Object`   | `false`  | Initial state to feed into Cache Configuration `reducer`                                       |
 
@@ -1011,7 +1011,7 @@ import { FetchyeReduxProvider } from "fetchye-redux-provider";
 
 | name          | type       | required | description                                                                                    |
 |---------------|------------|----------|------------------------------------------------------------------------------------------------|
-| `fetchClient` | `ES6Fetch` | `true`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| `fetchClient` | `ES6Fetch` | `false`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
 | `cache`       | `Cache`    | `false`  | Fetchye `Cache` object. *Defaults to `SimpleCache`*                                            |
 
 #### `OneFetchyeProvider`
@@ -1044,7 +1044,7 @@ import { OneFetchyeProvider } from 'fetchye-one-app';
 
 | name          | type       | required | description                                                                                    |
 |---------------|------------|----------|------------------------------------------------------------------------------------------------|
-| `fetchClient` | `ES6Fetch` | `true`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| `fetchClient` | `ES6Fetch` | `false`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
 | `cache`       | `Cache`    | `false`  | Fetchye `Cache` object. *Defaults to `OneCache`*                                               |
 
 ### Caches
