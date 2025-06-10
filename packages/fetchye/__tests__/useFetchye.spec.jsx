@@ -365,7 +365,7 @@ describe('useFetchye', () => {
                 return null;
               }
               return React.createElement(() => {
-                fetchyeRes = useFetchye('http://example.com/one', { forceFetch: true });
+                fetchyeRes = useFetchye('http://example.com/one', { forceInitialFetch: true });
                 return null;
               });
             })}

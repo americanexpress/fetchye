@@ -837,15 +837,15 @@ const { isLoading, data, error, run } = useFetchye(key, { defer: Boolean, mapOpt
 
 **Options**
 
-| name               | type                                                  | required | description                                                                                                                                                         |
-|--------------------|-------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `mapOptionsToKey`  | `(options: Options) => transformedOptions`            | `false`  | A function that maps options to the key that will become part of the cache key. See below for a list of mapOptionsToKey helpers.                                    |
-| `mapKeyToCacheKey` | `(key: String, options: Options) => cacheKey: String` | `false`  | A function that maps the key for use as the cacheKey allowing direct control of the cacheKey                                                                        |
-| `defer`            | `Boolean`                                             | `false`  | Prevents execution of `useFetchye` on each render in favor of using the returned `run` function. *Defaults to `false`*                                              |
-| `forceFetch`       | `Boolean`                                             | `false`  | Allows the consumer to ignore the cached value and instead always fetch from the server. *Defaults to `false`*                                                      |
-| `initialData`      | `Object`                                              | `false`  | Seeds the initial data on first render of `useFetchye` to accomodate server side rendering *Defaults to `undefined`*                                                |
-| `headers`          | `Object` or `() => Object`                            | `false`  | `Object`: as per the ES6 Compatible `fetch` option. `() => Object`: A function to construct a ES6 Compatible `headers` object prior to any api call                 |
-| `...restOptions`   | `ES6FetchOptions`                                     | `true`   | Contains any ES6 Compatible `fetch` option. (See [Fetch Options](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options)) |
+| name                | type                                                  | required | description                                                                                                                                                                        |
+|---------------------|-------------------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `mapOptionsToKey`   | `(options: Options) => transformedOptions`            | `false`  | A function that maps options to the key that will become part of the cache key. See below for a list of mapOptionsToKey helpers.                                                   |
+| `mapKeyToCacheKey`  | `(key: String, options: Options) => cacheKey: String` | `false`  | A function that maps the key for use as the cacheKey allowing direct control of the cacheKey                                                                                       |
+| `defer`             | `Boolean`                                             | `false`  | Prevents execution of `useFetchye` on each render in favor of using the returned `run` function. *Defaults to `false`*                                                             |
+| `forceInitialFetch` | `Boolean`                                             | `false`  | Allows the consumer to ignore the cached value and instead always fetch from the server for the initial fetch and update the cached value with what returns. *Defaults to `false`* |
+| `initialData`       | `Object`                                              | `false`  | Seeds the initial data on first render of `useFetchye` to accomodate server side rendering *Defaults to `undefined`*                                                               |
+| `headers`           | `Object` or `() => Object`                            | `false`  | `Object`: as per the ES6 Compatible `fetch` option. `() => Object`: A function to construct a ES6 Compatible `headers` object prior to any api call                                |
+| `...restOptions`    | `ES6FetchOptions`                                     | `true`   | Contains any ES6 Compatible `fetch` option. (See [Fetch Options](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Supplying_request_options))                |
 
 **Returns**
 
