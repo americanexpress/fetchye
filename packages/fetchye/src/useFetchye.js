@@ -63,6 +63,7 @@ const useFetchye = (
       data: selectorState.current.data || options.initialData?.data,
       numOfRenders: numOfRenders.current,
       options,
+      error: selectorState.current.error,
     }),
     error: passInitialData(
       selectorState.current.error,

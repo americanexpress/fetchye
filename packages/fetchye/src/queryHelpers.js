@@ -15,7 +15,7 @@
  */
 
 export const isLoading = ({
-  loading, data, numOfRenders, options,
+  loading, data, numOfRenders, options, error,
 }) => {
   // If first render
   if (numOfRenders === 1) {
@@ -35,6 +35,11 @@ export const isLoading = ({
     // isLoading should be true
     return true;
   }
+  // Here to mimic what happens in the useEffect
+  if (!options.defer && !loading && !data && !error) {
+    return true;
+  }
+
   // else isLoading should be false
   return false;
 };
