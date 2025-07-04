@@ -61,7 +61,6 @@ const useFetchye = (
     isLoading: isLoading({
       loading: selectorState.current.loading,
       data: selectorState.current.data || options.initialData?.data,
-      numOfRenders: numOfRenders.current,
       options,
       error: selectorState.current.error,
     }),
