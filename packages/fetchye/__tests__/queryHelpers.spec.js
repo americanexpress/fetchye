@@ -37,6 +37,19 @@ describe('isLoading', () => {
     })).toEqual(true);
   });
 
+  it('should return true if numOfRenders === 1 and options.forceInitialFetch === true', () => {
+    expect(isLoading({
+      loading: false,
+      numOfRenders: 1,
+      data: {},
+      options: {
+        defer: false,
+        forceInitialFetch: true,
+      },
+      error: undefined,
+    })).toEqual(true);
+  });
+
   it('should return false if there are errors present', () => {
     expect(isLoading({
       loading: false, options: { defer: false }, error: { },

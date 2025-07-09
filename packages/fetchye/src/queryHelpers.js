@@ -15,7 +15,7 @@
  */
 
 export const isLoading = ({
-  loading, data, options, error,
+  loading, data, numOfRenders, options, error,
 }) => {
   // if defer is true
   if (options.defer) {
@@ -30,7 +30,7 @@ export const isLoading = ({
   }
 
   // Here to mimic what happens in the useEffect
-  if (!data && !error) {
+  if ((!data && !error) || (numOfRenders === 1 && options.forceInitialFetch === true)) {
     return true;
   }
 
