@@ -50,7 +50,12 @@ const useFetchye = (
       return;
     }
     const { loading, data, error } = selectorState.current;
-    if (!loading && !data && !error) {
+    // If first render and options.forceInitialFetch is true we want to fetch from server
+    // on first render.
+    if (
+      (!loading && !data && !error)
+      || (numOfRenders.current === 1 && options.forceInitialFetch === true)
+    ) {
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
