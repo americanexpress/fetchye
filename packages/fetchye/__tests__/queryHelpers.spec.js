@@ -19,24 +19,46 @@ import {
 } from '../src/queryHelpers';
 
 describe('isLoading', () => {
-  it('should return true if loading cache true', () => {
+  it('should return false defer is true', () => {
     expect(isLoading({
-      loading: true, data: undefined, numOfRenders: 2, options: {},
-    })).toEqual(true);
-  });
-  it('should return true if first render is true', () => {
-    expect(isLoading({
-      loading: false, data: undefined, numOfRenders: 1, options: { },
-    })).toEqual(true);
-  });
-  it('should return false if first render is true and defer is true', () => {
-    expect(isLoading({
-      loading: false, data: undefined, numOfRenders: 1, options: { defer: true },
+      loading: false, data: undefined, options: { defer: true }, error: undefined,
     })).toEqual(false);
   });
-  it('should return false if all args are false', () => {
+
+  it('should return true if loading cache true', () => {
     expect(isLoading({
-      loading: false, numOfRenders: 2, options: { defer: false },
+      loading: true, data: undefined, options: {}, error: undefined,
+    })).toEqual(true);
+  });
+
+  it('should return true if all args are false', () => {
+    expect(isLoading({
+      loading: false, options: { defer: false }, error: undefined,
+    })).toEqual(true);
+  });
+
+  it('should return true if numOfRenders === 1 and options.forceInitialFetch === true', () => {
+    expect(isLoading({
+      loading: false,
+      numOfRenders: 1,
+      data: {},
+      options: {
+        defer: false,
+        forceInitialFetch: true,
+      },
+      error: undefined,
+    })).toEqual(true);
+  });
+
+  it('should return false if there are errors present', () => {
+    expect(isLoading({
+      loading: false, options: { defer: false }, error: { },
+    })).toEqual(false);
+  });
+
+  it('should return false if there is data present', () => {
+    expect(isLoading({
+      loading: false, data: { }, numOfRenders: 2, options: { defer: false },
     })).toEqual(false);
   });
 });
