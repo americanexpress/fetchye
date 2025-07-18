@@ -354,6 +354,27 @@ describe('useFetchye', () => {
           }
         `);
       });
+      it('should ignore cache', async () => {
+        let fetchyeRes;
+        global.fetch = jest.fn(async () => ({ ...defaultPayload }));
+        render(
+          <AFetchyeProvider cache={cache}>
+            {React.createElement(() => {
+              const { isLoading } = useFetchye('http://example.com/one');
+              if (isLoading === true) {
+                return null;
+              }
+              return React.createElement(() => {
+                fetchyeRes = useFetchye('http://example.com/one', { forceInitialFetch: true });
+                return null;
+              });
+            })}
+          </AFetchyeProvider>
+        );
+        await waitFor(() => fetchyeRes.isLoading === false);
+
+        expect(global.fetch.mock.calls).toHaveLength(2);
+      });
     });
   });
 
