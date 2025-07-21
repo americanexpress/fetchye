@@ -15,6 +15,7 @@
  */
 
 import { useEffect, useRef } from 'react';
+import { setAction } from 'fetchye-core';
 import { runAsync } from './runAsync';
 import { computeKey } from './computeKey';
 import {
@@ -52,16 +53,22 @@ const useFetchye = (
     const { loading, data, error } = selectorState.current;
     // If first render and options.forceInitialFetch is true we want to fetch from server
     // on first render.
+    // We check the numOfRenders as two here as that is when this useEffect will actually be run
+    // so to make this work it needs to be on render 2
+    // If data is not set here then we know cache is empty,
+    // so fetch will happen anyway and this would just cause a second fetch.
     if (
       (!loading && !data && !error)
-      || (numOfRenders.current === 1 && options.forceInitialFetch === true)
+      || (data && numOfRenders.current === 2 && options.forceInitialFetch === true)
     ) {
+      // This is so it clears the cache before the forceFetch so we don't have isLoading true
+      // and data also defined from the cached value.
+      dispatch(setAction({ hash: computedKey.hash, value: undefined }));
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
     }
   });
-
   return {
     isLoading: isLoading({
       loading: selectorState.current.loading,
