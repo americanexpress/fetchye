@@ -15,7 +15,7 @@
  */
 
 import React, { useRef } from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 // eslint-disable-next-line import/no-extraneous-dependencies -- we are importing the provider just during tests, it doesn't need to be a dep
@@ -356,23 +356,44 @@ describe('useFetchye', () => {
       });
       it('should ignore cache', async () => {
         let fetchyeRes;
-        global.fetch = jest.fn(async () => ({ ...defaultPayload }));
+        global.fetch = jest.fn()
+          .mockImplementationOnce(async () => ({
+            ...defaultPayload,
+            text: async () => JSON.stringify({
+              fakeData: true,
+              fetchNo: 'first',
+            }),
+          }))
+          .mockImplementationOnce(async () => ({
+            ...defaultPayload,
+            text: async () => JSON.stringify({
+              fakeData: true,
+              fetchNo: 'second',
+            }),
+          }));
         render(
           <AFetchyeProvider cache={cache}>
             {React.createElement(() => {
-              const { isLoading } = useFetchye('http://example.com/one');
-              if (isLoading === true) {
+              const { isLoading, data } = useFetchye('http://example.com/one');
+              if (isLoading || !data) {
                 return null;
               }
               return React.createElement(() => {
-                fetchyeRes = useFetchye('http://example.com/one', { forceInitialFetch: true });
-                return null;
+                const res = useFetchye('http://example.com/one', { forceInitialFetch: true });
+                const { isLoading: isSecondFetchLoading, data: secondFetchData } = res;
+                fetchyeRes = res;
+                if (isSecondFetchLoading || !secondFetchData) {
+                  return null;
+                }
+                return <p>fetchNo: {secondFetchData.body.fetchNo}</p>;
               });
             })}
           </AFetchyeProvider>
         );
-        await waitFor(() => fetchyeRes.isLoading === false);
-
+        await waitFor(() => fetchyeRes.body === JSON.stringify({
+          fakeData: true,
+          fetchNo: 'second',
+        }));
         expect(global.fetch.mock.calls).toHaveLength(2);
       });
     });
