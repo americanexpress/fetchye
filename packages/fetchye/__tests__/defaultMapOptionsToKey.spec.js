@@ -17,9 +17,9 @@
 import { defaultMapOptionsToKey } from '../src/defaultMapOptionsToKey';
 
 describe('defaultMapOptionsToKey', () => {
-  it('should return an object without passed signal, defer, or mapOptionsToKey', () => {
+  it('should return an object without passed signal, defer, mapOptionsToKey, or forceInitialFetch', () => {
     expect(defaultMapOptionsToKey({
-      signal: {}, defer: true, mapOptionsToKey: () => { }, method: 'POST',
+      signal: {}, defer: true, mapOptionsToKey: () => { }, method: 'POST', forceInitialFetch: true,
     }))
       .toMatchInlineSnapshot(`
       Object {

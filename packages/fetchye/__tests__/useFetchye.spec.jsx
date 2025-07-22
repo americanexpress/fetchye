@@ -348,7 +348,7 @@ describe('useFetchye', () => {
                 "initialData": true,
               },
             },
-            "error": null,
+            "error": undefined,
             "isLoading": false,
             "run": [Function],
           }
@@ -381,10 +381,10 @@ describe('useFetchye', () => {
             firstRes = res;
           }
           useEffect(() => {
-            if (!firstResponse && res.data?.body.fetchNo === 'first') {
+            if (!firstResponse && res.data?.body.fetchNo === 'first' && !forceFetch) {
               setRes(res);
             }
-          }, [firstResponse, res, setRes]);
+          }, [firstResponse, res, setRes, forceFetch]);
           if (res.isLoading || !res.data) {
             return null;
           }

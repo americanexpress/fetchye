@@ -23,9 +23,22 @@ import {
 } from './queryHelpers';
 import { useFetchyeContext } from './useFetchyeContext';
 
-const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders === 1
-  ? value || initialValue
-  : value);
+const passInitialData = ({
+  value,
+  initialValue,
+  numOfRenders,
+  forceInitialFetch,
+}) => {
+  if (numOfRenders === 1) {
+    if (initialValue) {
+      return initialValue;
+    }
+    if (forceInitialFetch === true) {
+      return undefined;
+    }
+  }
+  return value;
+};
 
 const useFetchye = (
   key,
@@ -57,13 +70,14 @@ const useFetchye = (
     // so to make this work it needs to be on render 2
     // If data is not set here then we know cache is empty,
     // so fetch will happen anyway and this would just cause a second fetch.
-    if (options.forceInitialFetch === true && data && numOfRenders.current === 2) {
+    if (data && options.forceInitialFetch === true && numOfRenders.current === 2) {
       // This is so it clears the cache before the forceFetch so we don't have isLoading true
       // and data also defined from the cached value.
       dispatch(setAction({ hash: computedKey.hash, value: undefined }));
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
+      return;
     }
     if (!loading && !data && !error) {
       runAsync({
@@ -79,14 +93,20 @@ const useFetchye = (
       options,
     }),
     error: passInitialData(
-      selectorState.current.error,
-      options.initialData?.error,
-      numOfRenders.current
+      {
+        value: selectorState.current.error,
+        initialValue: options.initialData?.error,
+        numOfRenders: numOfRenders.current,
+        forceInitialFetch: options.forceInitialFetch,
+      }
     ),
     data: passInitialData(
-      selectorState.current.data,
-      options.initialData?.data,
-      numOfRenders.current
+      {
+        value: selectorState.current.data,
+        initialValue: options.initialData?.data,
+        numOfRenders: numOfRenders.current,
+        forceInitialFetch: options.forceInitialFetch,
+      }
     ),
     run() {
       return runAsync({
