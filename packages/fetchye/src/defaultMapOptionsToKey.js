@@ -20,6 +20,7 @@ export const defaultMapOptionsToKey = (options) => {
     defer,
     mapOptionsToKey,
     initialData,
+    forceInitialFetch,
     ...restOfOptions
   } = options;
   return restOfOptions;

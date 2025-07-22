@@ -29,6 +29,11 @@ describe('isLoading', () => {
       loading: false, data: undefined, numOfRenders: 1, options: { },
     })).toEqual(true);
   });
+  it('should return true if first render and forceInitialFetch option is true', () => {
+    expect(isLoading({
+      loading: false, data: undefined, numOfRenders: 1, options: { forceInitialFetch: true },
+    })).toEqual(true);
+  });
   it('should return false if first render is true and defer is true', () => {
     expect(isLoading({
       loading: false, data: undefined, numOfRenders: 1, options: { defer: true },

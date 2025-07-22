@@ -29,6 +29,11 @@ export const isLoading = ({
       // isLoading should be true
       return true;
     }
+    // when we force fetch isLoading is always going to be true on first render
+    if (options.forceInitialFetch) {
+      // isLoading should be true
+      return true;
+    }
   }
   // If not on first render and loading from cache is true
   if (loading) {
