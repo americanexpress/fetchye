@@ -404,7 +404,6 @@ describe('useFetchye', () => {
           expect(firstRes.data?.body.fetchNo).toBe('first');
         });
         await waitFor(() => {
-          console.log(secondRes)
           expect(secondRes.data?.body).toStrictEqual({
             fakeData: true,
             fetchNo: 'second',
