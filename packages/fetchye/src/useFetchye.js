@@ -51,6 +51,7 @@ const useFetchye = (
   const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
   const computedKey = computeKey(key, options);
   const selectorState = useFetchyeSelector(computedKey.hash);
+  const forceInitialFetch = useRef(options?.forceInitialFetch || false);
   // create a render version manager using refs
   const numOfRenders = useRef(0);
   numOfRenders.current += 1;
@@ -64,18 +65,18 @@ const useFetchye = (
       return;
     }
     const { loading, data, error } = selectorState.current;
-    // If first render and forceInitialFetch is true we want to fetch from server on first render.
-    // If data is not set here then we know cache is empty,
-    // so fetch will happen anyway and this would just cause a second fetch.
-    if (data && options.forceInitialFetch === true && numOfRenders.current <= 2) {
+
+    if (data && forceInitialFetch.current) {
       // This is so it clears the cache before the forceFetch so we don't have isLoading true
       // and data also defined from the cached value.
       dispatch(setAction({ hash: computedKey.hash, value: undefined }));
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
+      forceInitialFetch.current = false;
       return;
     }
+
     if (!loading && !data && !error) {
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
