@@ -81,6 +81,7 @@ const useFetchye = (
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
+      forceInitialFetch.current = false;
     }
   });
   return {
