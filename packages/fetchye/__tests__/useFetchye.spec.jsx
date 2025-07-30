@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
@@ -348,32 +348,11 @@ describe('useFetchye', () => {
                 "initialData": true,
               },
             },
-            "error": null,
+            "error": undefined,
             "isLoading": false,
             "run": [Function],
           }
         `);
-      });
-      it('should ignore cache', async () => {
-        let fetchyeRes;
-        global.fetch = jest.fn(async () => ({ ...defaultPayload }));
-        render(
-          <AFetchyeProvider cache={cache}>
-            {React.createElement(() => {
-              const { isLoading } = useFetchye('http://example.com/one');
-              if (isLoading === true) {
-                return null;
-              }
-              return React.createElement(() => {
-                fetchyeRes = useFetchye('http://example.com/one', { forceInitialFetch: true });
-                return null;
-              });
-            })}
-          </AFetchyeProvider>
-        );
-        await waitFor(() => fetchyeRes.isLoading === false);
-
-        expect(global.fetch.mock.calls).toHaveLength(2);
       });
     });
   });
@@ -400,6 +379,65 @@ describe('useFetchye', () => {
             </AFetchyeProvider>
           );
           expect(fakeFetchClient).toHaveBeenCalledTimes(1);
+        });
+        it('should ignore cache', async () => {
+          global.fetch = jest.fn()
+            .mockImplementationOnce(async () => ({
+              ...defaultPayload,
+              text: async () => JSON.stringify({
+                fakeData: true,
+                fetchNo: 'first',
+              }),
+            }))
+            .mockImplementationOnce(async () => ({
+              ...defaultPayload,
+              text: async () => JSON.stringify({
+                fakeData: true,
+                fetchNo: 'second',
+              }),
+            }));
+          let firstRes;
+          let secondRes;
+          // eslint-disable-next-line react/prop-types -- no need for test here
+          const TestComp = ({ forceFetch, firstResponse, setRes }) => {
+            const res = useFetchye('http://example.com/one', forceFetch ? { forceInitialFetch: forceFetch } : undefined);
+            if (forceFetch) {
+              secondRes = res;
+            } else {
+              firstRes = res;
+            }
+            useEffect(() => {
+              if (!firstResponse && res.data?.body.fetchNo === 'first' && !forceFetch) {
+                setRes(res);
+              }
+            }, [firstResponse, res, setRes, forceFetch]);
+            if (res.isLoading || !res.data) {
+              return null;
+            }
+            return <p>{res.data.body.fetchNo}</p>;
+          };
+          const Comp = () => {
+            const [firstResponse, setRes] = useState();
+            return (
+              <AFetchyeProvider cache={cache}>
+                <TestComp forceFetch={false} firstResponse={firstResponse} setRes={setRes} />
+                {firstResponse?.data && <TestComp forceFetch={true} />}
+              </AFetchyeProvider>
+            );
+          };
+          render(<Comp />);
+          await waitFor(() => {
+            expect(firstRes.data?.body.fetchNo).toBe('first');
+          });
+          await waitFor(() => {
+            expect(secondRes.data?.body).toStrictEqual({
+              fakeData: true,
+              fetchNo: 'second',
+            });
+          });
+          expect(secondRes.isLoading).toBeFalsy();
+          expect(secondRes.error).toBeUndefined();
+          expect(global.fetch.mock.calls).toHaveLength(2);
         });
       });
     });

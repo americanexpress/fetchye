@@ -15,6 +15,7 @@
  */
 
 import { useEffect, useRef } from 'react';
+import { setAction } from 'fetchye-core';
 import { runAsync } from './runAsync';
 import { computeKey } from './computeKey';
 import {
@@ -22,9 +23,22 @@ import {
 } from './queryHelpers';
 import { useFetchyeContext } from './useFetchyeContext';
 
-const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders === 1
-  ? value || initialValue
-  : value);
+const passInitialData = ({
+  value,
+  initialValue,
+  numOfRenders,
+  forceInitialFetch,
+}) => {
+  if (numOfRenders === 1) {
+    if (initialValue) {
+      return initialValue;
+    }
+    if (forceInitialFetch === true) {
+      return undefined;
+    }
+  }
+  return value;
+};
 
 const useFetchye = (
   key,
@@ -37,6 +51,7 @@ const useFetchye = (
   const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
   const computedKey = computeKey(key, options);
   const selectorState = useFetchyeSelector(computedKey.hash);
+  const forceInitialFetch = useRef(options?.forceInitialFetch || false);
   // create a render version manager using refs
   const numOfRenders = useRef(0);
   numOfRenders.current += 1;
@@ -50,18 +65,25 @@ const useFetchye = (
       return;
     }
     const { loading, data, error } = selectorState.current;
-    // If first render and options.forceInitialFetch is true we want to fetch from server
-    // on first render.
-    if (
-      (!loading && !data && !error)
-      || (numOfRenders.current === 1 && options.forceInitialFetch === true)
-    ) {
+
+    if (data && forceInitialFetch.current) {
+      // This is so it clears the cache before the forceFetch so we don't have isLoading true
+      // and data also defined from the cached value.
+      dispatch(setAction({ hash: computedKey.hash, value: undefined }));
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
+      forceInitialFetch.current = false;
+      return;
+    }
+
+    if (!loading && !data && !error) {
+      runAsync({
+        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
+      });
+      forceInitialFetch.current = false;
     }
   });
-
   return {
     isLoading: isLoading({
       loading: selectorState.current.loading,
@@ -70,14 +92,20 @@ const useFetchye = (
       options,
     }),
     error: passInitialData(
-      selectorState.current.error,
-      options.initialData?.error,
-      numOfRenders.current
+      {
+        value: selectorState.current.error,
+        initialValue: options.initialData?.error,
+        numOfRenders: numOfRenders.current,
+        forceInitialFetch: options.forceInitialFetch,
+      }
     ),
     data: passInitialData(
-      selectorState.current.data,
-      options.initialData?.data,
-      numOfRenders.current
+      {
+        value: selectorState.current.data,
+        initialValue: options.initialData?.data,
+        numOfRenders: numOfRenders.current,
+        forceInitialFetch: options.forceInitialFetch,
+      }
     ),
     run() {
       return runAsync({
