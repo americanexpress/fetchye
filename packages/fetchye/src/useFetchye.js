@@ -66,22 +66,22 @@ const useFetchye = (
     }
     const { loading, data, error } = selectorState.current;
 
-    if (data && forceInitialFetch.current) {
+    if (data && forceInitialFetch.current && !loading) {
       // This is so it clears the cache before the forceFetch so we don't have isLoading true
       // and data also defined from the cached value.
+      forceInitialFetch.current = false;
       dispatch(setAction({ hash: computedKey.hash, value: undefined }));
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
-      forceInitialFetch.current = false;
       return;
     }
 
     if (!loading && !data && !error) {
+      forceInitialFetch.current = false;
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
-      forceInitialFetch.current = false;
     }
   });
   return {
