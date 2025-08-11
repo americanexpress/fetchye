@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.7.0](https://github.com/americanexpress/fetchye/compare/v1.4.0...v1.7.0) (2025-07-15)
+
+
+### Features
+
+* force initial fetch ([#98](https://github.com/americanexpress/fetchye/issues/98)) ([e8e91d2](https://github.com/americanexpress/fetchye/commit/e8e91d26898e365a12480e43469a4ee8791cc915))
+* **makeServerFetchye:** adding run method to response ([#92](https://github.com/americanexpress/fetchye/issues/92)) ([f6f9d94](https://github.com/americanexpress/fetchye/commit/f6f9d944ea616ca3c5e61fccac6a024397dcae5b))
+
+
+
+
+
 # [1.6.0](https://github.com/americanexpress/fetchye/compare/v1.4.0...v1.6.0) (2024-08-29)
 
 

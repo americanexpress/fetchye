@@ -15,6 +15,7 @@
  */
 
 import { useEffect, useRef } from 'react';
+import { setAction } from 'fetchye-core';
 import { runAsync } from './runAsync';
 import { computeKey } from './computeKey';
 import {
@@ -22,9 +23,22 @@ import {
 } from './queryHelpers';
 import { useFetchyeContext } from './useFetchyeContext';
 
-const passInitialData = (value, initialValue, numOfRenders) => (numOfRenders === 1
-  ? value || initialValue
-  : value);
+const passInitialData = ({
+  value,
+  initialValue,
+  numOfRenders,
+  forceInitialFetch,
+}) => {
+  if (numOfRenders === 1) {
+    if (initialValue) {
+      return initialValue;
+    }
+    if (forceInitialFetch === true) {
+      return undefined;
+    }
+  }
+  return value;
+};
 
 const useFetchye = (
   key,
@@ -37,6 +51,7 @@ const useFetchye = (
   const selectedFetcher = typeof fetcher === 'function' ? fetcher : defaultFetcher;
   const computedKey = computeKey(key, options);
   const selectorState = useFetchyeSelector(computedKey.hash);
+  const forceInitialFetch = useRef(options?.forceInitialFetch || false);
   // create a render version manager using refs
   const numOfRenders = useRef(0);
   numOfRenders.current += 1;
@@ -50,13 +65,25 @@ const useFetchye = (
       return;
     }
     const { loading, data, error } = selectorState.current;
+
+    if (data && forceInitialFetch.current && !loading) {
+      // This is so it clears the cache before the forceFetch so we don't have isLoading true
+      // and data also defined from the cached value.
+      forceInitialFetch.current = false;
+      dispatch(setAction({ hash: computedKey.hash, value: undefined }));
+      runAsync({
+        dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
+      });
+      return;
+    }
+
     if (!loading && !data && !error) {
+      forceInitialFetch.current = false;
       runAsync({
         dispatch, computedKey, fetcher: selectedFetcher, fetchClient, options,
       });
     }
   });
-
   return {
     isLoading: isLoading({
       loading: selectorState.current.loading,
@@ -66,14 +93,20 @@ const useFetchye = (
       numOfRenders: numOfRenders.current,
     }),
     error: passInitialData(
-      selectorState.current.error,
-      options.initialData?.error,
-      numOfRenders.current
+      {
+        value: selectorState.current.error,
+        initialValue: options.initialData?.error,
+        numOfRenders: numOfRenders.current,
+        forceInitialFetch: options.forceInitialFetch,
+      }
     ),
     data: passInitialData(
-      selectorState.current.data,
-      options.initialData?.data,
-      numOfRenders.current
+      {
+        value: selectorState.current.data,
+        initialValue: options.initialData?.data,
+        numOfRenders: numOfRenders.current,
+        forceInitialFetch: options.forceInitialFetch,
+      }
     ),
     run() {
       return runAsync({
