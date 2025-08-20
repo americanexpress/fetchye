@@ -15,31 +15,28 @@
  */
 
 export const isLoading = ({
-  loading, data, numOfRenders, options,
+  loading, data, options, error, refs,
 }) => {
-  // If first render
-  if (numOfRenders === 1) {
-    // and defer is true
-    if (options.defer) {
-      // isLoading should be false
-      return false;
-    }
-    // and no data exists and presume loading state isn't present
-    if (!data) {
-      // isLoading should be true
-      return true;
-    }
-    // when we force fetch isLoading is always going to be true on first render
-    if (options.forceInitialFetch) {
-      // isLoading should be true
-      return true;
-    }
+  // if defer is true
+  if (options.defer) {
+    // isLoading should be false
+    return false;
   }
-  // If not on first render and loading from cache is true
+
+  // If loading from cache is true
   if (loading) {
     // isLoading should be true
     return true;
   }
+
+  // Here to mimic what happens in the useEffect
+  if (
+    (!data && !error)
+    || (refs.forceInitialFetch === true)
+  ) {
+    return true;
+  }
+
   // else isLoading should be false
   return false;
 };
