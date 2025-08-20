@@ -90,7 +90,9 @@ const useFetchye = (
       data: selectorState.current.data || options.initialData?.data,
       options,
       error: selectorState.current.error,
-      numOfRenders: numOfRenders.current,
+      refs: {
+        forceInitialFetch: forceInitialFetch.current,
+      },
     }),
     error: passInitialData(
       {
