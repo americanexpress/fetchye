@@ -17,23 +17,18 @@
 export const isLoading = ({
   loading, data, options, error, refs,
 }) => {
-  // if defer is true
-  if (options.defer) {
-    // isLoading should be false
-    return false;
-  }
-
   // If loading from cache is true
   if (loading) {
     // isLoading should be true
     return true;
   }
 
-  // Here to mimic what happens in the useEffect
-  if (
-    (!data && !error)
-    || (refs.forceInitialFetch === true)
-  ) {
+  // will fetch if no data and no error
+  // will fetch if forceInitialFetch is true
+  const willFetchIfNotDefered = (!data && !error)
+    || (refs.forceInitialFetch === true);
+
+  if (willFetchIfNotDefered && !options.defer) {
     return true;
   }
 
