@@ -5,13 +5,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [1.8.0](https://github.com/americanexpress/fetchye/compare/v1.7.0...v1.8.0) (2025-11-26)
 
+### Features
 
-### Bug Fixes
-
-* **useFetchye:** forceInitialFetch ([#102](https://github.com/americanexpress/fetchye/issues/102)) ([21c00f5](https://github.com/americanexpress/fetchye/commit/21c00f570e43e4d0b8f759b61f65d0953bc73e66))
-* **useFetchye:** forceInitialFetch ([#103](https://github.com/americanexpress/fetchye/issues/103)) ([a581c6f](https://github.com/americanexpress/fetchye/commit/a581c6ffbb0660fd7634b5fc67df9b91f969be03))
-
-
+Bump fetchye-redux
 
 
 
