@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/americanexpress/fetchye/compare/v1.7.0...v1.8.0) (2025-11-26)
+
+
+### Features
+
+* bump peerDeps for react and react redux ([#108](https://github.com/americanexpress/fetchye/issues/108)) ([f0fe304](https://github.com/americanexpress/fetchye/commit/f0fe304261c8b9ee946a216e9eef197db876a83d))
+
+
+
+
+
 ## [1.7.1](https://github.com/americanexpress/fetchye/compare/v1.7.0...v1.7.1) (2025-08-08)
 
 **Note:** Version bump only for package fetchye-redux-provider
