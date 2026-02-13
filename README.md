@@ -957,6 +957,81 @@ A promise resolving to an object with the below keys:
 | `error?` | `Object`         | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
 | `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can be awaited.                                                                                                      |
 
+### streamedFetchye
+
+A helper to enable streaming for server side Fetchye API calls. The first parameter is a [`oneFetchye`](https://github.com/americanexpress/fetchye?tab=readme-ov-file#oneFetchye) thunk.
+
+Note: The key and options are used to compute the cache key and must match the values passed to `useStreamedFetchye` for a successful cache hit.
+
+**Shape**
+```js
+import { streamedFetchye } from 'fetchye-one-app';
+
+const key = "https://example.com/api/v2/people";
+const thunk = oneFetchye(key);
+const loadModuleData = async ({ store: { dispatch } }) => dispatch(streamedFetchye(thunk, key, options, fetcher));
+```
+
+**`streamedFetchye` Arguments**
+
+| name      | type                                                                                                 | required | description                                                                                                                                       |
+|-----------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `thunk`     | `Promise`                                                                           | `true`   | A fetchye Redux thunk.                               |
+| `key`     | `String`                                                                           | `true`   | A string that factors into cache key creation. *Defaults to URL compatible string*.  |
+| `options` | `ES6FetchOptions`                                                                                    | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                               |
+| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+
+**`streamedFetchye` Returns**
+
+A promise resolving to the value of the thunk.
+
+### useStreamedFetchye
+
+A React hook used to read streamed data from the server. It will return the raw promise that the user can then parse manually. If there is no existing data from the server, a request will be performed on the client. 
+
+The key and options are used to compute the cache key and must match the values passed to `streamedFetchye` for a successful cache hit.
+
+Note: The hook is intended to be used within a suspense boundary.
+
+**Shape**
+```jsx
+import { use } from 'react';
+import { useStreamedFetchye } from 'fetchye-one-app';
+import { Spinner } from 'design-library';
+
+const MyComponent = () => {
+  const response = useStreamedFetchye('https://example.com/api/v2/people', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const { data } = use(response);
+
+  if (!data.ok) {
+    throw new Error('missing data');
+  }
+
+  return (
+    <p>{data.body.name}</p>
+  );
+};
+
+const Container = () => (
+  <Suspense fallback={<Spinner size="sm" />}>
+    <MyComponent />
+  </Suspense>
+);
+```
+
+**`useStreamedFetchye` Arguments**
+
+Refer to [`oneFetchye`](https://github.com/americanexpress/fetchye?tab=readme-ov-file#oneFetchye).
+
+**`useStreamedFetchye` Returns**
+
+A promise resolving to the streamed or local promise.
+
 ### Providers
 
 A Provider creates a React Context to connect all the `useFetchye` Hooks into a centrally stored cache.
