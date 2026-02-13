@@ -22,6 +22,7 @@ describe('index', () => {
       Array [
         "FetchyeProvider",
         "SimpleCache",
+        "computeKey",
         "ignoreHeadersByKey",
         "makeServerFetchye",
         "useFetchye",
