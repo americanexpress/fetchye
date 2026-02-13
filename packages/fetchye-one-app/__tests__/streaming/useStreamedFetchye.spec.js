@@ -42,7 +42,9 @@ const promiseStore = {
 
 const useStreamedPromiseSpy = jest.spyOn(streamingHooks, 'useStreamedPromise');
 const useDispatchSpy = jest.spyOn(redux, 'useDispatch');
-const dispatchMock = jest.fn((_thunk) => _thunk(undefined, undefined, { promiseStore, fetchClient: mockFetchClientSymbol }));
+const noop = jest.fn();
+const extraArguments = { promiseStore, fetchClient: mockFetchClientSymbol };
+const dispatchMock = jest.fn((t) => t(noop, noop, extraArguments));
 useDispatchSpy.mockImplementation(() => dispatchMock);
 
 describe('useStreamedFetchye', () => {
@@ -80,6 +82,6 @@ describe('useStreamedFetchye', () => {
 
     expect(dispatchMock).toHaveBeenCalledTimes(3);
 
-    expect(await result.current).toStrictEqual({ fetcheArgs: ['http://example-3.com', {}, undefined], makeFetchyeArgs: [{ cache: mockOneCacheSymbol, fetchClient: mockFetchClientSymbol, store: { dispatch: undefined, getState: undefined } }] });
+    expect(await result.current).toStrictEqual({ fetcheArgs: ['http://example-3.com', {}, undefined], makeFetchyeArgs: [{ cache: mockOneCacheSymbol, fetchClient: mockFetchClientSymbol, store: { dispatch: noop, getState: noop } }] });
   });
 });

@@ -355,6 +355,7 @@ const AbortComponent = () => {
   const controller = new AbortController();
   useFetchye('http://example.com/api/books', { signal: controller.signal });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- sample code.
   useEffect(() => () => controller.abort(), []);
 
   return (
@@ -796,26 +797,53 @@ const ParentComponent = ({ children }) => (
 
 **Contents**
 
-* [`useFetchye`](#usefetchye)
-* [`makeServerFetchye`](#makeserverfetchye)
-* [`makeOneServerFetchye`](#makeoneserverfetchye) (deprecated)
-* [`oneFetchye`](#oneFetchye)
-* [Providers](#providers)
-  * [`FetchyeProvider`](#fetchyeprovider)
-  * [`FetchyeReduxProvider`](#fetchyereduxprovider)
-  * [`OneFetchyeProvider`](#oneFetchyeProvider)
-* [Caches](#caches)
-  * [`SimpleCache`](#simplecache)
-  * [`ImmutableCache`](#immutablecache)
-  * [`OneCache`](#onecache)
-* [Actions](#actions)
-  * [`IS_LOADING`](#is_loading)
-  * [`SET_DATA`](#set_data)
-  * [`DELETE_DATA`](#delete_data)
-  * [`ERROR`](#error)
-  * [`CLEAR_ERROR`](#clear_error)
-* [`mapOptionToKey Helpers`](#mapoptiontokey-helpers)
-  * [`ignoreHeadersByKey`](#ignoreheadersbykey)
+- [📖 Table of Contents](#-table-of-contents)
+- [✨ Features](#-features)
+- [⬇️ Install \& Setup](#️-install--setup)
+  - [Quick Install](#quick-install)
+  - [`FetchyeProvider` Install](#fetchyeprovider-install)
+  - [`FetchyeReduxProvider` Install](#fetchyereduxprovider-install)
+  - [One App Install](#one-app-install)
+- [🤹‍ Usage](#-usage)
+  - [Real-World Example](#real-world-example)
+  - [Deferred execution](#deferred-execution)
+  - [Abort Inflight Requests](#abort-inflight-requests)
+  - [Sequential API Execution](#sequential-api-execution)
+  - [Refreshing](#refreshing)
+  - [Custom Fetcher](#custom-fetcher)
+  - [Controlling the Cache Key](#controlling-the-cache-key)
+  - [Passing dynamic headers](#passing-dynamic-headers)
+  - [SSR](#ssr)
+    - [One App SSR](#one-app-ssr)
+    - [Next.JS SSR](#nextjs-ssr)
+- [Write your own Cache](#write-your-own-cache)
+- [🎛️ API](#️-api)
+  - [`useFetchye`](#usefetchye)
+  - [`makeServerFetchye`](#makeserverfetchye)
+  - [`makeOneServerFetchye`](#makeoneserverfetchye)
+  - [oneFetchye](#onefetchye)
+  - [streamedFetchye](#streamedfetchye)
+  - [useStreamedFetchye](#usestreamedfetchye)
+  - [Providers](#providers)
+    - [`FetchyeProvider`](#fetchyeprovider)
+    - [`FetchyeReduxProvider`](#fetchyereduxprovider)
+    - [`OneFetchyeProvider`](#onefetchyeprovider)
+  - [Caches](#caches)
+    - [`SimpleCache`](#simplecache)
+    - [`ImmutableCache`](#immutablecache)
+    - [`OneCache`](#onecache)
+  - [Actions](#actions)
+    - [`IS_LOADING`](#is_loading)
+    - [`SET_DATA`](#set_data)
+    - [`DELETE_DATA`](#delete_data)
+    - [`ERROR`](#error)
+    - [`CLEAR_ERROR`](#clear_error)
+  - [mapOptionToKey Helpers](#mapoptiontokey-helpers)
+    - [ignoreHeadersByKey](#ignoreheadersbykey)
+- [📢 Mission](#-mission)
+- [🏆 Contributing](#-contributing)
+- [🗝️ License](#️-license)
+- [🗣️ Code of Conduct](#️-code-of-conduct)
 
 ### `useFetchye`
 
@@ -967,9 +995,10 @@ Note: The key and options are used to compute the cache key and must match the v
 ```js
 import { streamedFetchye } from 'fetchye-one-app';
 
-const key = "https://example.com/api/v2/people";
+const key = 'https://example.com/api/v2/people';
 const thunk = oneFetchye(key);
-const loadModuleData = async ({ store: { dispatch } }) => dispatch(streamedFetchye(thunk, key, options, fetcher));
+const streamedFetchyeThunk = streamedFetchye(thunk, key, options, fetcher);
+const loadModuleData = async ({ store: { dispatch } }) => dispatch(streamedFetchyeThunk);
 ```
 
 **`streamedFetchye` Arguments**

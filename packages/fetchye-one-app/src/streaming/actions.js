@@ -18,8 +18,10 @@ export const storeLocalPromise = (domain, key, promise) => (_a, _b, { promiseSto
   promiseStore?.storeLocalPromise(domain, key, promise);
 };
 
+// eslint-disable-next-line max-len -- length can't be reduced w/o breaking other lint rules.
 export const getLocalPromise = (domain, key) => (_a, _b, { promiseStore }) => promiseStore?.getLocalPromise(domain, key);
 
+// eslint-disable-next-line max-len -- length can't be reduced w/o breaking other lint rules.
 export const getStreamingPromises = () => (_a, _b, { promiseStore }) => promiseStore?.getStreamingPromises() ?? [];
 
 export const stream = (promiseArray) => (_a, _b, { promiseStore }) => {
