@@ -18,7 +18,7 @@ import { computeKey } from 'fetchye';
 import { stream } from './actions';
 import { STREAM_DOMAIN } from './constants';
 
-export const streamedFetchye = (fetchyeThunk, key, options = {}) => async (dispatch) => {
+export const streamFetchye = (fetchyeThunk, key, options = {}) => async (dispatch) => {
   const { hash: computedKey } = computeKey(key, options);
   const promise = dispatch(fetchyeThunk);
 

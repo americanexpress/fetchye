@@ -19,5 +19,5 @@ export OneCache, { oneCacheSelector } from './OneCache';
 export OneFetchyeProvider from './OneFetchyeProvider';
 export oneFetchye from './oneFetchye';
 // streaming
-export { streamedFetchye } from './streaming/streamedFetchye';
+export { streamFetchye } from './streaming/streamFetchye';
 export { useStreamedFetchye } from './streaming/useStreamedFetchye';

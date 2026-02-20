@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-import { streamedFetchye } from '../../src/streaming/streamedFetchye';
+import { streamFetchye } from '../../src/streaming/streamFetchye';
 import * as actions from '../../src/streaming/actions';
 import { STREAM_DOMAIN } from '../../src/streaming/constants';
 
@@ -26,7 +26,7 @@ jest.mock('fetchye', () => ({
 const streamActionSpy = jest.spyOn(actions, 'stream');
 const mockDispatch = jest.fn();
 
-describe('streamedFetchye', () => {
+describe('streamFetchye', () => {
   it('should return a one-app-thunk that dispatches an action resolving to the passed in thunk', async () => {
     expect.assertions(2);
 
@@ -34,9 +34,9 @@ describe('streamedFetchye', () => {
     fetchyeThunk.mockResolvedValue(Symbol('fetchRequest'));
 
     const fetchyeParams = [fetchyeThunk, Symbol('fetchyeArgs 2')];
-    const streamedFetchyeThunk = streamedFetchye(...fetchyeParams);
+    const streamFetchyeThunk = streamFetchye(...fetchyeParams);
     const thunkParams = [mockDispatch, Symbol('getState'), Symbol('fetchClient')];
-    const streamedFetchyeResponse = await streamedFetchyeThunk(
+    const streamFetchyeResponse = await streamFetchyeThunk(
       fetchyeThunk, thunkParams[0], thunkParams[1], { fetchClient: thunkParams[2] }
     );
     const fetchyeThunkPromise = fetchyeThunk();
@@ -46,6 +46,6 @@ describe('streamedFetchye', () => {
       domain: STREAM_DOMAIN,
       promise: fetchyeThunkPromise,
     }]);
-    expect(streamedFetchyeResponse).toStrictEqual(await fetchyeThunkPromise);
+    expect(streamFetchyeResponse).toStrictEqual(await fetchyeThunkPromise);
   });
 });

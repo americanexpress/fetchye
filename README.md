@@ -822,7 +822,7 @@ const ParentComponent = ({ children }) => (
   - [`makeServerFetchye`](#makeserverfetchye)
   - [`makeOneServerFetchye`](#makeoneserverfetchye)
   - [oneFetchye](#onefetchye)
-  - [streamedFetchye](#streamedfetchye)
+  - [streamFetchye](#streamfetchye)
   - [useStreamedFetchye](#usestreamedfetchye)
   - [Providers](#providers)
     - [`FetchyeProvider`](#fetchyeprovider)
@@ -985,7 +985,7 @@ A promise resolving to an object with the below keys:
 | `error?` | `Object`         | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
 | `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can be awaited.                                                                                                      |
 
-### streamedFetchye
+### streamFetchye
 
 A helper to enable streaming for server side Fetchye API calls. The first parameter is a [`oneFetchye`](https://github.com/americanexpress/fetchye?tab=readme-ov-file#oneFetchye) thunk.
 
@@ -993,15 +993,15 @@ Note: The key and options are used to compute the cache key and must match the v
 
 **Shape**
 ```js
-import { streamedFetchye } from 'fetchye-one-app';
+import { streamFetchye } from 'fetchye-one-app';
 
 const key = 'https://example.com/api/v2/people';
 const thunk = oneFetchye(key);
-const streamedFetchyeThunk = streamedFetchye(thunk, key, options, fetcher);
-const loadModuleData = async ({ store: { dispatch } }) => dispatch(streamedFetchyeThunk);
+const streamFetchyeThunk = streamFetchye(thunk, key, options, fetcher);
+const loadModuleData = async ({ store: { dispatch } }) => dispatch(streamFetchyeThunk);
 ```
 
-**`streamedFetchye` Arguments**
+**`streamFetchye` Arguments**
 
 | name      | type                                                                                                 | required | description                                                                                                                                       |
 |-----------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -1010,13 +1010,13 @@ const loadModuleData = async ({ store: { dispatch } }) => dispatch(streamedFetch
 | `options` | `Object<ES6FetchOptions & CustomFetchOptions>`                                                                                     | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). See **Options** table for the CustomFetchOptions which do not get passed through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                            |
 | `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
 
-**`streamedFetchye` Options**
+**`streamFetchye` Options**
 
 | name                | type                                                  | required | description                                                                                                                                                                        |
 |---------------------|-------------------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `throwOnError`   | `boolean`            | `false`  | This option overrides the default fetchye behavior of catching failed requests. When enabled, unsuccessful responses will throw an error containing the payload of the request. This is intended to be used within a suspense boundary.   
 
-**`streamedFetchye` Returns**
+**`streamFetchye` Returns**
 
 A promise resolving to the value of the thunk.
 
