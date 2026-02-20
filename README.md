@@ -989,23 +989,27 @@ A promise resolving to an object with the below keys:
 
 A helper to enable streaming for server side Fetchye API calls. The first parameter is a [`oneFetchye`](https://github.com/americanexpress/fetchye?tab=readme-ov-file#oneFetchye) thunk.
 
-Note: The key and options are used to compute the cache key and must match the values passed to `useStreamedFetchye` for a successful cache hit.
+Note: The key and options are used to compute the cache key and must match the values passed to `useStreamedFetchye` for a successful cache hit. When `options.throwOnError` is enabled, the function will throw an error for unsuccessful requests which will bubble up to the nearest error boundary. When disabled, the success status of the request must be manually checked.
 
 **Shape**
 ```js
-import { streamFetchye } from 'fetchye-one-app';
+import { streamFetchye, oneFetchye } from 'fetchye-one-app';
 
 const key = 'https://example.com/api/v2/people';
-const thunk = oneFetchye(key);
-const streamFetchyeThunk = streamFetchye(thunk, key, options, fetcher);
-const loadModuleData = async ({ store: { dispatch } }) => dispatch(streamFetchyeThunk);
+const options = { throwOnError: true };
+const streamFetchyeThunk = streamFetchye(oneFetchye, key, options, fetcher);
+const reportError = (response) => {};
+// NOTE: When throwOnError is true, promise rejections must be handled.
+const loadModuleData = async ({ store: { dispatch } }) => {
+  dispatch(streamFetchyeThunk).catch(reportError);
+};
 ```
 
 **`streamFetchye` Arguments**
 
 | name      | type                                                                                                 | required | description                                                                                                                                       |
 |-----------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| `thunk`     | `Promise`                                                                           | `true`   | A fetchye Redux thunk.                               |
+| `thunk`     | `Function`                                                                           | `true`   | A fetchye Redux thunk that will be called with the key, options, and fetcher.                               |
 | `key`     | `String`                                                                           | `true`   | A string that factors into cache key creation. *Defaults to URL compatible string*.  |
 | `options` | `Object<ES6FetchOptions & CustomFetchOptions>`                                                                                     | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). See **Options** table for the CustomFetchOptions which do not get passed through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                            |
 | `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
@@ -1024,7 +1028,7 @@ A promise resolving to the value of the thunk.
 
 A React hook used to read streamed data from the server. It will return the raw promise that the user can then parse manually. If there is no existing data from the server, a request will be performed on the client. 
 
-The key and options are used to compute the cache key and must match the values passed to `streamedFetchye` for a successful cache hit.
+The key and options are used to compute the cache key and must match the values passed to `streamedFetchye` for a successful cache hit. When `options.throwOnError` is enabled, the hook will throw an error for unsuccessful responses which will bubble up to the nearest error boundary. When disabled, the success status of the request must be manually checked.
 
 Note: The hook is intended to be used within a suspense boundary.
 
@@ -1039,13 +1043,17 @@ const MyComponent = () => {
     headers: {
       'Content-Type': 'application/json',
     },
+    throwOnError: true,
   });
 
   const { data } = use(response);
 
-  if (!data.ok) {
-    throw new Error('missing data');
-  }
+  // If `throwOnError` is false, the success status must be manually checked.
+  /*
+    if (!data.ok) {
+      throw new Error(data.body || 'something went wrong');
+    }
+  */
 
   return (
     <p>{data.body.name}</p>

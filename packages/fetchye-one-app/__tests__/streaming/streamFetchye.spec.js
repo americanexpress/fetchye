@@ -33,7 +33,7 @@ describe('streamFetchye', () => {
     const fetchyeThunk = jest.fn();
     fetchyeThunk.mockResolvedValue(Symbol('fetchRequest'));
 
-    const fetchyeParams = [fetchyeThunk, Symbol('fetchyeArgs 2')];
+    const fetchyeParams = [fetchyeThunk, Symbol('fetchyeArgs - key')];
     const streamFetchyeThunk = streamFetchye(...fetchyeParams);
     const thunkParams = [mockDispatch, Symbol('getState'), Symbol('fetchClient')];
     const streamFetchyeResponse = await streamFetchyeThunk(
@@ -47,5 +47,20 @@ describe('streamFetchye', () => {
       promise: fetchyeThunkPromise,
     }]);
     expect(streamFetchyeResponse).toStrictEqual(await fetchyeThunkPromise);
+  });
+
+  it('should call the fetchye thunk with the correct args', async () => {
+    expect.assertions(1);
+
+    const fetchyeThunk = jest.fn();
+    fetchyeThunk.mockResolvedValue(Symbol('fetchRequest'));
+
+    const fetchyeParams = [fetchyeThunk, Symbol('fetchyeArgs - key'), Symbol('fetchyeArgs - options'), Symbol('fetchyeArgs - fetcher')];
+    const streamFetchyeThunk = streamFetchye(...fetchyeParams);
+    const thunkParams = [mockDispatch, Symbol('getState'), Symbol('fetchClient')];
+    await streamFetchyeThunk(
+      fetchyeThunk, thunkParams[0], thunkParams[1], { fetchClient: thunkParams[2] }
+    );
+    expect(fetchyeThunk).toHaveBeenCalledWith(...fetchyeParams.slice(1));
   });
 });

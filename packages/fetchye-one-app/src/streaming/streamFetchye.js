@@ -18,9 +18,10 @@ import { computeKey } from 'fetchye';
 import { stream } from './actions';
 import { STREAM_DOMAIN } from './constants';
 
-export const streamFetchye = (fetchyeThunk, key, options = {}) => async (dispatch) => {
-  const { hash: computedKey } = computeKey(key, options);
-  const promise = dispatch(fetchyeThunk);
+// eslint-disable-next-line max-params -- param length is intentional.
+export const streamFetchye = (thunk, key, opts = {}, fetcher = undefined) => async (dispatch) => {
+  const { hash: computedKey } = computeKey(key, opts);
+  const promise = dispatch(thunk(key, opts, fetcher));
 
   dispatch(
     stream([
