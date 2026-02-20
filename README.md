@@ -1007,8 +1007,14 @@ const loadModuleData = async ({ store: { dispatch } }) => dispatch(streamedFetch
 |-----------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
 | `thunk`     | `Promise`                                                                           | `true`   | A fetchye Redux thunk.                               |
 | `key`     | `String`                                                                           | `true`   | A string that factors into cache key creation. *Defaults to URL compatible string*.  |
-| `options` | `ES6FetchOptions`                                                                                    | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                               |
+| `options` | `Object<ES6FetchOptions & CustomFetchOptions>`                                                                                     | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). See **Options** table for the CustomFetchOptions which do not get passed through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                            |
 | `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+
+**`streamedFetchye` Options**
+
+| name                | type                                                  | required | description                                                                                                                                                                        |
+|---------------------|-------------------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `throwOnError`   | `boolean`            | `false`  | This option overrides the default fetchye behavior of catching failed requests. When enabled, unsuccessful responses will throw an error containing the payload of the request. This is intended to be used within a suspense boundary.   
 
 **`streamedFetchye` Returns**
 
@@ -1055,7 +1061,18 @@ const Container = () => (
 
 **`useStreamedFetchye` Arguments**
 
-Refer to [`oneFetchye`](https://github.com/americanexpress/fetchye?tab=readme-ov-file#oneFetchye).
+| name      | type                                                                                                 | required | description                                                                                                                                       |
+|-----------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `key`     | `String`                                                                           | `true`   | A string that factors into cache key creation. *Defaults to URL compatible string*.  |
+| `options` | `Object<ES6FetchOptions & CustomFetchOptions>`                                                                                     | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). See **Options** table for the CustomFetchOptions which do not get passed through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                            |
+| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+
+**`useStreamedFetchye` Options**
+
+| name                | type                                                  | required | description                                                                                                                                                                        |
+|---------------------|-------------------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `throwOnError`   | `boolean`            | `false`  | This option overrides the default fetchye behavior of catching failed requests. When enabled, unsuccessful responses will throw an error containing the payload of the request. This is intended to be used within a suspense boundary.   
+
 
 **`useStreamedFetchye` Returns**
 
