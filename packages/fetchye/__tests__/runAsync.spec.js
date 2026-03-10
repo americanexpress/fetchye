@@ -167,5 +167,29 @@ describe('runAsync', () => {
         error: mockFetcherResponse.error,
       });
     });
+
+    it('should throw an object containing the requestError as the error when a fetch error is present', async () => {
+      const mockFetcherResponse = {
+        payload: { body: 'something went wrong', ok: true },
+        error: new Error('fake error'),
+      };
+
+      const fetcher = async () => mockFetcherResponse;
+      const options = {
+        throwOnError: true,
+      };
+
+      await expect(runAsync({
+        dispatch,
+        computedKey,
+        fetcher,
+        fetchClient,
+        options,
+      })
+      ).rejects.toEqual({
+        ...mockFetcherResponse.payload,
+        error: mockFetcherResponse.error,
+      });
+    });
   });
 });
