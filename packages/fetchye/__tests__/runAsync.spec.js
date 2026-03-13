@@ -16,14 +16,19 @@
 
 import { runAsync } from '../src/runAsync';
 
+const dispatch = jest.fn();
+const fetchClient = jest.fn();
+
 describe('runAsync', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should return successful payload and actions', async () => {
     const computedKey = {
       hash: '1234',
       key: 'http://example.com',
     };
-    const dispatch = jest.fn();
-    const fetchClient = jest.fn();
     const fetcher = async () => ({
       payload: { body: { fake: true } },
       error: undefined,
@@ -73,8 +78,6 @@ describe('runAsync', () => {
       hash: '1234',
       key: 'http://example.com',
     };
-    const dispatch = jest.fn();
-    const fetchClient = jest.fn();
     const fetcher = async () => ({
       payload: undefined,
       error: new Error('fake error'),
@@ -110,5 +113,83 @@ describe('runAsync', () => {
         "error": [Error: fake error],
       }
     `);
+  });
+
+  describe('options.throwOnError is enabled', () => {
+    const computedKey = {
+      hash: '1234',
+      key: 'http://example.com',
+    };
+
+    it('should throw an object containing the response payload as the error', async () => {
+      const mockFetcherResponse = {
+        payload: { body: { fake: true }, ok: false },
+      };
+
+      const fetcher = async () => mockFetcherResponse;
+      const options = {
+        throwOnError: true,
+      };
+
+      await expect(runAsync({
+        dispatch,
+        computedKey,
+        fetcher,
+        fetchClient,
+        options,
+      })
+      ).rejects.toEqual({
+        ...mockFetcherResponse.payload,
+        error: mockFetcherResponse.payload.body,
+      });
+    });
+
+    it('should throw an object containing the requestError as the error when response payload is null', async () => {
+      const mockFetcherResponse = {
+        payload: { body: null, ok: false },
+        error: new Error('fake error'),
+      };
+
+      const fetcher = async () => mockFetcherResponse;
+      const options = {
+        throwOnError: true,
+      };
+
+      await expect(runAsync({
+        dispatch,
+        computedKey,
+        fetcher,
+        fetchClient,
+        options,
+      })
+      ).rejects.toEqual({
+        ...mockFetcherResponse.payload,
+        error: mockFetcherResponse.error,
+      });
+    });
+
+    it('should throw an object containing the requestError as the error when a fetch error is present', async () => {
+      const mockFetcherResponse = {
+        payload: { body: 'something went wrong', ok: true },
+        error: new Error('fake error'),
+      };
+
+      const fetcher = async () => mockFetcherResponse;
+      const options = {
+        throwOnError: true,
+      };
+
+      await expect(runAsync({
+        dispatch,
+        computedKey,
+        fetcher,
+        fetchClient,
+        options,
+      })
+      ).rejects.toEqual({
+        ...mockFetcherResponse.payload,
+        error: mockFetcherResponse.error,
+      });
+    });
   });
 });

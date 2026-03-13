@@ -30,6 +30,20 @@ export const runAsync = async ({
     payload: data,
     error: requestError,
   } = await fetcher(fetchClient, computedKey.key, handleDynamicHeaders(options));
+  /*
+    This option overrides the default fetchye behavior of catching failed requests.
+    When enabled, unsuccessful responses will throw an error containing the payload of the request.
+    This is intended to be used within a suspense boundary.
+  */
+  if (options?.throwOnError && (!data?.ok || requestError)) {
+    const errorWithPayload = {
+      ...data,
+      error: requestError || data?.body,
+    };
+
+    throw errorWithPayload;
+  }
+
   if (!requestError) {
     dispatch(setAction({ hash: computedKey.hash, value: data }));
   } else {
