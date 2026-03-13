@@ -19,6 +19,7 @@ import makeServerFetchye from './makeServerFetchye';
 import FetchyeProvider from './FetchyeProvider';
 import SimpleCache from './SimpleCache';
 import { ignoreHeadersByKey } from './mapOptionsToKeyHelpers';
+import { computeKey } from './computeKey';
 
 export {
   useFetchye,
@@ -26,4 +27,5 @@ export {
   FetchyeProvider,
   SimpleCache,
   ignoreHeadersByKey,
+  computeKey,
 };

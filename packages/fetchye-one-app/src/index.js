@@ -18,3 +18,6 @@ export { makeOneServerFetchye } from './makeOneServerFetchye';
 export OneCache, { oneCacheSelector } from './OneCache';
 export OneFetchyeProvider from './OneFetchyeProvider';
 export oneFetchye from './oneFetchye';
+// streaming
+export { streamFetchye } from './streaming/streamFetchye';
+export { useStreamedFetchye } from './streaming/useStreamedFetchye';

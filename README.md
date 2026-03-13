@@ -355,6 +355,7 @@ const AbortComponent = () => {
   const controller = new AbortController();
   useFetchye('http://example.com/api/books', { signal: controller.signal });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- sample code.
   useEffect(() => () => controller.abort(), []);
 
   return (
@@ -796,26 +797,53 @@ const ParentComponent = ({ children }) => (
 
 **Contents**
 
-* [`useFetchye`](#usefetchye)
-* [`makeServerFetchye`](#makeserverfetchye)
-* [`makeOneServerFetchye`](#makeoneserverfetchye) (deprecated)
-* [`oneFetchye`](#oneFetchye)
-* [Providers](#providers)
-  * [`FetchyeProvider`](#fetchyeprovider)
-  * [`FetchyeReduxProvider`](#fetchyereduxprovider)
-  * [`OneFetchyeProvider`](#oneFetchyeProvider)
-* [Caches](#caches)
-  * [`SimpleCache`](#simplecache)
-  * [`ImmutableCache`](#immutablecache)
-  * [`OneCache`](#onecache)
-* [Actions](#actions)
-  * [`IS_LOADING`](#is_loading)
-  * [`SET_DATA`](#set_data)
-  * [`DELETE_DATA`](#delete_data)
-  * [`ERROR`](#error)
-  * [`CLEAR_ERROR`](#clear_error)
-* [`mapOptionToKey Helpers`](#mapoptiontokey-helpers)
-  * [`ignoreHeadersByKey`](#ignoreheadersbykey)
+- [📖 Table of Contents](#-table-of-contents)
+- [✨ Features](#-features)
+- [⬇️ Install \& Setup](#️-install--setup)
+  - [Quick Install](#quick-install)
+  - [`FetchyeProvider` Install](#fetchyeprovider-install)
+  - [`FetchyeReduxProvider` Install](#fetchyereduxprovider-install)
+  - [One App Install](#one-app-install)
+- [🤹‍ Usage](#-usage)
+  - [Real-World Example](#real-world-example)
+  - [Deferred execution](#deferred-execution)
+  - [Abort Inflight Requests](#abort-inflight-requests)
+  - [Sequential API Execution](#sequential-api-execution)
+  - [Refreshing](#refreshing)
+  - [Custom Fetcher](#custom-fetcher)
+  - [Controlling the Cache Key](#controlling-the-cache-key)
+  - [Passing dynamic headers](#passing-dynamic-headers)
+  - [SSR](#ssr)
+    - [One App SSR](#one-app-ssr)
+    - [Next.JS SSR](#nextjs-ssr)
+- [Write your own Cache](#write-your-own-cache)
+- [🎛️ API](#️-api)
+  - [`useFetchye`](#usefetchye)
+  - [`makeServerFetchye`](#makeserverfetchye)
+  - [`makeOneServerFetchye`](#makeoneserverfetchye)
+  - [oneFetchye](#onefetchye)
+  - [streamFetchye](#streamfetchye)
+  - [useStreamedFetchye](#usestreamedfetchye)
+  - [Providers](#providers)
+    - [`FetchyeProvider`](#fetchyeprovider)
+    - [`FetchyeReduxProvider`](#fetchyereduxprovider)
+    - [`OneFetchyeProvider`](#onefetchyeprovider)
+  - [Caches](#caches)
+    - [`SimpleCache`](#simplecache)
+    - [`ImmutableCache`](#immutablecache)
+    - [`OneCache`](#onecache)
+  - [Actions](#actions)
+    - [`IS_LOADING`](#is_loading)
+    - [`SET_DATA`](#set_data)
+    - [`DELETE_DATA`](#delete_data)
+    - [`ERROR`](#error)
+    - [`CLEAR_ERROR`](#clear_error)
+  - [mapOptionToKey Helpers](#mapoptiontokey-helpers)
+    - [ignoreHeadersByKey](#ignoreheadersbykey)
+- [📢 Mission](#-mission)
+- [🏆 Contributing](#-contributing)
+- [🗝️ License](#️-license)
+- [🗣️ Code of Conduct](#️-code-of-conduct)
 
 ### `useFetchye`
 
@@ -956,6 +984,107 @@ A promise resolving to an object with the below keys:
 | `data`   | `Object`         | A result of a `fetchClient` query. *Defaults to returning `{ status, body, ok, headers }` from `fetchClient` response*                                                          |
 | `error?` | `Object`         | An object containing an error if present. *Defaults to an `Error` object with a thrown `fetch` error. This is not for API errors (e.g. Status 500 or 400). See `data` for that* |
 | `run`    | `async () => {}` | A function for bypassing the cache and firing an API call. Can be awaited.                                                                                                      |
+
+### streamFetchye
+
+A helper to enable streaming for server side Fetchye API calls. The first parameter is a [`oneFetchye`](https://github.com/americanexpress/fetchye?tab=readme-ov-file#oneFetchye) thunk.
+
+Note: The key and options are used to compute the cache key and must match the values passed to `useStreamedFetchye` for a successful cache hit. When `options.throwOnError` is enabled, the function will throw an error for unsuccessful requests which will bubble up to the nearest error boundary. When disabled, the success status of the request must be manually checked.
+
+**Shape**
+```js
+import { streamFetchye, oneFetchye } from 'fetchye-one-app';
+
+const key = 'https://example.com/api/v2/people';
+const options = { throwOnError: true };
+const streamFetchyeThunk = streamFetchye(oneFetchye, key, options, fetcher);
+const reportError = (response) => {};
+// NOTE: When throwOnError is true, promise rejections must be handled.
+const loadModuleData = async ({ store: { dispatch } }) => {
+  dispatch(streamFetchyeThunk).catch(reportError);
+};
+```
+
+**`streamFetchye` Arguments**
+
+| name      | type                                                                                                 | required | description                                                                                                                                       |
+|-----------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `thunk`     | `Function`                                                                           | `true`   | A fetchye Redux thunk that will be called with the key, options, and fetcher.                               |
+| `key`     | `String`                                                                           | `true`   | A string that factors into cache key creation. *Defaults to URL compatible string*.  |
+| `options` | `Object<ES6FetchOptions & CustomFetchOptions>`                                                                                     | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). See **Options** table for the CustomFetchOptions which do not get passed through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                            |
+| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+
+**`streamFetchye` Options**
+
+| name                | type                                                  | required | description                                                                                                                                                                        |
+|---------------------|-------------------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `throwOnError`   | `boolean`            | `false`  | This option overrides the default fetchye behavior of catching failed requests. When enabled, unsuccessful responses will throw an error containing the payload of the request. This is intended to be used within a suspense boundary.   
+
+**`streamFetchye` Returns**
+
+A promise resolving to the value of the thunk.
+
+### useStreamedFetchye
+
+A React hook used to read streamed data from the server. It will return the raw promise that the user can then parse manually. If there is no existing data from the server, a request will be performed on the client. 
+
+The key and options are used to compute the cache key and must match the values passed to `streamedFetchye` for a successful cache hit. When `options.throwOnError` is enabled, the hook will throw an error for unsuccessful responses which will bubble up to the nearest error boundary. When disabled, the success status of the request must be manually checked.
+
+Note: The hook is intended to be used within a suspense boundary.
+
+**Shape**
+```jsx
+import { use } from 'react';
+import { useStreamedFetchye } from 'fetchye-one-app';
+import { Spinner } from 'design-library';
+
+const MyComponent = () => {
+  const response = useStreamedFetchye('https://example.com/api/v2/people', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    throwOnError: true,
+  });
+
+  const { data } = use(response);
+
+  // If `throwOnError` is false, the success status must be manually checked.
+  /*
+    if (!data.ok) {
+      throw new Error(data.body || 'something went wrong');
+    }
+  */
+
+  return (
+    <p>{data.body.name}</p>
+  );
+};
+
+const Container = () => (
+  <Suspense fallback={<Spinner size="sm" />}>
+    <MyComponent />
+  </Suspense>
+);
+```
+
+**`useStreamedFetchye` Arguments**
+
+| name      | type                                                                                                 | required | description                                                                                                                                       |
+|-----------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `key`     | `String`                                                                           | `true`   | A string that factors into cache key creation. *Defaults to URL compatible string*.  |
+| `options` | `Object<ES6FetchOptions & CustomFetchOptions>`                                                                                     | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). See **Options** table for the CustomFetchOptions which do not get passed through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                            |
+| `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+
+**`useStreamedFetchye` Options**
+
+| name                | type                                                  | required | description                                                                                                                                                                        |
+|---------------------|-------------------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `throwOnError`   | `boolean`            | `false`  | This option overrides the default fetchye behavior of catching failed requests. When enabled, unsuccessful responses will throw an error containing the payload of the request. This is intended to be used within a suspense boundary.   
+
+
+**`useStreamedFetchye` Returns**
+
+A promise resolving to the streamed or local promise.
 
 ### Providers
 

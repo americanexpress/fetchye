@@ -21,10 +21,11 @@ module.exports = {
   ],
   snapshotSerializers: [],
   testMatch: [
-    '**/__tests__/*.spec.{js,jsx}',
+    '**/__tests__/**/*.spec.{js,jsx}',
   ],
   collectCoverageFrom: [
-    'packages/*/src/*.{js,jsx}',
+    'packages/*/src/**/*.{js,jsx}',
+    '!packages/*/src/**/index.{js,jsx}',
   ],
   moduleNameMapper: {
     '^fetchye-redux-provider$': '<rootDir>/packages/fetchye-redux-provider/src/index.js',

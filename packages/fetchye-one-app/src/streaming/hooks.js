@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 American Express Travel Related Services Company, Inc.
+ * Copyright 2026 American Express Travel Related Services Company, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,13 @@
  * permissions and limitations under the License.
  */
 
-import * as fetchye from '../src';
+// eslint-disable-next-line import/no-extraneous-dependencies -- transitive from fetchye-redux-provider
+import { useDispatch } from 'react-redux';
+import { getStreamingPromises } from './actions';
+import { STREAM_DOMAIN } from './constants';
 
-describe('index', () => {
-  it('should return public methods', () => {
-    expect(Object.keys(fetchye).sort()).toMatchInlineSnapshot(`
-      Array [
-        "FetchyeProvider",
-        "SimpleCache",
-        "computeKey",
-        "ignoreHeadersByKey",
-        "makeServerFetchye",
-        "useFetchye",
-      ]
-    `);
-  });
-});
+export const useStreamedPromise = (key, domain = STREAM_DOMAIN) => {
+  const dispatch = useDispatch();
+  const promises = dispatch(getStreamingPromises());
+  return promises?.find((p) => p.key === key && p.domain === (domain || key))?.promise;
+};
