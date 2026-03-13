@@ -11,28 +11,28 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [ '12.x', '14.x', '16.x', '18.x' ]
+        node: [20.x]
     name: Node ${{ matrix.node }}
     steps:
-    - uses: actions/checkout@v2
-    - run: |
-        git remote set-branches --add origin main beta
-        git fetch
-    - name: Setup Node
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node }}
-    - name: Install Dependencies
-      run: yarn
-      env:
-        NODE_ENV: development
-    - name: Unit Tests
-      run: yarn test:unit
-      env:
-        NODE_ENV: production
-    - name: Git History Test
-      run: yarn test:git-history
-    - name: Lockfile Lint Test
-      run: yarn test:lockfile
-    - name: Lint
-      run: yarn lint
+      - uses: actions/checkout@v2
+      - run: |
+          git remote set-branches --add origin main beta
+          git fetch
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install Dependencies
+        run: yarn
+        env:
+          NODE_ENV: development
+      - name: Unit Tests
+        run: yarn test:unit
+        env:
+          NODE_ENV: production
+      - name: Git History Test
+        run: yarn test:git-history
+      - name: Lockfile Lint Test
+        run: yarn test:lockfile
+      - name: Lint
+        run: yarn lint
