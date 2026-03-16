@@ -11,14 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
-    - id: commit
-      run: echo "message=${{ github.event.head_commit.message }}" >> $GITHUB_OUTPUT
+      - id: commit
+        run: echo "message=${{ github.event.head_commit.message }}" >> $GITHUB_OUTPUT
     outputs:
       commitMsg: ${{ steps.commit.outputs.message }}
   release:
     name: Release
     needs: [checkCommit]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for trusted publisher publishing
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
     steps:
       - uses: actions/checkout@v2
         with:
@@ -26,16 +31,14 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '18'
+          node-version: 24
       - name: Install yarn
         run: |-
           NODE_ENV=development yarn
       - name: Test packages
         run: yarn test
       - name: Release packages
+        if: "startsWith(needs.checkCommit.outputs.commitMsg, 'chore(release):')"
         env:
           NODE_ENV: production
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |-
-          echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
-          yarn lerna:deploy -- "${{ needs.checkCommit.outputs.commitMsg }}"
+        run: yarn lerna:publish
