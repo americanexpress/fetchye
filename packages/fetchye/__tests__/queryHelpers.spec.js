@@ -19,30 +19,118 @@ import {
 } from '../src/queryHelpers';
 
 describe('isLoading', () => {
-  it('should return true if loading cache true', () => {
-    expect(isLoading({
-      loading: true, data: undefined, numOfRenders: 2, options: {},
-    })).toEqual(true);
+  describe('should return false', () => {
+    it('if defer is true, and not already loading', () => {
+      expect(isLoading({
+        loading: false,
+        data: undefined,
+        options: {
+          defer: true,
+        },
+        error: undefined,
+        refs: {},
+      })).toEqual(false);
+    });
+
+    it('if forceInitialFetch is true, but call is defered', () => {
+      expect(isLoading({
+        loading: false,
+        data: {},
+        options: {
+          defer: true,
+        },
+        error: undefined,
+        refs: {
+          forceInitialFetch: true,
+        },
+      })).toEqual(false);
+    });
+
+    it('if data is undefined and no error, but call is defered', () => {
+      expect(isLoading({
+        loading: false,
+        data: undefined,
+        options: {
+          defer: true,
+        },
+        error: undefined,
+        refs: {
+          forceInitialFetch: false,
+        },
+      })).toEqual(false);
+    });
+
+    it('if there are errors present', () => {
+      expect(isLoading({
+        loading: false,
+        options: {
+          defer: false,
+        },
+        error: {},
+        refs: {},
+      })).toEqual(false);
+    });
+
+    it('if there is data present', () => {
+      expect(isLoading({
+        loading: false,
+        data: { },
+        options: {
+          defer: false,
+        },
+        refs: {},
+      })).toEqual(false);
+    });
   });
-  it('should return true if first render is true', () => {
-    expect(isLoading({
-      loading: false, data: undefined, numOfRenders: 1, options: { },
-    })).toEqual(true);
-  });
-  it('should return true if first render and forceInitialFetch option is true', () => {
-    expect(isLoading({
-      loading: false, data: undefined, numOfRenders: 1, options: { forceInitialFetch: true },
-    })).toEqual(true);
-  });
-  it('should return false if first render is true and defer is true', () => {
-    expect(isLoading({
-      loading: false, data: undefined, numOfRenders: 1, options: { defer: true },
-    })).toEqual(false);
-  });
-  it('should return false if all args are false', () => {
-    expect(isLoading({
-      loading: false, numOfRenders: 2, options: { defer: false },
-    })).toEqual(false);
+
+  describe('should return true', () => {
+    it('if fetchye is loading', () => {
+      expect(isLoading({
+        loading: true,
+        data: undefined,
+        options: {},
+        error: undefined,
+        refs: {},
+      })).toEqual(true);
+    });
+
+    it('if fetchye is loading, even if defered is true', () => {
+      expect(isLoading({
+        loading: true,
+        data: undefined,
+        options: {
+          defered: true,
+        },
+        error: undefined,
+        refs: {},
+      })).toEqual(true);
+    });
+
+    it('if there is no data, no error and not defered', () => {
+      expect(isLoading({
+        data: undefined,
+        loading: false,
+        options: {
+          defer: false,
+        },
+        error: undefined,
+        refs: {},
+      })).toEqual(true);
+    });
+
+    it('if forceInitialFetch is true, even if data exists', () => {
+      expect(isLoading({
+        loading: false,
+        data: {},
+        options: {
+          defer: false,
+        },
+        error: undefined,
+        refs: {
+          forceInitialFetch: true,
+        },
+      })).toEqual(true);
+    });
   });
 });
 
