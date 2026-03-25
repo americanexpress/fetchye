@@ -63,4 +63,22 @@ describe('streamFetchye', () => {
     );
     expect(fetchyeThunk).toHaveBeenCalledWith(...fetchyeParams.slice(1));
   });
+
+  it('should log a warning and return null if called in the browser', async () => {
+    expect.assertions(2);
+
+    const originalBrowserValue = global.BROWSER;
+    global.BROWSER = true;
+    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+
+    const fetchyeParams = [jest.fn(), Symbol('fetchyeArgs - key')];
+    const streamFetchyeThunk = streamFetchye(...fetchyeParams);
+    const response = await streamFetchyeThunk();
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      '[fetchye-one-app] streamFetchye is not intended for use in the browser and will return null.'
+    );
+    expect(response).toBeNull();
+    global.BROWSER = originalBrowserValue;
+    consoleWarnSpy.mockRestore();
+  });
 });
