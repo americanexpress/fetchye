@@ -27,6 +27,21 @@ const streamActionSpy = jest.spyOn(actions, 'stream');
 const mockDispatch = jest.fn();
 
 describe('streamFetchye', () => {
+  const originalWindow = global.window;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    Object.defineProperty(global, 'window', {
+      value: undefined,
+      configurable: true,
+      writable: true,
+    });
+  });
+
+  afterEach(() => {
+    global.window = originalWindow;
+  });
+
   it('should return a one-app-thunk that dispatches an action resolving to the passed in thunk', async () => {
     expect.assertions(2);
 
@@ -64,21 +79,20 @@ describe('streamFetchye', () => {
     expect(fetchyeThunk).toHaveBeenCalledWith(...fetchyeParams.slice(1));
   });
 
-  it('should log a warning and return null if called in the browser', async () => {
-    expect.assertions(2);
+  it('should not dispatch the stream action on the client', async () => {
+    expect.assertions(1);
 
-    const originalBrowserValue = global.BROWSER;
-    global.BROWSER = true;
-    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+    global.window = originalWindow;
 
-    const fetchyeParams = [jest.fn(), Symbol('fetchyeArgs - key')];
+    const fetchyeThunk = jest.fn();
+    fetchyeThunk.mockResolvedValue(Symbol('fetchRequest'));
+
+    const fetchyeParams = [fetchyeThunk, Symbol('fetchyeArgs - key'), Symbol('fetchyeArgs - options'), Symbol('fetchyeArgs - fetcher')];
     const streamFetchyeThunk = streamFetchye(...fetchyeParams);
-    const response = await streamFetchyeThunk();
-    expect(consoleWarnSpy).toHaveBeenCalledWith(
-      '[fetchye-one-app] streamFetchye is not intended for use in the browser and will return null.'
+    const thunkParams = [mockDispatch, Symbol('getState'), Symbol('fetchClient')];
+    await streamFetchyeThunk(
+      fetchyeThunk, thunkParams[0], thunkParams[1], { fetchClient: thunkParams[2] }
     );
-    expect(response).toBeNull();
-    global.BROWSER = originalBrowserValue;
-    consoleWarnSpy.mockRestore();
+    expect(streamActionSpy).not.toHaveBeenCalled();
   });
 });

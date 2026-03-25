@@ -20,26 +20,20 @@ import { STREAM_DOMAIN } from './constants';
 
 // eslint-disable-next-line max-params -- param length is intentional.
 export const streamFetchye = (thunk, key, opts = {}, fetcher = undefined) => async (dispatch) => {
-  if (global.BROWSER) {
-    // eslint-disable-next-line no-console -- warning is useful to developer in specific case.
-    console.warn(
-      '[fetchye-one-app] streamFetchye is not intended for use in the browser and will return null.'
-    );
-    return null;
-  }
-
   const { hash: computedKey } = computeKey(key, opts);
   const promise = dispatch(thunk(key, opts, fetcher));
 
-  dispatch(
-    stream([
-      {
-        key: computedKey,
-        domain: STREAM_DOMAIN,
-        promise,
-      },
-    ])
-  );
+  if (!global.window) {
+    dispatch(
+      stream([
+        {
+          key: computedKey,
+          domain: STREAM_DOMAIN,
+          promise,
+        },
+      ])
+    );
+  }
 
   return promise;
 };
