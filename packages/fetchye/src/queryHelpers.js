@@ -15,31 +15,23 @@
  */
 
 export const isLoading = ({
-  loading, data, numOfRenders, options,
+  loading, data, options, error, refs,
 }) => {
-  // If first render
-  if (numOfRenders === 1) {
-    // and defer is true
-    if (options.defer) {
-      // isLoading should be false
-      return false;
-    }
-    // and no data exists and presume loading state isn't present
-    if (!data) {
-      // isLoading should be true
-      return true;
-    }
-    // when we force fetch isLoading is always going to be true on first render
-    if (options.forceInitialFetch) {
-      // isLoading should be true
-      return true;
-    }
-  }
-  // If not on first render and loading from cache is true
+  // If loading from cache is true
   if (loading) {
     // isLoading should be true
     return true;
   }
+
+  // will fetch if no data and no error
+  // will fetch if forceInitialFetch is true
+  const willFetchIfNotDefered = (!data && !error)
+    || (refs.forceInitialFetch === true);
+
+  if (willFetchIfNotDefered && !options.defer) {
+    return true;
+  }
+
   // else isLoading should be false
   return false;
 };
