@@ -27,6 +27,21 @@ const streamActionSpy = jest.spyOn(actions, 'stream');
 const mockDispatch = jest.fn();
 
 describe('streamFetchye', () => {
+  const originalWindow = global.window;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    Object.defineProperty(global, 'window', {
+      value: undefined,
+      configurable: true,
+      writable: true,
+    });
+  });
+
+  afterEach(() => {
+    global.window = originalWindow;
+  });
+
   it('should return a one-app-thunk that dispatches an action resolving to the passed in thunk', async () => {
     expect.assertions(2);
 
@@ -62,5 +77,22 @@ describe('streamFetchye', () => {
       fetchyeThunk, thunkParams[0], thunkParams[1], { fetchClient: thunkParams[2] }
     );
     expect(fetchyeThunk).toHaveBeenCalledWith(...fetchyeParams.slice(1));
+  });
+
+  it('should not dispatch the stream action on the client', async () => {
+    expect.assertions(1);
+
+    global.window = originalWindow;
+
+    const fetchyeThunk = jest.fn();
+    fetchyeThunk.mockResolvedValue(Symbol('fetchRequest'));
+
+    const fetchyeParams = [fetchyeThunk, Symbol('fetchyeArgs - key'), Symbol('fetchyeArgs - options'), Symbol('fetchyeArgs - fetcher')];
+    const streamFetchyeThunk = streamFetchye(...fetchyeParams);
+    const thunkParams = [mockDispatch, Symbol('getState'), Symbol('fetchClient')];
+    await streamFetchyeThunk(
+      fetchyeThunk, thunkParams[0], thunkParams[1], { fetchClient: thunkParams[2] }
+    );
+    expect(streamActionSpy).not.toHaveBeenCalled();
   });
 });
