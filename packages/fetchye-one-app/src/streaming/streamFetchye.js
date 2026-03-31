@@ -23,15 +23,17 @@ export const streamFetchye = (thunk, key, opts = {}, fetcher = undefined) => asy
   const { hash: computedKey } = computeKey(key, opts);
   const promise = dispatch(thunk(key, opts, fetcher));
 
-  dispatch(
-    stream([
-      {
-        key: computedKey,
-        domain: STREAM_DOMAIN,
-        promise,
-      },
-    ])
-  );
+  if (!global.window) {
+    dispatch(
+      stream([
+        {
+          key: computedKey,
+          domain: STREAM_DOMAIN,
+          promise,
+        },
+      ])
+    );
+  }
 
   return promise;
 };
