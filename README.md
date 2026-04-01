@@ -302,6 +302,69 @@ const BookList = ({ genre }) => {
 };
 ```
 
+### Unit Testing and Mocking
+
+Fetchye can be tested with Jest and React Testing Library by rendering a small
+component that uses `useFetchye` and asserting the hook state over time.
+
+```jsx
+import React from 'react';
+import { render, waitFor } from '@testing-library/react';
+import { FetchyeProvider, SimpleCache, useFetchye } from 'fetchye';
+
+const customFetchClient = jest.fn(async () => ({
+  ok: true,
+  status: 200,
+  text: async () => JSON.stringify({
+    name: 'Ada Lovelace',
+  }),
+}));
+
+const customFetcher = async (fetchClient, key, options) => {
+  const response = await fetchClient(key, options);
+  return {
+    payload: {
+      ok: response.ok,
+      status: response.status,
+      body: JSON.parse(await response.text()),
+    },
+    error: undefined,
+  };
+};
+
+it('fetches profile data with a mocked custom fetcher', async () => {
+  let result;
+
+  render(
+    <FetchyeProvider cache={SimpleCache()} fetchClient={customFetchClient}>
+      {React.createElement(() => {
+        result = useFetchye('http://example.com/api/profile', {}, customFetcher);
+        return null;
+      })}
+    </FetchyeProvider>
+  );
+
+  await waitFor(() => expect(result.isLoading).toBe(false));
+  expect(customFetchClient).toHaveBeenCalledWith(
+    'http://example.com/api/profile',
+    {}
+  );
+  expect(result.data.body.name).toBe('Ada Lovelace');
+});
+```
+
+If you are not injecting a custom fetcher, mock `global.fetch` directly:
+
+```jsx
+global.fetch = jest.fn(async () => ({
+  ok: true,
+  status: 200,
+  text: async () => JSON.stringify({
+    name: 'Ada Lovelace',
+  }),
+}));
+```
+
 ### Deferred execution
 
 When you need to delay execution of a `useFetchye` call, you may use
@@ -806,6 +869,7 @@ const ParentComponent = ({ children }) => (
   - [One App Install](#one-app-install)
 - [🤹‍ Usage](#-usage)
   - [Real-World Example](#real-world-example)
+  - [Unit Testing and Mocking](#unit-testing-and-mocking)
   - [Deferred execution](#deferred-execution)
   - [Abort Inflight Requests](#abort-inflight-requests)
   - [Sequential API Execution](#sequential-api-execution)
