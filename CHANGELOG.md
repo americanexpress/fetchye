@@ -3,22 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [1.9.0](https://github.com/americanexpress/fetchye/compare/v1.8.0...v1.9.0) (2026-03-30)
-
-
-### Bug Fixes
-
-* **isLoading:** added catch for post render edge case ([6e30af6](https://github.com/americanexpress/fetchye/commit/6e30af6af26e1b872911653b7b476605b7ac307d))
-
-
-### Features
-
-* **fetchye-one-app:** add streaming support ([#110](https://github.com/americanexpress/fetchye/issues/110)) ([53185ea](https://github.com/americanexpress/fetchye/commit/53185ea772e43cba0aaa86b2b337267449c97246)), closes [#111](https://github.com/americanexpress/fetchye/issues/111)
-
-
-
-
-
 # [1.8.0](https://github.com/americanexpress/fetchye/compare/v1.7.0...v1.8.0) (2025-11-26)
 
 
