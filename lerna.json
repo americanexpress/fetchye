@@ -1,11 +1,15 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "npmClient": "yarn",
+  "useWorkspaces": true,
+  "packages": [
+    "packages/*"
+  ],
   "command": {
     "version": {
       "conventionalCommits": true,
       "allowBranch": "chore/release-*"
     }
   },
-  "version": "1.9.0"
+  "version": "1.8.0"
 }
