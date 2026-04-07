@@ -1,6 +1,6 @@
 {
   "name": "fetchye-test-utils",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Core components of the Fetchye library",
   "license": "Apache-2.0",
   "main": "lib/index.js",
@@ -9,6 +9,11 @@
     "lib",
     "es"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/americanexpress/fetchye.git",
+    "directory": "packages/fetchye-test-utils"
+  },
   "scripts": {
     "clean": "rimraf lib && rimraf es",
     "prebuild": "yarn clean",

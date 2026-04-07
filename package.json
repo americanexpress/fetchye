@@ -1,6 +1,10 @@
 {
   "name": "fetchye-project",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/americanexpress/fetchye.git"
+  },
   "workspaces": [
     "packages/*"
   ],
