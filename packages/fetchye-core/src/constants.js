@@ -20,3 +20,4 @@ export const SET_DATA = `${ACTION_NAMESPACE}/SET_DATA`;
 export const DELETE_DATA = `${ACTION_NAMESPACE}/DELETE_DATA`;
 export const ERROR = `${ACTION_NAMESPACE}/ERROR`;
 export const CLEAR_ERROR = `${ACTION_NAMESPACE}/CLEAR_ERROR`;
+export const FETCHYE_PROMISE_DOMAIN = '__fetchye__';

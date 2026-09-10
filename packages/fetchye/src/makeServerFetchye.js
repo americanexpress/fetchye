@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-import { ssrFetcher } from 'fetchye-core';
+import { ssrFetcher, FETCHYE_PROMISE_DOMAIN } from 'fetchye-core';
 import SimpleCache from './SimpleCache';
 import { runAsync } from './runAsync';
 import { computeKey } from './computeKey';
@@ -24,6 +24,7 @@ const makeServerFetchye = ({
   cache = SimpleCache(),
   store: { getState, dispatch } = {},
   fetchClient,
+  promiseStore,
 }) => async (
   key,
   options = {},
@@ -39,10 +40,26 @@ const makeServerFetchye = ({
     options,
   });
 
-  if (!getState || !dispatch || !cacheSelector) {
-    const res = await runAsync({
-      dispatch: () => {}, computedKey, fetcher, fetchClient, options,
+  // shares an in flight request between callers of the same key, ie two modules
+  // requesting the same data within their loadModuleData
+  const canDedupe = !!promiseStore && !!computedKey;
+  const inFlightPromise = canDedupe
+    && promiseStore.getLocalPromise(FETCHYE_PROMISE_DOMAIN, computedKey.hash);
+  const runDeduped = (dispatchToUse) => {
+    if (inFlightPromise) {
+      return inFlightPromise;
+    }
+    const promise = runAsync({
+      dispatch: dispatchToUse, computedKey, fetcher, fetchClient, options,
     });
+    if (canDedupe) {
+      promiseStore.storeLocalPromise(FETCHYE_PROMISE_DOMAIN, computedKey.hash, promise);
+    }
+    return promise;
+  };
+
+  if (!getState || !dispatch || !cacheSelector) {
+    const res = await runDeduped(() => {});
     return {
       data: coerceSsrField(res.data),
       error: coerceSsrField(res.error),
@@ -51,10 +68,8 @@ const makeServerFetchye = ({
   }
   const state = cacheSelector(getState());
   const { data, loading, error } = cache.getCacheByKey(state, computedKey.hash);
-  if (!data && !error && !loading) {
-    const res = await runAsync({
-      dispatch, computedKey, fetcher, fetchClient, options,
-    });
+  if (!data && !error && (!loading || inFlightPromise)) {
+    const res = await runDeduped(dispatch);
     return {
       data: coerceSsrField(res.data),
       error: coerceSsrField(res.error),

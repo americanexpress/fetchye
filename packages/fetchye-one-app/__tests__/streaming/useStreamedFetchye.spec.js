@@ -82,6 +82,14 @@ describe('useStreamedFetchye', () => {
 
     expect(dispatchMock).toHaveBeenCalledTimes(3);
 
-    expect(await result.current).toStrictEqual({ fetcheArgs: ['http://example-3.com', {}, undefined], makeFetchyeArgs: [{ cache: mockOneCacheSymbol, fetchClient: mockFetchClientSymbol, store: { dispatch: noop, getState: noop } }] });
+    expect(await result.current).toStrictEqual({
+      fetcheArgs: ['http://example-3.com', {}, undefined],
+      makeFetchyeArgs: [{
+        cache: mockOneCacheSymbol,
+        fetchClient: mockFetchClientSymbol,
+        promiseStore: undefined,
+        store: { dispatch: noop, getState: noop },
+      }],
+    });
   });
 });

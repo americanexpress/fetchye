@@ -676,6 +676,21 @@ BookList.holocron = {
 export default BookList;
 ```
 
+##### Request deduplication
+
+On the server, `oneFetchye` and `makeOneServerFetchye` share in flight requests between callers of
+the same key using [Holocron's promise store](https://github.com/americanexpress/one-app/blob/main/README.md).
+If Module A and Module B both request `http://example.com/api/books/` within their
+`loadModuleData`, only one request is made and both modules resolve with the same result.
+
+Notes:
+
+- Deduplication is server side only. On the client each `loadModuleData` call behaves as before.
+- The cache is always read first, so a request that has already resolved is served from the cache.
+- `run()` intentionally bypasses both the cache and deduplication to force a fresh request.
+- Keys are deduped by the same hash used for caching, so `mapOptionsToKey` and `mapKeyToCacheKey`
+  apply. Modules must use matching keys and options for a request to be shared.
+
 #### Next.JS SSR
 
 ```jsx
@@ -898,10 +913,11 @@ const { data, error } = await fetchye(key, options, fetcher);
 
 **`makeServerFetchye` Arguments**
 
-| name          | type       | required | description                                                                                    |
-|---------------|------------|----------|------------------------------------------------------------------------------------------------|
-| `cache`       | `Cache`    | `true`   | Fetchye `Cache` object.                                                                        |
-| `fetchClient` | `ES6Fetch` | `true`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| name           | type            | required | description                                                                                    |
+|----------------|-----------------|----------|------------------------------------------------------------------------------------------------|
+| `cache`        | `Cache`         | `true`   | Fetchye `Cache` object.                                                                        |
+| `fetchClient`  | `ES6Fetch`      | `true`   | A [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) compatible function. |
+| `promiseStore` | `PromiseStore`  | `false`  | An object shaped `{ getLocalPromise(domain, key), storeLocalPromise(domain, key, promise) }`, such as [Holocron's promise store](#request-deduplication). When given, concurrent calls for the same key share a single in flight request. |
 
 **`fetchye` Arguments**
 
