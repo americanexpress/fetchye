@@ -679,8 +679,7 @@ export default BookList;
 ##### Request deduplication
 
 On the server, `oneFetchye` and `makeOneServerFetchye` share in flight requests between callers of
-the same key using [Holocron's promise store](https://github.com/americanexpress/one-app/blob/main/README.md).
-If Module A and Module B both request `http://example.com/api/books/` within their
+the same key using Holocron's promise store. If Module A and Module B both request `http://example.com/api/books/` within their
 `loadModuleData`, only one request is made and both modules resolve with the same result.
 
 Notes:
@@ -830,6 +829,7 @@ const ParentComponent = ({ children }) => (
   - [Passing dynamic headers](#passing-dynamic-headers)
   - [SSR](#ssr)
     - [One App SSR](#one-app-ssr)
+      - [Request deduplication](#request-deduplication)
     - [Next.JS SSR](#nextjs-ssr)
 - [Write your own Cache](#write-your-own-cache)
 - [🎛️ API](#️-api)
