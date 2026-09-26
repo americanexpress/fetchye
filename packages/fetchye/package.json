@@ -5,6 +5,14 @@
   "license": "Apache-2.0",
   "main": "lib/index.js",
   "module": "es/index.js",
+  "exports": {
+    ".": {
+      "react-server": "./es/react-server/index.js",
+      "import": "./es/index.js",
+      "require": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "lib",
     "es"

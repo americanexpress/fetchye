@@ -4,7 +4,16 @@
   "description": "Collection of helpers to aid fetchye integration with One App",
   "license": "Apache-2.0",
   "main": "lib/index.js",
+  "module": "es/index.js",
   "es": "es/index.js",
+  "exports": {
+    ".": {
+      "react-server": "./es/react-server/index.js",
+      "import": "./es/index.js",
+      "require": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/americanexpress/fetchye.git",
