@@ -1345,7 +1345,7 @@ import { invalidateFetchyeTags } from 'fetchye';
 // Invalidate one or more tags
 const invalidateAllAction = async () => {
   await invalidateFetchyeTags(['books', 'profile', 'comments']);
-}
+};
 ```
 
 **Arguments**
