@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-import { TTLCache } from '@isaacs/ttlcache';
+import { Cacheable } from 'cacheable';
 import computeHash from 'object-hash';
 
 // Applied to newly created entries when a persistentCache config does not provide
@@ -22,20 +22,19 @@ import computeHash from 'object-hash';
 export const DEFAULT_PERSISTENT_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 /**
- * A single, module-level TTL cache shared by every call made with a `persistentCache`
+ * A single, module-level cache shared by every call made with a `persistentCache`
  * option. Unlike the promiseStore (which is only used to dedupe in-flight requests for
  * the lifetime of a single request/render), this cache is intended to live across
  * requests, which is what makes it "persistent".
  *
- * By default it checks the age of an entry whenever it is read (`checkAgeOnGet`) so that
- * stale entries which have not yet been purged by their timer are never returned, and it
- * does not extend/refresh an entry's TTL when it is overwritten with a fresh value
- * (`noUpdateTTL`), so that the original expiration keeps counting down.
+ * This is a `cacheable` `Cacheable` instance. Its default (and only, unless a
+ * `secondary` store is explicitly configured) `primary` store is an in-memory TTL cache
+ * (`CacheableMemory`, via `createKeyv()`), so entries always expire on their own.
+ *
+ * All reads/writes go through cacheable's native, promise-based `get`/`set` API.
  */
-export const persistentCacheStore = new TTLCache({
+export const persistentCacheStore = new Cacheable({
   ttl: DEFAULT_PERSISTENT_CACHE_TTL,
-  checkAgeOnGet: true,
-  noUpdateTTL: true,
 });
 
 /**
@@ -62,18 +61,3 @@ export const getPersistentCacheKey = (computedKey, isolationKey) => computeHash(
   [computedKey.hash, isolationKey],
   { respectType: false }
 );
-
-/**
- * Normalizes a `persistentCache` option into the get/set overrides accepted by
- * @isaacs/ttlcache, applying fetchye's defaults of checking age on get and not
- * extending the TTL when a value is refreshed.
- */
-export const getPersistentCacheOptions = ({
-  ttl,
-  checkAgeOnGet = true,
-  noUpdateTTL = true,
-} = {}) => ({
-  ttl,
-  checkAgeOnGet,
-  noUpdateTTL,
-});

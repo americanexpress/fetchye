@@ -18,19 +18,18 @@ import {
   persistentCacheStore,
   validatePersistentCache,
   getPersistentCacheKey,
-  getPersistentCacheOptions,
   DEFAULT_PERSISTENT_CACHE_TTL,
 } from '../../src/react-server/persistentCache';
 
 describe('react-server/persistentCache', () => {
-  afterEach(() => {
-    persistentCacheStore.clear();
+  afterEach(async () => {
+    await persistentCacheStore.clear();
   });
 
   describe('persistentCacheStore', () => {
-    it('is a shared TTLCache configured to check age on get and not update TTL', () => {
-      persistentCacheStore.set('some-key', 'some-value');
-      expect(persistentCacheStore.get('some-key')).toBe('some-value');
+    it('is a shared cacheable instance backed by an in-memory TTL primary store', async () => {
+      await persistentCacheStore.set('some-key', 'some-value');
+      await expect(persistentCacheStore.get('some-key')).resolves.toBe('some-value');
     });
   });
 
@@ -55,8 +54,6 @@ describe('react-server/persistentCache', () => {
       expect(() => validatePersistentCache({
         isolationKey: 'tenant-a',
         ttl: 1000,
-        checkAgeOnGet: false,
-        noUpdateTTL: false,
       })).not.toThrow();
     });
   });
@@ -69,28 +66,6 @@ describe('react-server/persistentCache', () => {
 
       expect(keyOne).not.toEqual(keyTwo);
       expect(keyOne).toEqual(keyThree);
-    });
-  });
-
-  describe('getPersistentCacheOptions', () => {
-    it('defaults checkAgeOnGet and noUpdateTTL to true', () => {
-      expect(getPersistentCacheOptions()).toEqual({
-        ttl: undefined,
-        checkAgeOnGet: true,
-        noUpdateTTL: true,
-      });
-    });
-
-    it('allows the caller to override ttl, checkAgeOnGet and noUpdateTTL', () => {
-      expect(getPersistentCacheOptions({
-        ttl: 1234,
-        checkAgeOnGet: false,
-        noUpdateTTL: false,
-      })).toEqual({
-        ttl: 1234,
-        checkAgeOnGet: false,
-        noUpdateTTL: false,
-      });
     });
   });
 

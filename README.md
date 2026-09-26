@@ -780,15 +780,20 @@ export default Page;
 
 > ⚠️ This is an **RSC-only** feature. It is not available in the standard (non-`react-server`) build of `makeServerFetchye`/`oneFetchye`, since those already have a Redux-backed cache to serve repeat requests from.
 
-Unlike in SPA where data can be implicitly cached in the browser between renders, in RSC data is fetched on the server, so by default every render re-issues a fresh upstream request. If your upstream data source is slow or rate-limited enough that this becomes a performance hindrance, you can opt in to a `persistentCache` option, which caches the request for a period of time, across requests/renders.
+Unlike in SPA where data can be implicitly cached in the browser between renders, in RSC data is fetched on the server, so by default every render re-issues a fresh upstream request. If your upstream data source is slow or rate-limited enough that this becomes a performance hindrance, you can opt in to a `persistentCache` option, which caches the **resolved response** for a period of time, across requests/renders.
 
 > 💡 The persistent cache is currently **in-memory only**, backed by a single process-wide TTL cache. In the future, support for external/shared stores (eg. Redis) is planned so that the cache can be shared across multiple server instances.
 
-Because this cache lives outside of any per-request store, an `isolationKey` is **required** whenever `persistentCache` is used. The `isolationKey` must be a value that uniquely identifies the caller/audience for the data being cached (for example, a username, user id, or auth token for a logged-in experience). This ensures that responses can **never** accidentally leak between users or tenants; two calls for the exact same URL/options but with different `isolationKey`s are always stored and served as fully separate entries.
+**How it works:**
 
-> ⚠️ When `persistentCache` is provided it is used **instead of** the `promiseStore`, replacing the [Request deduplication](#request-deduplication) mechanism described above. Concurrent in-flight requests for the same key/`isolationKey` are still shared as a single request (the pending request is itself cached), and the settled result (or rejection) then continues to be served from the cache until it expires.
->
-> Note: if the upstream request fails, the rejection itself is cached; repeat calls will keep receiving that same rejection until the entry's `ttl` elapses, rather than immediately retrying the upstream call.
+The persistent cache works in tandem with the [in-flight promise store deduplication](#request-deduplication):
+
+- **First call:** The in-flight `promiseStore` is checked. If a matching request is already in-flight (from a concurrent call), it shares that promise. Otherwise, a new request is issued. The settled **response value** (not the promise itself) is then written to the persistent cache.
+- **Cache hit:** Subsequent calls with a matching `key`/`options`/`isolationKey` are served directly from the persistent cache without touching the in-flight store, avoiding both the fetch and any promise deduplication overhead.
+- **Rejections:** If the in-flight request fails (throws), the rejection does **not** get written to persistent cache. The rejection stays in the in-flight promise store only, so a retry from a fresh `promiseStore` (e.g., in a later request) will attempt to fetch again rather than reusing the failure.
+- **Bypass:** The `run()` function bypasses both the persistent cache and the in-flight promise store for a fresh-data fetch, but does not update the cached value.
+
+Because this cache lives outside of any per-request store, an `isolationKey` is **required** whenever `persistentCache` is used. The `isolationKey` must be a value that uniquely identifies the caller/audience for the data being cached (for example, a username, user id, or auth token for a logged-in experience). This ensures that responses can **never** accidentally leak between users or tenants; two calls for the exact same URL/options but with different `isolationKey`s are always stored and served as fully separate entries.
 
 `persistentCache` is entirely optional and should only be used where your upstream data source is a genuine performance bottleneck; it is not needed for typical requests where deduplication of concurrent, in-flight calls is enough.
 
@@ -804,16 +809,8 @@ const BookList = async ({ dispatch, currentUser }) => {
       isolationKey: currentUser.id,
       // optional: how long (in ms) a resolved response is served from the
       // cache before a fresh request is made again. Cannot be Infinity.
+      // Defaults to 5 minutes (300000 ms) if not specified.
       ttl: 30000,
-      // optional: defaults to true. If the cache's internal timer has not
-      // yet purged an expired entry, checking the age on get ensures a
-      // stale value is never returned.
-      checkAgeOnGet: true,
-      // optional: defaults to true. Keeps the original expiration counting
-      // down when an entry is refreshed, rather than extending it.
-      // This can be set to false if you want shorter 'sessions' that can
-      // be 'kept alive' with repeated requests.
-      noUpdateTTL: true,
     },
   }));
 
@@ -1048,9 +1045,9 @@ A factory function used to generate an async/await fetchye function used for ser
 
 > 💡 **RSC variant**: When resolved via the `"react-server"` [export condition](#react-server-components-with-one-app) (i.e. imported from a React Server Component), a different implementation of `makeServerFetchye` is automatically loaded. It behaves differently from the standard implementation described below:
 > - `cache` and `store` must **not** be passed (they should be omitted, or explicitly `null`). Passing either will cause the returned `fetchye` function to throw, since there is no Redux store to interact with in RSC.
-> - `promiseStore` is **required**, rather than optional. Omitting it will cause the returned `fetchye` function to throw. De-duplication always goes through the given `promiseStore`; there is no cache to fall back on. (Unless `persistentCache` is used, see below.)
+> - `promiseStore` is **required**, rather than optional. Omitting it will cause the returned `fetchye` function to throw. De-duplication always goes through the given `promiseStore` to share in-flight requests. (A `persistentCache` option can still be used to also cache resolved responses across requests.)
 > - No Redux actions are ever dispatched; the RSC variant never touches a Redux store, only the `promiseStore`.
-> - A `persistentCache` option can be passed as part of the per-call `options`, to opt in to a persistent, cross-request cache (with its own in-flight de-duplication) used **instead of** the `promiseStore`. See [Persistent Cache](#persistent-cache) for full details.
+> - A `persistentCache` option can be passed as part of the per-call `options`, to opt in to cross-request caching of resolved responses. When not using persistent cache, only the in-flight `promiseStore` is used for deduplication. See [Persistent Cache](#persistent-cache) for full details.
 
 **Shape**
 
@@ -1073,8 +1070,15 @@ const { data, error } = await fetchye(key, options, fetcher);
 | name      | type                                                                                                 | required | description                                                                                                                                       |
 |-----------|------------------------------------------------------------------------------------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
 | `key`     | `String` or `() => String`                                                                           | `true`   | A string or function returning a string that factors into cache key creation. *Defaults to URL compatible string*.                                |
-| `options` | `ES6FetchOptions`                                                                                    | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).                                               |
+| `options` | `ES6FetchOptions & { persistentCache?: Object }`                                                      | `false`  | Options to pass through to [ES6 Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). In the RSC variant, includes optional `persistentCache` config for cross-request caching. |
 | `fetcher` | `async (fetchClient: Fetch, key: String, options: Options) => ({ payload: Object, error?: Object })` | `false`  | The async function that calls `fetchClient` by key and options. Returns a `payload` with outcome of `fetchClient` and an optional `error` object. |
+
+**`persistentCache` Option (RSC variant only)**
+
+| name             | type      | required | description                                                                                                                                       |
+|------------------|-----------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `isolationKey`   | `String`  | `true`   | Required when using persistent cache. Uniquely identifies the audience for the cached data (e.g. user id, tenant id), preventing cross-user leaks. |
+| `ttl`            | `Number`  | `false`  | Time in milliseconds to cache the resolved response. Cannot be `Infinity`. Defaults to 5 minutes (300000 ms) if not specified.                   |
 
 **`fetchye` Returns**
 
@@ -1129,6 +1133,7 @@ Call fetchye in an imperative context, such as in One App's loadModuleData, in a
 > 💡 **RSC variant**: When resolved via the `"react-server"` [export condition](#react-server-components-with-one-app) (i.e. imported from a React Server Component), a different implementation of `oneFetchye` is automatically loaded. It behaves differently from the standard implementation described below:
 > - It always calls the RSC variant of `makeServerFetchye` with `cache: null` and `store: null`, meaning you do **not** need to register a `fetchye` reducer, nor render a `<FetchyeProvider />`/`<OneFetchyeProvider />` anywhere in your component tree.
 > - It always builds a `promiseStore` from `dispatch` (via `promiseStoreFromDispatch`), regardless of `global.window`, since request de-duplication is the *only* mechanism available in RSC — there is no cache to serve repeat calls from (unless you opt in to a [Persistent Cache](#persistent-cache) via the `persistentCache` option).
+> - The `persistentCache` option allows you to cache resolved responses across requests/renders. See [Persistent Cache](#persistent-cache) for full details.
 > - See [React Server Components with One App](#react-server-components-with-one-app) for a full explanation and usage examples.
 
 **Shape**

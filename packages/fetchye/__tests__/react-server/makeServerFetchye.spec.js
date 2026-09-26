@@ -15,20 +15,21 @@
  */
 
 import makeServerFetchye from '../../src/react-server/makeServerFetchye';
-import { persistentCacheStore } from '../../src/react-server/persistentCache';
+import { persistentCacheStore, getPersistentCacheKey } from '../../src/react-server/persistentCache';
+import { computeKey } from '../../src/computeKey';
 
 global.console.error = jest.fn();
 
-const defaultPayload = {
+const makePayload = (fakeData = { fakeData: true }) => ({
   headers: new global.Headers({
     'Content-Type': 'application/json',
   }),
   ok: true,
   status: 200,
-  text: async () => JSON.stringify({
-    fakeData: true,
-  }),
-};
+  text: async () => JSON.stringify(fakeData),
+});
+
+const defaultPayload = makePayload();
 
 const expectedMakeServerFetchyeResponseSnapshot = `
   Object {
@@ -47,7 +48,11 @@ const expectedMakeServerFetchyeResponseSnapshot = `
   }
 `;
 
-// mirrors the local promise API of holocron's promise store
+// mirrors the local promise API of holocron's promise store. Note that, unlike a
+// short-lived, per-request cache, this test double (like the real implementation)
+// never evicts an entry once it has been stored, so a resolved/rejected promise for a
+// given key will be reused for the lifetime of the test unless `run()` is used to
+// bypass it.
 const createTestPromiseStore = () => {
   const promises = new Map();
   return {
@@ -67,8 +72,9 @@ describe('react-server/makeServerFetchye', () => {
     }));
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     jest.resetAllMocks();
+    await persistentCacheStore.clear();
   });
 
   it('should throw when a cache is provided', async () => {
@@ -91,14 +97,17 @@ describe('react-server/makeServerFetchye', () => {
     })('http://example.com')).rejects.toThrow();
   });
 
-  it('should return data in success state', async () => {
+  it('should return data in success state, deduping through the in-flight promise store', async () => {
     const fetchyeRes = await makeServerFetchye({
       fetchClient,
       promiseStore,
     })('http://example.com');
 
     expect(fetchyeRes).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
+    expect(promiseStore.getLocalPromise).toHaveBeenCalledTimes(1);
+    expect(promiseStore.storeLocalPromise).toHaveBeenCalledTimes(1);
   });
+
   it('should return null in the error state', async () => {
     fetchClient = jest.fn(async () => {
       throw new Error('fake error');
@@ -123,6 +132,7 @@ describe('react-server/makeServerFetchye', () => {
       }
     `);
   });
+
   it('should reload the data if the run function returned is called', async () => {
     const fetchye = makeServerFetchye({
       fetchClient,
@@ -134,7 +144,25 @@ describe('react-server/makeServerFetchye', () => {
     expect(fetchyeRes).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
   });
 
-  describe('deduplication', () => {
+  it('the run function should bypass the in-flight promise store entirely, both reading and writing it', async () => {
+    const fetchye = makeServerFetchye({
+      fetchClient,
+      promiseStore,
+    });
+    const fetchyeRes = await fetchye('http://example.com/two');
+    const getCallsBeforeRun = promiseStore.getLocalPromise.mock.calls.length;
+    const storeCallsBeforeRun = promiseStore.storeLocalPromise.mock.calls.length;
+
+    const runResult = await fetchyeRes.run();
+
+    expect(promiseStore.getLocalPromise).toHaveBeenCalledTimes(getCallsBeforeRun);
+    expect(promiseStore.storeLocalPromise).toHaveBeenCalledTimes(storeCallsBeforeRun);
+    // the run() result is the raw runAsync payload, it is not wrapped with a `run` fn
+    expect(runResult).toEqual({ data: expect.any(Object), error: null });
+    expect(runResult.run).toBeUndefined();
+  });
+
+  describe('deduplication via the in-flight promise store', () => {
     it('should share a single request between concurrent calls for the same key', async () => {
       const fetchye = makeServerFetchye({
         fetchClient,
@@ -165,20 +193,20 @@ describe('react-server/makeServerFetchye', () => {
       expect(fetchClient).toHaveBeenCalledTimes(2);
     });
 
-    it('should serve a subsequent call from the promise store', async () => {
+    it('should permanently reuse the resolved promise for any later call with the same key', async () => {
       const fetchye = makeServerFetchye({
         fetchClient,
         promiseStore,
       });
 
       await fetchye('http://example.com/dedupe');
-      const fetchyeRes = await fetchye('http://example.com/dedupe');
+      const fetchyeResTwo = await fetchye('http://example.com/dedupe');
 
       expect(fetchClient).toHaveBeenCalledTimes(1);
-      expect(fetchyeRes).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
+      expect(fetchyeResTwo).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
     });
 
-    it('should bypass deduplication when the run function is called', async () => {
+    it('should bypass deduplication when the run function is called, without replacing the stored promise', async () => {
       const fetchye = makeServerFetchye({
         fetchClient,
         promiseStore,
@@ -188,6 +216,12 @@ describe('react-server/makeServerFetchye', () => {
       await fetchyeRes.run();
 
       expect(fetchClient).toHaveBeenCalledTimes(2);
+
+      // a subsequent plain call still resolves from the original stored promise,
+      // it is unaffected by run() having fetched fresh data
+      const fetchyeResTwo = await fetchye('http://example.com/dedupe');
+      expect(fetchClient).toHaveBeenCalledTimes(2);
+      expect(fetchyeResTwo).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
     });
 
     it('should reject every concurrent caller when the shared request throws', async () => {
@@ -210,13 +244,27 @@ describe('react-server/makeServerFetchye', () => {
       expect(fetchClient).toHaveBeenCalledTimes(1);
       expect(results.map(({ status }) => status)).toEqual(['rejected', 'rejected']);
     });
+
+    it('should permanently reuse a previously rejected promise for a later call with the same key', async () => {
+      expect.assertions(3);
+      fetchClient = jest.fn(async () => ({
+        ...defaultPayload,
+        ok: false,
+        status: 500,
+      }));
+      const fetchye = makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      });
+
+      await expect(fetchye('http://example.com/dedupe', { throwOnError: true })).rejects.toBeTruthy();
+      await expect(fetchye('http://example.com/dedupe', { throwOnError: true })).rejects.toBeTruthy();
+
+      expect(fetchClient).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('persistentCache', () => {
-    afterEach(() => {
-      persistentCacheStore.clear();
-    });
-
     it('throws when persistentCache.isolationKey is missing', async () => {
       await expect(makeServerFetchye({
         fetchClient,
@@ -233,20 +281,29 @@ describe('react-server/makeServerFetchye', () => {
       })).rejects.toThrow('makeServerFetchye persistentCache.ttl cannot be Infinity');
     });
 
-    it('fetches and stores the result in the persistent cache, bypassing the promiseStore', async () => {
+    it('fetches through the in-flight promise store and stores only the resolved value in the persistent cache', async () => {
       const fetchyeRes = await makeServerFetchye({
         fetchClient,
         promiseStore,
       })('http://example.com/persistent', { persistentCache: { isolationKey: 'tenant-a' } });
 
+      const persistentCacheKey = getPersistentCacheKey(
+        computeKey('http://example.com/persistent'),
+        'tenant-a'
+      );
+
       expect(fetchClient).toHaveBeenCalledTimes(1);
-      expect(promiseStore.getLocalPromise).not.toHaveBeenCalled();
-      expect(promiseStore.storeLocalPromise).not.toHaveBeenCalled();
-      expect(persistentCacheStore.size).toBe(1);
+      // the in-flight promise store is still used to fetch/dedupe the request...
+      expect(promiseStore.getLocalPromise).toHaveBeenCalledTimes(1);
+      expect(promiseStore.storeLocalPromise).toHaveBeenCalledTimes(1);
+      // ...but only the resolved value (never the in-flight promise) is written to
+      // the persistent cache
+      const cached = await persistentCacheStore.get(persistentCacheKey);
+      expect(cached).toEqual({ data: expect.any(Object), error: null });
       expect(fetchyeRes).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
     });
 
-    it('serves a subsequent call from the persistent cache without refetching', async () => {
+    it('serves a subsequent call directly from the persistent cache, without touching the in-flight promise store', async () => {
       const fetchye = makeServerFetchye({
         fetchClient,
         promiseStore,
@@ -254,13 +311,18 @@ describe('react-server/makeServerFetchye', () => {
       const options = { persistentCache: { isolationKey: 'tenant-a' } };
 
       await fetchye('http://example.com/persistent', options);
+      const getCallsBeforeSecondCall = promiseStore.getLocalPromise.mock.calls.length;
+      const storeCallsBeforeSecondCall = promiseStore.storeLocalPromise.mock.calls.length;
+
       const fetchyeResTwo = await fetchye('http://example.com/persistent', options);
 
       expect(fetchClient).toHaveBeenCalledTimes(1);
+      expect(promiseStore.getLocalPromise).toHaveBeenCalledTimes(getCallsBeforeSecondCall);
+      expect(promiseStore.storeLocalPromise).toHaveBeenCalledTimes(storeCallsBeforeSecondCall);
       expect(fetchyeResTwo).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
     });
 
-    it('isolates entries for the same key under different isolationKeys', async () => {
+    it('does not isolate the shared in-flight promise across different isolationKeys, but does isolate the cached values', async () => {
       const fetchye = makeServerFetchye({
         fetchClient,
         promiseStore,
@@ -269,11 +331,25 @@ describe('react-server/makeServerFetchye', () => {
       await fetchye('http://example.com/persistent', { persistentCache: { isolationKey: 'tenant-a' } });
       await fetchye('http://example.com/persistent', { persistentCache: { isolationKey: 'tenant-b' } });
 
-      expect(fetchClient).toHaveBeenCalledTimes(2);
-      expect(persistentCacheStore.size).toBe(2);
+      const keyForTenantA = getPersistentCacheKey(
+        computeKey('http://example.com/persistent'),
+        'tenant-a'
+      );
+      const keyForTenantB = getPersistentCacheKey(
+        computeKey('http://example.com/persistent'),
+        'tenant-b'
+      );
+
+      // both isolationKeys compute the same request key/hash, so the second call
+      // reuses the promise already stored by the first, rather than issuing a new
+      // request
+      expect(fetchClient).toHaveBeenCalledTimes(1);
+      // the resolved value is still persisted separately for each isolationKey
+      await expect(persistentCacheStore.has(keyForTenantA)).resolves.toBe(true);
+      await expect(persistentCacheStore.has(keyForTenantB)).resolves.toBe(true);
     });
 
-    it('shares a single in-flight request between concurrent calls via the persistent cache', async () => {
+    it('dedupes concurrent calls through the in-flight promise store and stores the resolved value once in the persistent cache', async () => {
       const fetchye = makeServerFetchye({
         fetchClient,
         promiseStore,
@@ -285,14 +361,24 @@ describe('react-server/makeServerFetchye', () => {
         fetchye('http://example.com/persistent-dedupe', options),
       ]);
 
+      const persistentCacheKey = getPersistentCacheKey(
+        computeKey('http://example.com/persistent-dedupe'),
+        'tenant-a'
+      );
+
       expect(fetchClient).toHaveBeenCalledTimes(1);
-      expect(promiseStore.getLocalPromise).not.toHaveBeenCalled();
-      expect(promiseStore.storeLocalPromise).not.toHaveBeenCalled();
+      expect(promiseStore.getLocalPromise).toHaveBeenCalled();
+      expect(promiseStore.storeLocalPromise).toHaveBeenCalledTimes(1);
       expect(resOne.data).toEqual(resTwo.data);
-      expect(persistentCacheStore.size).toBe(1);
+      await expect(persistentCacheStore.has(persistentCacheKey)).resolves.toBe(true);
     });
 
-    it('refetches and updates the persistent cache when the run function is called', async () => {
+    it('the run function bypasses both the in-flight promise store and the persistent cache, and does not update the cached value', async () => {
+      let callCount = 0;
+      fetchClient = jest.fn(async () => {
+        callCount += 1;
+        return makePayload({ callCount });
+      });
       const fetchye = makeServerFetchye({
         fetchClient,
         promiseStore,
@@ -300,17 +386,21 @@ describe('react-server/makeServerFetchye', () => {
       const options = { persistentCache: { isolationKey: 'tenant-a' } };
 
       const fetchyeRes = await fetchye('http://example.com/persistent', options);
-      await fetchyeRes.run();
+      expect(fetchyeRes.data.body).toEqual({ callCount: 1 });
 
+      const runResult = await fetchyeRes.run();
+      expect(runResult.data.body).toEqual({ callCount: 2 });
       expect(fetchClient).toHaveBeenCalledTimes(2);
 
+      // a subsequent plain call is still served from the persistent cache entry
+      // written by the very first call; run() never updated it
       const fetchyeResTwo = await fetchye('http://example.com/persistent', options);
       expect(fetchClient).toHaveBeenCalledTimes(2);
-      expect(fetchyeResTwo).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
+      expect(fetchyeResTwo.data.body).toEqual({ callCount: 1 });
     });
 
-    it('shares a single rejected in-flight request between concurrent callers, and keeps the rejected entry cached', async () => {
-      expect.assertions(3);
+    it('does not persist a rejected in-flight request to the persistent cache', async () => {
+      expect.assertions(2);
       fetchClient = jest.fn(async () => ({
         ...defaultPayload,
         ok: false,
@@ -327,28 +417,39 @@ describe('react-server/makeServerFetchye', () => {
         fetchye('http://example.com/persistent-dedupe', options),
       ]);
 
-      expect(fetchClient).toHaveBeenCalledTimes(1);
+      const persistentCacheKey = getPersistentCacheKey(
+        computeKey('http://example.com/persistent-dedupe', { throwOnError: true }),
+        'tenant-a'
+      );
+
       expect(results.map(({ status }) => status)).toEqual(['rejected', 'rejected']);
-      expect(persistentCacheStore.size).toBe(1);
+      // the shared promise rejected before the persistent cache write was ever
+      // reached, so no entry is stored
+      await expect(persistentCacheStore.has(persistentCacheKey)).resolves.toBe(false);
     });
 
-    it('honors a custom ttl, checkAgeOnGet and noUpdateTTL configuration', async () => {
+    it('honors a custom ttl configuration', async () => {
       const fetchye = makeServerFetchye({
         fetchClient,
         promiseStore,
       });
 
+      const beforeSet = Date.now();
       await fetchye('http://example.com/persistent', {
         persistentCache: {
           isolationKey: 'tenant-a',
           ttl: 60000,
-          checkAgeOnGet: false,
-          noUpdateTTL: false,
         },
       });
 
-      expect(persistentCacheStore.getRemainingTTL).toBeDefined();
-      expect(persistentCacheStore.size).toBe(1);
+      const persistentCacheKey = getPersistentCacheKey(
+        computeKey('http://example.com/persistent'),
+        'tenant-a'
+      );
+      const raw = await persistentCacheStore.getRaw(persistentCacheKey);
+
+      expect(raw.expires).toBeGreaterThanOrEqual(beforeSet + 60000 - 1000);
+      expect(raw.expires).toBeLessThanOrEqual(beforeSet + 60000 + 1000);
     });
   });
 });

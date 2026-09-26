@@ -30,6 +30,12 @@ module.exports = {
   moduleNameMapper: {
     '^fetchye-redux-provider$': '<rootDir>/packages/fetchye-redux-provider/src/index.js',
     '^fetchye$': '<rootDir>/packages/fetchye/src/index.js',
+    // These packages (transitive deps of `cacheable`) declare "main" as an ESM file even
+    // though they ship a CJS build (only exposed via "exports"). Jest 26 does not honor the
+    // package "exports" field, so it would otherwise resolve to the unusable ESM entry point.
+    '^keyv$': '<rootDir>/node_modules/keyv/dist/index.cjs',
+    '^hookified$': '<rootDir>/node_modules/hookified/dist/node/index.cjs',
+    '^hashery$': '<rootDir>/node_modules/hashery/dist/node/index.cjs',
   },
   coveragePathIgnorePatterns: ['packages/fetchye-test-utils/src/testCacheInterface.js'],
 };

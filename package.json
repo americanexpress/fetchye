@@ -46,6 +46,6 @@
     }
   },
   "dependencies": {
-    "@isaacs/ttlcache": "^2.1.5"
+    "cacheable": "^2.5.0"
   }
 }
