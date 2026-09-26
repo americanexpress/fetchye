@@ -1,3 +1,5 @@
+'use client';
+
 /*
  * Copyright 2020 American Express Travel Related Services Company, Inc.
  *

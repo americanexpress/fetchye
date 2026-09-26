@@ -22,12 +22,14 @@ import { coerceSsrField } from '../queryHelpers';
 /**
  * The react-server variant of makeServerFetchye drops the ineraction with the 'cache'
  * and calls the react-server variant of runAsync
+ *
+ * This function _must_ be involked with  no cache, no store, and a valid promiseStore
  */
 const makeServerFetchye = ({
   cache = null,
   store = null,
   fetchClient,
-  promiseStore,
+  promiseStore = null,
 }) => async (
   key,
   options = {},
@@ -47,11 +49,8 @@ const makeServerFetchye = ({
     options,
   });
 
-  // shares an in flight request between callers of the same key, ie two modules
-  // requesting the same data within their loadModuleData
-  const canDedupe = !!promiseStore && !!computedKey;
-  const inFlightPromise = canDedupe
-    && promiseStore.getLocalPromise(FETCHYE_PROMISE_DOMAIN, computedKey.hash);
+  const inFlightPromise = promiseStore.getLocalPromise(FETCHYE_PROMISE_DOMAIN, computedKey.hash);
+
   const runDeduped = () => {
     if (inFlightPromise) {
       return inFlightPromise;
@@ -59,9 +58,7 @@ const makeServerFetchye = ({
     const promise = runAsync({
       computedKey, fetcher, fetchClient, options,
     });
-    if (canDedupe) {
-      promiseStore.storeLocalPromise(FETCHYE_PROMISE_DOMAIN, computedKey.hash, promise);
-    }
+    promiseStore.storeLocalPromise(FETCHYE_PROMISE_DOMAIN, computedKey.hash, promise);
     return promise;
   };
 
