@@ -18,6 +18,11 @@ import { ssrFetcher, FETCHYE_PROMISE_DOMAIN } from 'fetchye-core';
 import { runAsync } from './runAsync';
 import { computeKey } from '../computeKey';
 import { coerceSsrField } from '../queryHelpers';
+import {
+  persistentCacheStore,
+  validatePersistentCache,
+  getPersistentCacheKey,
+} from './persistentCache';
 
 /**
  * The react-server variant of makeServerFetchye drops the ineraction with the 'cache'
@@ -41,13 +46,32 @@ const makeServerFetchye = ({
   if (store) {
     throw new Error('This function does not support a store in RSC, it is passed as null from oneFetchye, you should not be calling makeServerFetchye directly');
   }
-  const computedKey = computeKey(key, options);
+
+  const { persistentCache, ...fetchOptions } = options;
+
+  validatePersistentCache(persistentCache);
+
+  const computedKey = computeKey(key, fetchOptions);
   const run = () => runAsync({
-    computedKey: computeKey(key, options),
+    computedKey: computeKey(key, fetchOptions),
     fetcher,
     fetchClient,
-    options,
+    options: fetchOptions,
   });
+
+  if (persistentCache) {
+    const { isolationKey } = persistentCache;
+    const persistentCacheKey = getPersistentCacheKey(computedKey, isolationKey);
+    const cachedResponse = await persistentCacheStore.get(persistentCacheKey);
+
+    if (cachedResponse) {
+      return {
+        data: coerceSsrField(cachedResponse.data),
+        error: coerceSsrField(cachedResponse.error),
+        run,
+      };
+    }
+  }
 
   const inFlightPromise = promiseStore.getLocalPromise(FETCHYE_PROMISE_DOMAIN, computedKey.hash);
 
@@ -56,13 +80,19 @@ const makeServerFetchye = ({
       return inFlightPromise;
     }
     const promise = runAsync({
-      computedKey, fetcher, fetchClient, options,
+      computedKey, fetcher, fetchClient, options: fetchOptions,
     });
     promiseStore.storeLocalPromise(FETCHYE_PROMISE_DOMAIN, computedKey.hash, promise);
     return promise;
   };
 
   const res = await runDeduped();
+
+  if (persistentCache) {
+    const { isolationKey, ttl } = persistentCache;
+    const persistentCacheKey = getPersistentCacheKey(computedKey, isolationKey);
+    await persistentCacheStore.set(persistentCacheKey, res, ttl);
+  }
   return {
     data: coerceSsrField(res.data),
     error: coerceSsrField(res.error),
