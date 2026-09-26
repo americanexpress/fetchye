@@ -19,6 +19,7 @@ import {
   validatePersistentCache,
   getPersistentCacheKey,
   DEFAULT_PERSISTENT_CACHE_TTL,
+  invalidateFetchyeTags,
 } from '../../src/react-server/persistentCache';
 
 describe('react-server/persistentCache', () => {
@@ -56,6 +57,30 @@ describe('react-server/persistentCache', () => {
         ttl: 1000,
       })).not.toThrow();
     });
+
+    it('does not throw for a valid persistentCache config with tags', () => {
+      expect(() => validatePersistentCache({
+        isolationKey: 'tenant-a',
+        ttl: 1000,
+        tags: ['users', 'profile'],
+      })).not.toThrow();
+    });
+
+    it('throws when tags is an empty array', () => {
+      expect(() => validatePersistentCache({
+        isolationKey: 'tenant-a',
+        ttl: 1000,
+        tags: [],
+      })).toThrow('makeServerFetchye persistentCache.tags must be a non-empty array when provided');
+    });
+
+    it('throws when tags is not an array', () => {
+      expect(() => validatePersistentCache({
+        isolationKey: 'tenant-a',
+        ttl: 1000,
+        tags: 'users',
+      })).toThrow('makeServerFetchye persistentCache.tags must be a non-empty array when provided');
+    });
   });
 
   describe('getPersistentCacheKey', () => {
@@ -71,5 +96,45 @@ describe('react-server/persistentCache', () => {
 
   it('exposes a sane default ttl', () => {
     expect(DEFAULT_PERSISTENT_CACHE_TTL).toBe(5 * 60 * 1000);
+  });
+
+  describe('invalidateFetchyeTags', () => {
+    it('invalidates cache entries by a single tag', async () => {
+      await persistentCacheStore.set('key1', { data: 'value1' }, { ttl: 10000, tags: ['users'] });
+      await persistentCacheStore.set('key2', { data: 'value2' }, { ttl: 10000, tags: ['posts'] });
+
+      // Verify both entries exist before invalidation
+      expect(await persistentCacheStore.get('key1')).toEqual({ data: 'value1' });
+      expect(await persistentCacheStore.get('key2')).toEqual({ data: 'value2' });
+
+      await invalidateFetchyeTags(['users']);
+
+      // After invalidating the 'users' tag, the next get should return undefined
+      expect(await persistentCacheStore.get('key1')).toBeUndefined();
+      expect(await persistentCacheStore.get('key2')).toEqual({ data: 'value2' });
+    });
+
+    it('invalidates cache entries by multiple tags', async () => {
+      await persistentCacheStore.set('key1', { data: 'value1' }, { ttl: 10000, tags: ['users', 'profile'] });
+      await persistentCacheStore.set('key2', { data: 'value2' }, { ttl: 10000, tags: ['posts'] });
+      await persistentCacheStore.set('key3', { data: 'value3' }, { ttl: 10000, tags: ['comments'] });
+
+      // Verify all entries exist before invalidation
+      expect(await persistentCacheStore.get('key1')).toEqual({ data: 'value1' });
+      expect(await persistentCacheStore.get('key2')).toEqual({ data: 'value2' });
+      expect(await persistentCacheStore.get('key3')).toEqual({ data: 'value3' });
+
+      await invalidateFetchyeTags(['users', 'posts']);
+
+      expect(await persistentCacheStore.get('key1')).toBeUndefined();
+      expect(await persistentCacheStore.get('key2')).toBeUndefined();
+      expect(await persistentCacheStore.get('key3')).toEqual({ data: 'value3' });
+    });
+
+    it('throws when provided an empty array', async () => {
+      await expect(invalidateFetchyeTags([])).rejects.toThrow(
+        'invalidateFetchyeTags requires at least one tag'
+      );
+    });
   });
 });

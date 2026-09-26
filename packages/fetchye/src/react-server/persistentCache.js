@@ -32,9 +32,12 @@ export const DEFAULT_PERSISTENT_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
  * (`CacheableMemory`, via `createKeyv()`), so entries always expire on their own.
  *
  * All reads/writes go through cacheable's native, promise-based `get`/`set` API.
+ *
+ * Tag-based invalidation is enabled to support invalidating groups of cache entries by tags.
  */
 export const persistentCacheStore = new Cacheable({
   ttl: DEFAULT_PERSISTENT_CACHE_TTL,
+  tags: true,
 });
 
 /**
@@ -50,6 +53,11 @@ export const validatePersistentCache = (persistentCache) => {
   if (persistentCache.ttl === Number.POSITIVE_INFINITY) {
     throw new Error('makeServerFetchye persistentCache.ttl cannot be Infinity');
   }
+  if (persistentCache.tags !== undefined
+    && (!Array.isArray(persistentCache.tags)
+    || persistentCache.tags.length === 0)) {
+    throw new Error('makeServerFetchye persistentCache.tags must be a non-empty array when provided');
+  }
 };
 
 /**
@@ -61,3 +69,21 @@ export const getPersistentCacheKey = (computedKey, isolationKey) => computeHash(
   [computedKey.hash, isolationKey],
   { respectType: false }
 );
+
+/**
+ * Invalidates all cache entries associated with the given tags.
+ * This leverages the underlying cacheable instance's tag-based invalidation.
+ *
+ * This function is intended to be called inside a server action, to allow the next
+ * RSC render to fetch fresh data.
+ *
+ * @param {string[]} tags - An array of tags to invalidate
+ * @returns {Promise<void>}
+ */
+export const invalidateFetchyeTags = async (tags) => {
+  if (tags.length === 0) {
+    throw new Error('invalidateFetchyeTags requires at least one tag');
+  }
+
+  await persistentCacheStore.tags.invalidateTags(tags);
+};
