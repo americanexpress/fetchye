@@ -15,6 +15,7 @@
  */
 
 import makeServerFetchye from '../../src/react-server/makeServerFetchye';
+import { persistentCacheStore } from '../../src/react-server/persistentCache';
 
 global.console.error = jest.fn();
 
@@ -208,6 +209,146 @@ describe('react-server/makeServerFetchye', () => {
 
       expect(fetchClient).toHaveBeenCalledTimes(1);
       expect(results.map(({ status }) => status)).toEqual(['rejected', 'rejected']);
+    });
+  });
+
+  describe('persistentCache', () => {
+    afterEach(() => {
+      persistentCacheStore.clear();
+    });
+
+    it('throws when persistentCache.isolationKey is missing', async () => {
+      await expect(makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      })('http://example.com/persistent', { persistentCache: {} })).rejects.toThrow('makeServerFetchye persistentCache.isolationKey is required when using persistentCache');
+    });
+
+    it('throws when persistentCache.ttl is Infinity', async () => {
+      await expect(makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      })('http://example.com/persistent', {
+        persistentCache: { isolationKey: 'tenant-a', ttl: Number.POSITIVE_INFINITY },
+      })).rejects.toThrow('makeServerFetchye persistentCache.ttl cannot be Infinity');
+    });
+
+    it('fetches and stores the result in the persistent cache, bypassing the promiseStore', async () => {
+      const fetchyeRes = await makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      })('http://example.com/persistent', { persistentCache: { isolationKey: 'tenant-a' } });
+
+      expect(fetchClient).toHaveBeenCalledTimes(1);
+      expect(promiseStore.getLocalPromise).not.toHaveBeenCalled();
+      expect(promiseStore.storeLocalPromise).not.toHaveBeenCalled();
+      expect(persistentCacheStore.size).toBe(1);
+      expect(fetchyeRes).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
+    });
+
+    it('serves a subsequent call from the persistent cache without refetching', async () => {
+      const fetchye = makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      });
+      const options = { persistentCache: { isolationKey: 'tenant-a' } };
+
+      await fetchye('http://example.com/persistent', options);
+      const fetchyeResTwo = await fetchye('http://example.com/persistent', options);
+
+      expect(fetchClient).toHaveBeenCalledTimes(1);
+      expect(fetchyeResTwo).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
+    });
+
+    it('isolates entries for the same key under different isolationKeys', async () => {
+      const fetchye = makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      });
+
+      await fetchye('http://example.com/persistent', { persistentCache: { isolationKey: 'tenant-a' } });
+      await fetchye('http://example.com/persistent', { persistentCache: { isolationKey: 'tenant-b' } });
+
+      expect(fetchClient).toHaveBeenCalledTimes(2);
+      expect(persistentCacheStore.size).toBe(2);
+    });
+
+    it('shares a single in-flight request between concurrent calls via the persistent cache', async () => {
+      const fetchye = makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      });
+      const options = { persistentCache: { isolationKey: 'tenant-a' } };
+
+      const [resOne, resTwo] = await Promise.all([
+        fetchye('http://example.com/persistent-dedupe', options),
+        fetchye('http://example.com/persistent-dedupe', options),
+      ]);
+
+      expect(fetchClient).toHaveBeenCalledTimes(1);
+      expect(promiseStore.getLocalPromise).not.toHaveBeenCalled();
+      expect(promiseStore.storeLocalPromise).not.toHaveBeenCalled();
+      expect(resOne.data).toEqual(resTwo.data);
+      expect(persistentCacheStore.size).toBe(1);
+    });
+
+    it('refetches and updates the persistent cache when the run function is called', async () => {
+      const fetchye = makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      });
+      const options = { persistentCache: { isolationKey: 'tenant-a' } };
+
+      const fetchyeRes = await fetchye('http://example.com/persistent', options);
+      await fetchyeRes.run();
+
+      expect(fetchClient).toHaveBeenCalledTimes(2);
+
+      const fetchyeResTwo = await fetchye('http://example.com/persistent', options);
+      expect(fetchClient).toHaveBeenCalledTimes(2);
+      expect(fetchyeResTwo).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
+    });
+
+    it('shares a single rejected in-flight request between concurrent callers, and keeps the rejected entry cached', async () => {
+      expect.assertions(3);
+      fetchClient = jest.fn(async () => ({
+        ...defaultPayload,
+        ok: false,
+        status: 500,
+      }));
+      const fetchye = makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      });
+      const options = { persistentCache: { isolationKey: 'tenant-a' }, throwOnError: true };
+
+      const results = await Promise.allSettled([
+        fetchye('http://example.com/persistent-dedupe', options),
+        fetchye('http://example.com/persistent-dedupe', options),
+      ]);
+
+      expect(fetchClient).toHaveBeenCalledTimes(1);
+      expect(results.map(({ status }) => status)).toEqual(['rejected', 'rejected']);
+      expect(persistentCacheStore.size).toBe(1);
+    });
+
+    it('honors a custom ttl, checkAgeOnGet and noUpdateTTL configuration', async () => {
+      const fetchye = makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      });
+
+      await fetchye('http://example.com/persistent', {
+        persistentCache: {
+          isolationKey: 'tenant-a',
+          ttl: 60000,
+          checkAgeOnGet: false,
+          noUpdateTTL: false,
+        },
+      });
+
+      expect(persistentCacheStore.getRemainingTTL).toBeDefined();
+      expect(persistentCacheStore.size).toBe(1);
     });
   });
 });

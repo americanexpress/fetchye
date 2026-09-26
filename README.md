@@ -776,6 +776,59 @@ Page.holocron = {
 export default Page;
 ```
 
+##### Persistent Cache
+
+> ⚠️ This is an **RSC-only** feature. It is not available in the standard (non-`react-server`) build of `makeServerFetchye`/`oneFetchye`, since those already have a Redux-backed cache to serve repeat requests from.
+
+Unlike in SPA where data can be implicitly cached in the browser between renders, in RSC data is fetched on the server, so by default every render re-issues a fresh upstream request. If your upstream data source is slow or rate-limited enough that this becomes a performance hindrance, you can opt in to a `persistentCache` option, which caches the request for a period of time, across requests/renders.
+
+> 💡 The persistent cache is currently **in-memory only**, backed by a single process-wide TTL cache. In the future, support for external/shared stores (eg. Redis) is planned so that the cache can be shared across multiple server instances.
+
+Because this cache lives outside of any per-request store, an `isolationKey` is **required** whenever `persistentCache` is used. The `isolationKey` must be a value that uniquely identifies the caller/audience for the data being cached (for example, a username, user id, or auth token for a logged-in experience). This ensures that responses can **never** accidentally leak between users or tenants; two calls for the exact same URL/options but with different `isolationKey`s are always stored and served as fully separate entries.
+
+> ⚠️ When `persistentCache` is provided it is used **instead of** the `promiseStore`, replacing the [Request deduplication](#request-deduplication) mechanism described above. Concurrent in-flight requests for the same key/`isolationKey` are still shared as a single request (the pending request is itself cached), and the settled result (or rejection) then continues to be served from the cache until it expires.
+>
+> Note: if the upstream request fails, the rejection itself is cached; repeat calls will keep receiving that same rejection until the entry's `ttl` elapses, rather than immediately retrying the upstream call.
+
+`persistentCache` is entirely optional and should only be used where your upstream data source is a genuine performance bottleneck; it is not needed for typical requests where deduplication of concurrent, in-flight calls is enough.
+
+```jsx
+// BookList.server.jsx
+import { oneFetchye } from 'fetchye-one-app';
+
+const BookList = async ({ dispatch, currentUser }) => {
+  const { data } = await dispatch(oneFetchye('http://example.com/api/books/', {
+    persistentCache: {
+      // required: uniquely identifies the audience for this data, preventing
+      // any possibility of leaking one user's cached data to another
+      isolationKey: currentUser.id,
+      // optional: how long (in ms) a resolved response is served from the
+      // cache before a fresh request is made again. Cannot be Infinity.
+      ttl: 30000,
+      // optional: defaults to true. If the cache's internal timer has not
+      // yet purged an expired entry, checking the age on get ensures a
+      // stale value is never returned.
+      checkAgeOnGet: true,
+      // optional: defaults to true. Keeps the original expiration counting
+      // down when an entry is refreshed, rather than extending it.
+      // This can be set to false if you want shorter 'sessions' that can
+      // be 'kept alive' with repeated requests.
+      noUpdateTTL: true,
+    },
+  }));
+
+  return (
+    <ul>
+      {data.body.map((book) => (
+        <li key={book.id}>{book.title} by {book.author}</li>
+      ))}
+    </ul>
+  );
+};
+
+export default BookList;
+```
+
 #### Next.JS SSR
 
 ```jsx
@@ -919,6 +972,7 @@ const ParentComponent = ({ children }) => (
     - [React Server Components with One App](#react-server-components-with-one-app)
       - [Using `oneFetchye` in a Server Component](#using-onefetchye-in-a-server-component)
       - [Streaming data with `oneFetchye` and Suspense](#streaming-data-with-onefetchye-and-suspense)
+      - [Persistent Cache](#persistent-cache)
     - [Next.JS SSR](#nextjs-ssr)
 - [Write your own Cache](#write-your-own-cache)
 - [🎛️ API](#️-api)
@@ -994,8 +1048,9 @@ A factory function used to generate an async/await fetchye function used for ser
 
 > 💡 **RSC variant**: When resolved via the `"react-server"` [export condition](#react-server-components-with-one-app) (i.e. imported from a React Server Component), a different implementation of `makeServerFetchye` is automatically loaded. It behaves differently from the standard implementation described below:
 > - `cache` and `store` must **not** be passed (they should be omitted, or explicitly `null`). Passing either will cause the returned `fetchye` function to throw, since there is no Redux store to interact with in RSC.
-> - `promiseStore` is **required**, rather than optional. Omitting it will cause the returned `fetchye` function to throw. De-duplication always goes through the given `promiseStore`; there is no cache to fall back on.
+> - `promiseStore` is **required**, rather than optional. Omitting it will cause the returned `fetchye` function to throw. De-duplication always goes through the given `promiseStore`; there is no cache to fall back on. (Unless `persistentCache` is used, see below.)
 > - No Redux actions are ever dispatched; the RSC variant never touches a Redux store, only the `promiseStore`.
+> - A `persistentCache` option can be passed as part of the per-call `options`, to opt in to a persistent, cross-request cache (with its own in-flight de-duplication) used **instead of** the `promiseStore`. See [Persistent Cache](#persistent-cache) for full details.
 
 **Shape**
 
@@ -1073,7 +1128,7 @@ Call fetchye in an imperative context, such as in One App's loadModuleData, in a
 
 > 💡 **RSC variant**: When resolved via the `"react-server"` [export condition](#react-server-components-with-one-app) (i.e. imported from a React Server Component), a different implementation of `oneFetchye` is automatically loaded. It behaves differently from the standard implementation described below:
 > - It always calls the RSC variant of `makeServerFetchye` with `cache: null` and `store: null`, meaning you do **not** need to register a `fetchye` reducer, nor render a `<FetchyeProvider />`/`<OneFetchyeProvider />` anywhere in your component tree.
-> - It always builds a `promiseStore` from `dispatch` (via `promiseStoreFromDispatch`), regardless of `global.window`, since request de-duplication is the *only* mechanism available in RSC — there is no cache to serve repeat calls from.
+> - It always builds a `promiseStore` from `dispatch` (via `promiseStoreFromDispatch`), regardless of `global.window`, since request de-duplication is the *only* mechanism available in RSC — there is no cache to serve repeat calls from (unless you opt in to a [Persistent Cache](#persistent-cache) via the `persistentCache` option).
 > - See [React Server Components with One App](#react-server-components-with-one-app) for a full explanation and usage examples.
 
 **Shape**
