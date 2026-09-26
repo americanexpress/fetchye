@@ -826,6 +826,72 @@ const BookList = async ({ dispatch, currentUser }) => {
 export default BookList;
 ```
 
+##### Tag-Based Cache Invalidation
+
+When using persistent cache with tags, you can selectively invalidate cache entries without having to clear the entire cache. Use the `invalidateFetchyeTags` API to invalidate cached entries by their tags.
+
+Tags are particularly useful when you want to implement custom scoping strategies. For example, you could tag cache entries with both user-specific (`'book:${userId}'`) and collection-level (`'books'`) tags to enable invalidation at different scopes:
+
+- **User-specific invalidation**: If a user makes a change that affects their cached data, invalidate tags like `['book:user123']` to clear only that user's cache
+- **Collection-wide invalidation**: If the book catalog is updated, invalidate the `['books']` tag to clear all book caches across all users
+
+```jsx
+// BookList.server.jsx
+import { oneFetchye } from 'fetchye-one-app';
+import { invalidateFetchyeTags } from 'fetchye';
+
+const BookList = async ({ dispatch, currentUser }) => {
+  const { data } = await dispatch(oneFetchye('http://example.com/api/books/', {
+    persistentCache: {
+      isolationKey: currentUser.id,
+      ttl: 30000,
+      // associating multiple tags enables flexible invalidation strategies
+      // use your own scoping system - e.g. domain:identifier or collection:scope
+      tags: [`books:${currentUser.id}`, 'books'],
+    },
+  }));
+
+  return (
+    <ul>
+      {data.body.map((book) => (
+        <li key={book.id}>{book.title} by {book.author}</li>
+      ))}
+    </ul>
+  );
+};
+
+export default BookList;
+
+// In an API route or server action, when the book catalog updates:
+export async function updateBookCatalog(bookData) {
+  // Update your upstream data source
+  await saveToBackend(bookData);
+
+  // Invalidate the 'books' tag to clear all cached book lists across all users
+  await invalidateFetchyeTags(['books']);
+}
+
+// When a specific user makes a change:
+export async function updateUserBookPreferences(currentUser, preferences) {
+  // Update your upstream data source
+  await saveToBackend(preferences);
+
+  // Invalidate only this user's book cache
+  await invalidateFetchyeTags([`books:${currentUser.id}`]);
+}
+
+// You can also invalidate multiple tags at once:
+export async function clearAllCaches() {
+  await invalidateFetchyeTags(['books', 'profile', 'comments']);
+}
+```
+
+**Tag scoping guidelines:**
+- Use a consistent delimiter (e.g., `:`) to structure your tags hierarchically
+- Combine broad tags (e.g., `'books'`) with specific tags (e.g., `'books:user123'`) to enable flexible invalidation
+- Keep tag names descriptive and stable across your application
+- Consider your cache invalidation needs when designing your tag structure
+
 #### Next.JS SSR
 
 ```jsx
@@ -973,13 +1039,14 @@ const ParentComponent = ({ children }) => (
     - [Next.JS SSR](#nextjs-ssr)
 - [Write your own Cache](#write-your-own-cache)
 - [🎛️ API](#️-api)
-  - [`useFetchye`](#usefetchye)
-  - [`makeServerFetchye`](#makeserverfetchye)
-  - [`makeOneServerFetchye`](#makeoneserverfetchye)
-  - [oneFetchye](#onefetchye)
-  - [streamFetchye](#streamfetchye)
-  - [useStreamedFetchye](#usestreamedfetchye)
-  - [Providers](#providers)
+   - [`useFetchye`](#usefetchye)
+   - [`makeServerFetchye`](#makeserverfetchye)
+   - [`makeOneServerFetchye`](#makeoneserverfetchye)
+   - [oneFetchye](#onefetchye)
+   - [streamFetchye](#streamfetchye)
+   - [useStreamedFetchye](#usestreamedfetchye)
+   - [invalidateFetchyeTags](#invalidatefetchyetags)
+   - [Providers](#providers)
     - [`FetchyeProvider`](#fetchyeprovider)
     - [`FetchyeReduxProvider`](#fetchyereduxprovider)
     - [`OneFetchyeProvider`](#onefetchyeprovider)
@@ -1075,10 +1142,11 @@ const { data, error } = await fetchye(key, options, fetcher);
 
 **`persistentCache` Option (RSC variant only)**
 
-| name             | type      | required | description                                                                                                                                       |
-|------------------|-----------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| `isolationKey`   | `String`  | `true`   | Required when using persistent cache. Uniquely identifies the audience for the cached data (e.g. user id, tenant id), preventing cross-user leaks. |
-| `ttl`            | `Number`  | `false`  | Time in milliseconds to cache the resolved response. Cannot be `Infinity`. Defaults to 5 minutes (300000 ms) if not specified.                   |
+| name             | type            | required | description                                                                                                                                       |
+|------------------|-----------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `isolationKey`   | `String`        | `true`   | Required when using persistent cache. Uniquely identifies the audience for the cached data (e.g. user id, tenant id), preventing cross-user leaks. |
+| `ttl`            | `Number`        | `false`  | Time in milliseconds to cache the resolved response. Cannot be `Infinity`. Defaults to 5 minutes (300000 ms) if not specified.                   |
+| `tags`           | `String[]`      | `false`  | An array of tags to associate with the cached entry. Tags enable invalidation of related cache entries via `invalidateFetchyeTags`. Must be a non-empty array when provided. |
 
 **`fetchye` Returns**
 
@@ -1260,6 +1328,59 @@ const Container = () => (
 **`useStreamedFetchye` Returns**
 
 A promise resolving to the streamed or local promise.
+
+### invalidateFetchyeTags
+
+Invalidates cache entries by their tags in the persistent cache. This function is only available when using React Server Components with the persistent cache feature.
+
+**Description**
+
+This function leverages the underlying [Cacheable](https://npmjs.com/package/cacheable) library's tag-based invalidation to clear cached entries that match the specified tags.
+
+**Shape**
+
+```js
+import { invalidateFetchyeTags } from 'fetchye';
+
+// Invalidate one or more tags
+const invalidateAllAction = async () => {
+  await invalidateFetchyeTags(['books', 'profile', 'comments']);
+}
+```
+
+**Arguments**
+
+| name   | type                 | required | description                                                                            |
+|--------|------------------------|----------|----------------------------------------------------------------------------------------|
+| `tags` | `String[]`           | `true`   | An array of tags to invalidate. Must contain at least one tag. |
+
+**Returns**
+
+A `Promise<void>` that resolves when the tags have been invalidated.
+
+**Errors**
+
+Throws an error if:
+- An empty array is passed as the `tags` parameter
+- The underlying cache operation fails
+
+**Example**
+
+```js
+import { invalidateFetchyeTags } from 'fetchye';
+
+// Invalidate a user's cached books when they make a change
+export async function moveUserBook(userId, bookId, newCollection) {
+  await updateBackend(userId, bookId, newCollection);
+  await invalidateFetchyeTags([`books:${userId}`]);
+}
+
+// Invalidate multiple tags when the book catalog is updated
+export async function updateBookCatalog(bookData) {
+  await updateBackend(bookData);
+  await invalidateFetchyeTags(['books', 'bestsellers', 'new-releases']);
+}
+```
 
 ### Providers
 
