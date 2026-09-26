@@ -23,6 +23,11 @@ jest.mock('fetchye', () => ({
   makeServerFetchye: jest.fn(),
 }));
 
+const promiseStore = {
+  getLocalPromise: jest.fn(),
+  storeLocalPromise: jest.fn(),
+};
+
 describe('makeOneServerFetchye', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -41,7 +46,30 @@ describe('makeOneServerFetchye', () => {
       cache: OneCache(),
       store,
       fetchClient,
+      promiseStore: {
+        getLocalPromise: expect.any(Function),
+        storeLocalPromise: expect.any(Function),
+      },
     });
+  });
+
+  it('passes a promise store backed by the given store to deduplicate requests', async () => {
+    const dispatch = jest.fn((thunk) => thunk(jest.fn(), jest.fn(), { promiseStore }));
+    const store = { dispatch };
+    const fetchClient = jest.fn();
+    const promise = Promise.resolve('data');
+
+    makeOneServerFetchye({
+      store,
+      fetchClient,
+    });
+
+    const { promiseStore: adapter } = makeServerFetchye.mock.calls[0][0];
+    adapter.storeLocalPromise('domain', 'key', promise);
+    adapter.getLocalPromise('domain', 'key');
+
+    expect(promiseStore.storeLocalPromise).toHaveBeenCalledWith('domain', 'key', promise);
+    expect(promiseStore.getLocalPromise).toHaveBeenCalledWith('domain', 'key');
   });
 
   it('throws when cache given', () => {

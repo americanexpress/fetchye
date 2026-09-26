@@ -33,3 +33,4 @@ __diff_output__
 .vscode
 .idea
 *.tgz
+.yarn/cache

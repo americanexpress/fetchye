@@ -17,6 +17,7 @@
 import { makeServerFetchye } from 'fetchye';
 import invariant from 'invariant';
 import OneCache from './OneCache';
+import { promiseStoreFromDispatch } from './promiseStoreAdapter';
 
 export const makeOneServerFetchye = ({
   store,
@@ -31,5 +32,6 @@ export const makeOneServerFetchye = ({
     store,
     fetchClient,
     cache: OneCache(),
+    promiseStore: promiseStoreFromDispatch(store.dispatch),
   });
 };

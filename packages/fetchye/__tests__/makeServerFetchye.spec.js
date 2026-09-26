@@ -48,14 +48,25 @@ const expectedMakeServerFetchyeResponseSnapshot = `
   }
 `;
 
+// mirrors the local promise API of holocron's promise store
+const createTestPromiseStore = () => {
+  const promises = new Map();
+  return {
+    getLocalPromise: jest.fn((domain, key) => promises.get(`${domain}:${key}`)),
+    storeLocalPromise: jest.fn((domain, key, promise) => promises.set(`${domain}:${key}`, promise)),
+  };
+};
+
 describe('makeServerFetchye', () => {
   let cache;
   let store;
   let fetchClient;
+  let promiseStore;
 
   beforeEach(() => {
     cache = SimpleCache();
     store = createStore(cache.reducer, cache.reducer(undefined, { type: '' }));
+    promiseStore = createTestPromiseStore();
     fetchClient = jest.fn(async () => ({
       ...defaultPayload,
     }));
@@ -135,5 +146,124 @@ describe('makeServerFetchye', () => {
     await fetchyeResTwo.run();
     expect(fetchClient).toHaveBeenCalledTimes(2);
     expect(fetchyeResTwo).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
+  });
+
+  describe('deduplication', () => {
+    it('should share a single request between concurrent calls for the same key', async () => {
+      const fetchye = makeServerFetchye({
+        store,
+        cache,
+        fetchClient,
+        promiseStore,
+      });
+
+      const [resOne, resTwo] = await Promise.all([
+        fetchye('http://example.com/dedupe'),
+        fetchye('http://example.com/dedupe'),
+      ]);
+
+      expect(fetchClient).toHaveBeenCalledTimes(1);
+      expect(resOne.data).toEqual(resTwo.data);
+      expect(resTwo).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
+    });
+
+    it('should not dedupe concurrent calls for different keys', async () => {
+      const fetchye = makeServerFetchye({
+        store,
+        cache,
+        fetchClient,
+        promiseStore,
+      });
+
+      await Promise.all([
+        fetchye('http://example.com/one'),
+        fetchye('http://example.com/two'),
+      ]);
+
+      expect(fetchClient).toHaveBeenCalledTimes(2);
+    });
+
+    it('should leave a concurrent caller without data when no promise store is given', async () => {
+      const fetchye = makeServerFetchye({
+        store,
+        cache,
+        fetchClient,
+      });
+
+      const [resOne, resTwo] = await Promise.all([
+        fetchye('http://example.com/dedupe'),
+        fetchye('http://example.com/dedupe'),
+      ]);
+
+      expect(resOne.data).not.toBeNull();
+      expect(resTwo.data).toBeNull();
+    });
+
+    it('should dedupe concurrent calls when no store or cache is given', async () => {
+      const fetchye = makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      });
+
+      const [resOne, resTwo] = await Promise.all([
+        fetchye('http://example.com/dedupe'),
+        fetchye('http://example.com/dedupe'),
+      ]);
+
+      expect(fetchClient).toHaveBeenCalledTimes(1);
+      expect(resOne.data).toEqual(resTwo.data);
+    });
+
+    it('should serve a resolved request from the cache rather than the promise store', async () => {
+      const fetchye = makeServerFetchye({
+        store,
+        cache,
+        fetchClient,
+        promiseStore,
+      });
+
+      await fetchye('http://example.com/dedupe');
+      const fetchyeRes = await fetchye('http://example.com/dedupe');
+
+      expect(fetchClient).toHaveBeenCalledTimes(1);
+      expect(fetchyeRes).toMatchInlineSnapshot(expectedMakeServerFetchyeResponseSnapshot);
+    });
+
+    it('should bypass deduplication when the run function is called', async () => {
+      const fetchye = makeServerFetchye({
+        store,
+        cache,
+        fetchClient,
+        promiseStore,
+      });
+
+      const fetchyeRes = await fetchye('http://example.com/dedupe');
+      await fetchyeRes.run();
+
+      expect(fetchClient).toHaveBeenCalledTimes(2);
+    });
+
+    it('should reject every concurrent caller when the shared request throws', async () => {
+      expect.assertions(2);
+      fetchClient = jest.fn(async () => ({
+        ...defaultPayload,
+        ok: false,
+        status: 500,
+      }));
+      const fetchye = makeServerFetchye({
+        store,
+        cache,
+        fetchClient,
+        promiseStore,
+      });
+
+      const results = await Promise.allSettled([
+        fetchye('http://example.com/dedupe', { throwOnError: true }),
+        fetchye('http://example.com/dedupe', { throwOnError: true }),
+      ]);
+
+      expect(fetchClient).toHaveBeenCalledTimes(1);
+      expect(results.map(({ status }) => status)).toEqual(['rejected', 'rejected']);
+    });
   });
 });
