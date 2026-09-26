@@ -89,9 +89,12 @@ const makeServerFetchye = ({
   const res = await runDeduped();
 
   if (persistentCache) {
-    const { isolationKey, ttl } = persistentCache;
+    const { isolationKey, ttl, tags } = persistentCache;
     const persistentCacheKey = getPersistentCacheKey(computedKey, isolationKey);
-    await persistentCacheStore.set(persistentCacheKey, res, ttl);
+    const storeOptions = {
+      ttl, tags,
+    };
+    await persistentCacheStore.set(persistentCacheKey, res, storeOptions);
   }
   return {
     data: coerceSsrField(res.data),

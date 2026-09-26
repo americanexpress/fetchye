@@ -22,6 +22,7 @@ describe('react-server/index', () => {
       Array [
         "computeKey",
         "ignoreHeadersByKey",
+        "invalidateFetchyeTags",
         "makeServerFetchye",
       ]
     `);

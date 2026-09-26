@@ -451,5 +451,45 @@ describe('react-server/makeServerFetchye', () => {
       expect(raw.expires).toBeGreaterThanOrEqual(beforeSet + 60000 - 1000);
       expect(raw.expires).toBeLessThanOrEqual(beforeSet + 60000 + 1000);
     });
+
+    it('supports storing cache entries with tags for later invalidation', async () => {
+      const fetchye = makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      });
+
+      await fetchye('http://example.com/persistent-tags', {
+        persistentCache: {
+          isolationKey: 'tenant-a',
+          tags: ['users', 'profile'],
+        },
+      });
+
+      const persistentCacheKey = getPersistentCacheKey(
+        computeKey('http://example.com/persistent-tags'),
+        'tenant-a'
+      );
+
+      // The cache entry exists
+      await expect(persistentCacheStore.has(persistentCacheKey)).resolves.toBe(true);
+    });
+
+    it('throws when persistentCache.tags is invalid', async () => {
+      await expect(makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      })('http://example.com/persistent', {
+        persistentCache: { isolationKey: 'tenant-a', tags: [] },
+      })).rejects.toThrow('makeServerFetchye persistentCache.tags must be a non-empty array when provided');
+    });
+
+    it('throws when persistentCache.tags is not an array', async () => {
+      await expect(makeServerFetchye({
+        fetchClient,
+        promiseStore,
+      })('http://example.com/persistent', {
+        persistentCache: { isolationKey: 'tenant-a', tags: 'users' },
+      })).rejects.toThrow('makeServerFetchye persistentCache.tags must be a non-empty array when provided');
+    });
   });
 });
