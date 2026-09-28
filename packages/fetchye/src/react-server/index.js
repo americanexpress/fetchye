@@ -17,11 +17,12 @@
 import makeServerFetchye from './makeServerFetchye';
 import { ignoreHeadersByKey } from '../mapOptionsToKeyHelpers';
 import { computeKey } from '../computeKey';
-import { invalidateFetchyeTags } from './persistentCache';
+import { invalidateFetchyeTags, connectToRedis } from './persistentCache';
 
 export {
   makeServerFetchye,
   ignoreHeadersByKey,
   computeKey,
   invalidateFetchyeTags,
+  connectToRedis,
 };
