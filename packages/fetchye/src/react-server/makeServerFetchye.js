@@ -19,7 +19,7 @@ import { runAsync } from './runAsync';
 import { computeKey } from '../computeKey';
 import { coerceSsrField } from '../queryHelpers';
 import {
-  persistentCacheStore,
+  getPersistentCacheStore,
   validatePersistentCache,
   getPersistentCacheKey,
 } from './persistentCache';
@@ -62,7 +62,7 @@ const makeServerFetchye = ({
   if (persistentCache) {
     const { isolationKey } = persistentCache;
     const persistentCacheKey = getPersistentCacheKey(computedKey, isolationKey);
-    const cachedResponse = await persistentCacheStore.get(persistentCacheKey);
+    const cachedResponse = await getPersistentCacheStore().get(persistentCacheKey);
 
     if (cachedResponse) {
       return {
@@ -94,7 +94,7 @@ const makeServerFetchye = ({
     const storeOptions = {
       ttl, tags,
     };
-    await persistentCacheStore.set(persistentCacheKey, res, storeOptions);
+    await getPersistentCacheStore().set(persistentCacheKey, res, storeOptions);
   }
   return {
     data: coerceSsrField(res.data),
