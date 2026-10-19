@@ -1,6 +1,6 @@
 {
   "name": "fetchye-immutable-cache",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "Immutable cache library to use with fetchye.",
   "license": "Apache-2.0",
   "main": "lib/index.js",
@@ -26,11 +26,6 @@
     "immutable",
     "fetchye"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/americanexpress/fetchye.git",
-    "directory": "packages/fetchye-immutable-cache"
-  },
   "contributors": [
     "James Singleton <James.Singleton1@aexp.com> https://github.com/JamesSingleton)",
     "Jamie King  <Jamie.King@aexp.com> (https://github.com/10xLaCroixDrinker)",
@@ -47,7 +42,7 @@
     "@babel/core": "7.11.6",
     "babel-preset-amex": "^3.4.1",
     "cross-env": "^7.0.2",
-    "fetchye-test-utils": "^1.9.0",
+    "fetchye-test-utils": "^1.10.0",
     "redux": "^4.0.5",
     "rimraf": "^3.0.2"
   },
