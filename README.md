@@ -690,6 +690,92 @@ Notes:
 - Keys are deduped by the same hash used for caching, so `mapOptionsToKey` and `mapKeyToCacheKey`
   apply. Modules must use matching keys and options for a request to be shared.
 
+#### React Server Components with One App
+
+When a module is rendered as a React Server Component (RSC), importing anything from `fetchye` or `fetchye-one-app` will automatically resolve to their `react-server` build via the `"react-server"` [export condition](https://github.com/reactjs/rfcs/blob/main/text/0227-server-module-conventions.md#react-server-condition). This build de-duplicates requests, using the same Holocron promise store mechanism described above in [Request deduplication](#request-deduplication), but it never touches the Redux store.
+
+Because of this, when using fetchye in a server component:
+
+- You do **not** need to register a `fetchye` reducer.
+- You do **not** need a `<FetchyeProvider />` or `<OneFetchyeProvider />` anywhere in your component tree.
+- Calling `oneFetchye` directly, inline, inside a React Server Component works out of the box.
+
+(If you want to use fetchye in a client component, you _must_ do the above as normal)
+
+You can still dispatch `oneFetchye` inside `loadModuleData` to kick off a request as early as possible:
+
+```jsx
+BookList.holocron = {
+  loadModuleData: async ({ dispatch }) => {
+    // Not awaited: this fires the request off immediately, but doesn't block
+    // loadModuleData from resolving, or the response from starting to stream.
+    dispatch(oneFetchye('http://example.com/api/books/'));
+  },
+};
+```
+
+Whether that pre-loaded request streams or blocks depends entirely on whether you `await` it:
+
+- **Don't await it** in `loadModuleData`, and call the same `oneFetchye(key, options)` again (with a matching key/options) from within a Suspense boundary further down the component tree. Since the request was already kicked off, React will suspend the boundary and stream the resolved markup down to the client as soon as the (de-duplicated) request resolves, without blocking the rest of the page.
+- **Await it** in `loadModuleData`, and the whole response will block until that request resolves. This is useful for critical, above-the-fold data that should never be streamed in after the initial paint.
+
+##### Using `oneFetchye` in a Server Component
+
+```jsx
+// BookList.server.jsx
+import { oneFetchye } from 'fetchye-one-app';
+
+// React Server Components can be async functions. Awaiting oneFetchye here
+// blocks this component (and anything depending on it) until the request
+// resolves. If a matching request was already kicked off elsewhere
+// (e.g. loadModuleData), this call is de-duplicated and simply resolves
+// with that same in-flight/settled result.
+const BookList = async ({ dispatch }) => {
+  const { data } = await dispatch(oneFetchye('http://example.com/api/books/'));
+
+  return (
+    <ul>
+      {data.body.map((book) => (
+        <li key={book.id}>{book.title} by {book.author}</li>
+      ))}
+    </ul>
+  );
+};
+
+export default BookList;
+```
+
+##### Streaming data with `oneFetchye` and Suspense
+
+```jsx
+// Page.server.jsx
+import { Suspense } from 'react';
+import { oneFetchye } from 'fetchye-one-app';
+import BookList from './BookList.server';
+
+const Page = ({ dispatch }) => (
+  <>
+    <h1>My Book Store</h1>
+    {/* BookList calls oneFetchye with the same key, and resolves from the */}
+    {/* already in-flight request kicked off in loadModuleData above. */}
+    {/* React streams this boundary's fallback first, then swaps in the */}
+    {/* resolved markup once the shared request settles. */}
+    <Suspense fallback={<p>Loading books...</p>}>
+      <BookList dispatch={dispatch} />
+    </Suspense>
+  </>
+);
+
+Page.holocron = {
+  loadModuleData: async ({ dispatch }) => {
+    // Fire-and-forget: kicks off the request but doesn't block rendering.
+    dispatch(oneFetchye('http://example.com/api/books/'));
+  },
+};
+
+export default Page;
+```
+
 #### Next.JS SSR
 
 ```jsx
@@ -830,6 +916,9 @@ const ParentComponent = ({ children }) => (
   - [SSR](#ssr)
     - [One App SSR](#one-app-ssr)
       - [Request deduplication](#request-deduplication)
+    - [React Server Components with One App](#react-server-components-with-one-app)
+      - [Using `oneFetchye` in a Server Component](#using-onefetchye-in-a-server-component)
+      - [Streaming data with `oneFetchye` and Suspense](#streaming-data-with-onefetchye-and-suspense)
     - [Next.JS SSR](#nextjs-ssr)
 - [Write your own Cache](#write-your-own-cache)
 - [🎛️ API](#️-api)
@@ -902,6 +991,11 @@ const { isLoading, data, error, run } = useFetchye(key, { defer: Boolean, mapOpt
 ### `makeServerFetchye`
 
 A factory function used to generate an async/await fetchye function used for server-side API calls.
+
+> 💡 **RSC variant**: When resolved via the `"react-server"` [export condition](#react-server-components-with-one-app) (i.e. imported from a React Server Component), a different implementation of `makeServerFetchye` is automatically loaded. It behaves differently from the standard implementation described below:
+> - `cache` and `store` must **not** be passed (they should be omitted, or explicitly `null`). Passing either will cause the returned `fetchye` function to throw, since there is no Redux store to interact with in RSC.
+> - `promiseStore` is **required**, rather than optional. Omitting it will cause the returned `fetchye` function to throw. De-duplication always goes through the given `promiseStore`; there is no cache to fall back on.
+> - No Redux actions are ever dispatched; the RSC variant never touches a Redux store, only the `promiseStore`.
 
 **Shape**
 
@@ -977,6 +1071,11 @@ const { data, error } = await fetchye(key, options, fetcher);
 
 Call fetchye in an imperative context, such as in One App's loadModuleData, in a Redux Thunk, or in an useEffect.
 
+> 💡 **RSC variant**: When resolved via the `"react-server"` [export condition](#react-server-components-with-one-app) (i.e. imported from a React Server Component), a different implementation of `oneFetchye` is automatically loaded. It behaves differently from the standard implementation described below:
+> - It always calls the RSC variant of `makeServerFetchye` with `cache: null` and `store: null`, meaning you do **not** need to register a `fetchye` reducer, nor render a `<FetchyeProvider />`/`<OneFetchyeProvider />` anywhere in your component tree.
+> - It always builds a `promiseStore` from `dispatch` (via `promiseStoreFromDispatch`), regardless of `global.window`, since request de-duplication is the *only* mechanism available in RSC — there is no cache to serve repeat calls from.
+> - See [React Server Components with One App](#react-server-components-with-one-app) for a full explanation and usage examples.
+
 **Shape**
 
 ```
@@ -1034,7 +1133,7 @@ const loadModuleData = async ({ store: { dispatch } }) => {
 
 | name                | type                                                  | required | description                                                                                                                                                                        |
 |---------------------|-------------------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `throwOnError`   | `boolean`            | `false`  | This option overrides the default fetchye behavior of catching failed requests. When enabled, unsuccessful responses will throw an error containing the payload of the request. This is intended to be used within a suspense boundary.   
+| `throwOnError`   | `boolean`            | `false`  | This option overrides the default fetchye behavior of catching failed requests. When enabled, unsuccessful responses will throw an error containing the payload of the request. This is intended to be used within a suspense boundary.
 
 **`streamFetchye` Returns**
 
@@ -1042,7 +1141,7 @@ A promise resolving to the value of the thunk.
 
 ### useStreamedFetchye
 
-A React hook used to read streamed data from the server. It will return the raw promise that the user can then parse manually. If there is no existing data from the server, a request will be performed on the client. 
+A React hook used to read streamed data from the server. It will return the raw promise that the user can then parse manually. If there is no existing data from the server, a request will be performed on the client.
 
 The key and options are used to compute the cache key and must match the values passed to `streamedFetchye` for a successful cache hit. When `options.throwOnError` is enabled, the hook will throw an error for unsuccessful responses which will bubble up to the nearest error boundary. When disabled, the success status of the request must be manually checked.
 
@@ -1095,7 +1194,7 @@ const Container = () => (
 
 | name                | type                                                  | required | description                                                                                                                                                                        |
 |---------------------|-------------------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `throwOnError`   | `boolean`            | `false`  | This option overrides the default fetchye behavior of catching failed requests. When enabled, unsuccessful responses will throw an error containing the payload of the request. This is intended to be used within a suspense boundary.   
+| `throwOnError`   | `boolean`            | `false`  | This option overrides the default fetchye behavior of catching failed requests. When enabled, unsuccessful responses will throw an error containing the payload of the request. This is intended to be used within a suspense boundary.
 
 
 **`useStreamedFetchye` Returns**
