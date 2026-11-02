@@ -40,8 +40,13 @@ export const defaultFetcher = async (fetchClient, key, options) => {
       status: res.status,
     };
   } catch (requestError) {
-    // eslint-disable-next-line no-console -- error useful to developer in specific error case
-    console.error(requestError);
+    const isAbort = Boolean(
+      requestError && (requestError.name === 'AbortError' || requestError.code === 20)
+    );
+    if (!isAbort) {
+      // eslint-disable-next-line no-console -- error useful to developer in specific error case
+      console.error(requestError);
+    }
     error = requestError;
   }
   return {
