@@ -103,6 +103,32 @@ describe('defaultFetcher', () => {
       }
     `);
   });
+  it('should return error and not log to console when request is aborted via AbortError', async () => {
+    const abortError = new Error('The user aborted a request.');
+    abortError.name = 'AbortError';
+    const fetchClient = jest.fn(async () => {
+      throw abortError;
+    });
+    const data = await defaultFetcher(fetchClient, 'http://example.com');
+    expect(global.console.error).not.toHaveBeenCalled();
+    expect(data).toEqual({
+      error: abortError,
+      payload: undefined,
+    });
+  });
+  it('should return error and not log to console when request is aborted with code 20', async () => {
+    const abortError = new Error('The user aborted a request.');
+    abortError.code = 20;
+    const fetchClient = jest.fn(async () => {
+      throw abortError;
+    });
+    const data = await defaultFetcher(fetchClient, 'http://example.com');
+    expect(global.console.error).not.toHaveBeenCalled();
+    expect(data).toEqual({
+      error: abortError,
+      payload: undefined,
+    });
+  });
   it('should return payload and undefined error when status 204 (No content)', async () => {
     const fetchClient = jest.fn(async () => ({
       ok: true,
